@@ -5,9 +5,11 @@ import 'auth/auth_screen.dart';
 import 'family_tree/family_tree_explorer_1.dart';
 import 'memories/member_memories_1.dart';
 import 'heritage/heritage_map_1.dart';
+import 'heritage/heritage_map_2.dart';
 import 'ai_features/ai_identity_matcher_1.dart';
 import 'identity/identity_profile.dart';
 import 'admin/admin_infrastructure_1.dart';
+import 'admin/admin_infrastructure_2.dart';
 import 'catalog/catalog_screen.dart';
 import 'settings/privacy_settings.dart';
 import '../theme/app_theme.dart';
@@ -35,14 +37,16 @@ class ScreenGallery extends StatelessWidget {
           _buildSection('Core App', [
             _buildItem(context, 'Family Tree Explorer', const FamilyTreeExplorer1()),
             _buildItem(context, 'AI Restoration (Memories)', const MemberMemories1()),
-            _buildItem(context, 'Upload Center (Heritage Map)', const HeritageMap1()),
+            _buildItem(context, 'Upload Center (Heritage Map 1)', const HeritageMap1()),
+            _buildItem(context, 'Family Messenger (Heritage Map 2)', const HeritageMap2()),
           ]),
           _buildSection('Features', [
             _buildItem(context, 'AI Identity Matcher', const AIIdentityMatcher1()),
             _buildItem(context, 'Identity Profile', const IdentityProfile()),
           ]),
           _buildSection('Admin & Tools', [
-            _buildItem(context, 'Deployment Center (Admin)', const AdminInfrastructure1()),
+            _buildItem(context, 'Deployment Center (Admin 1)', const AdminInfrastructure1()),
+            _buildItem(context, 'Infrastructure Control (Admin 2)', const AdminInfrastructure2()),
             _buildItem(context, 'Catalog Engine', const CatalogScreen()),
             _buildItem(context, 'Privacy Settings', const PrivacySettings()),
           ]),
