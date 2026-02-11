@@ -155,6 +155,10 @@ export async function resetPassword(email) {
     return { success: true };
   } catch (error) {
     console.error("Password reset error:", error);
+    // Return success even if user not found to prevent enumeration
+    if (error.code === "auth/user-not-found") {
+      return { success: true };
+    }
     return { success: false, error: getAuthErrorMessage(error.code) };
   }
 }
@@ -188,13 +192,13 @@ export function getCurrentUser() {
  */
 function getAuthErrorMessage(code) {
   const errorMessages = {
-    "auth/email-already-in-use": "An account with this email already exists.",
+    "auth/email-already-in-use": "Invalid credentials.",
     "auth/invalid-email": "Please enter a valid email address.",
     "auth/operation-not-allowed": "This sign-in method is not enabled.",
     "auth/weak-password": "Password must be at least 6 characters.",
     "auth/user-disabled": "This account has been disabled.",
-    "auth/user-not-found": "No account found with this email.",
-    "auth/wrong-password": "Incorrect password. Please try again.",
+    "auth/user-not-found": "Invalid credentials.",
+    "auth/wrong-password": "Invalid credentials.",
     "auth/too-many-requests": "Too many attempts. Please try again later.",
     "auth/popup-closed-by-user": "Sign-in was cancelled.",
     "auth/network-request-failed":
