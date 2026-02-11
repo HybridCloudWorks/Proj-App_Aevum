@@ -15,6 +15,7 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  writeBatch,
   query,
   where,
   orderBy,
@@ -107,7 +108,9 @@ export async function createFamily(userId, familyData) {
       memberCount: 1,
     };
 
-    await setDoc(familyRef, family);
+    const batch = writeBatch(db);
+
+    batch.set(familyRef, family);
 
     // Add user as first member
     const memberRef = doc(
@@ -117,11 +120,13 @@ export async function createFamily(userId, familyData) {
       COLLECTIONS.MEMBERS,
       userId,
     );
-    await setDoc(memberRef, {
+    batch.set(memberRef, {
       userId,
       role: "owner",
       joinedAt: serverTimestamp(),
     });
+
+    await batch.commit();
 
     return { success: true, familyId: familyRef.id };
   } catch (error) {
