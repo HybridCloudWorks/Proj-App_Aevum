@@ -8,22 +8,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
+import { subscribeToFamilies } from "@lib/firestore";
 import { signOut } from "@lib/auth";
 
 function DashboardScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
-  const [memories, setMemories] = useState([]);
 
   useEffect(() => {
     if (!user) return;
 
     // Subscribe to user's families
     const unsubFamilies = subscribeToFamilies(user.uid, setFamilies);
-
-    // If user has families, subscribe to memories of the first one
-    // TODO: Implement family selection
 
     return () => {
       unsubFamilies();
