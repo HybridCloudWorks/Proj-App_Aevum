@@ -370,7 +370,7 @@ class OnboardingScreen extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(context, '/onboarding-journey'),
           child: Container(
             height: 64,
             width: double.infinity,

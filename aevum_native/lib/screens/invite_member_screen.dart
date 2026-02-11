@@ -8,7 +8,7 @@ class InviteMemberScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color(0xFF0F151B),
       body: Stack(
         children: [
           _buildMeshBackground(),
@@ -88,21 +88,23 @@ class InviteMemberScreen extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Connect Your Roots",
+          "CONNECT YOUR\nROOTS",
+          textAlign: TextAlign.center,
           style: GoogleFonts.cinzel(
-            fontSize: 30,
-            fontWeight: FontWeight.w500,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
             color: Colors.white,
-            letterSpacing: 1.2,
+            letterSpacing: 2.0,
+            height: 1.2,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Text(
           "Expand the Aevum Tree together",
-          style: GoogleFonts.manrope(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            fontWeight: FontWeight.w300,
-            color: Colors.white70,
+            fontWeight: FontWeight.w400,
+            color: Colors.white60,
           ),
         ),
       ],

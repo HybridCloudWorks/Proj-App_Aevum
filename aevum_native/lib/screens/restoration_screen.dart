@@ -15,25 +15,25 @@ class _RestorationScreenState extends State<RestorationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0B1121),
+      backgroundColor: const Color(0xFF0F151B),
       appBar: _buildAppBar(),
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildComparisonSection(),
                 const SizedBox(height: 32),
                 _buildSectionTitle(Icons.tune, "Restoration Controls"),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 _buildControlsGrid(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 _buildRepairItem(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 40),
                 _buildSaveButton(),
-                const SizedBox(height: 100), // Navigation spacer
+                const SizedBox(height: 120),
               ],
             ),
           ),
