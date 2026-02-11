@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatFileSize } from './imageMetadata';
+import { formatFileSize, getImageQuality } from './imageMetadata';
 
 describe('formatFileSize', () => {
   it('should format 0 bytes correctly', () => {
@@ -32,5 +32,46 @@ describe('formatFileSize', () => {
 
   it('should handle large values by rounding to one decimal place', () => {
     expect(formatFileSize(1229)).toBe('1.2 KB'); // 1229 / 1024 = 1.20019...
+  });
+});
+
+describe('getImageQuality', () => {
+  it('should return Excellent for 8MP and above', () => {
+    // 8MP: 4000 x 2000 = 8,000,000
+    expect(getImageQuality(4000, 2000)).toEqual({ label: 'Excellent', color: 'green' });
+    // 12MP: 4000 x 3000 = 12,000,000
+    expect(getImageQuality(4000, 3000)).toEqual({ label: 'Excellent', color: 'green' });
+  });
+
+  it('should return Good for 4MP to < 8MP', () => {
+    // 4MP: 2000 x 2000 = 4,000,000
+    expect(getImageQuality(2000, 2000)).toEqual({ label: 'Good', color: 'blue' });
+    // 6MP: 3000 x 2000 = 6,000,000
+    expect(getImageQuality(3000, 2000)).toEqual({ label: 'Good', color: 'blue' });
+    // Just under 8MP: 7,999,999
+    expect(getImageQuality(7999.999, 1000)).toEqual({ label: 'Good', color: 'blue' });
+  });
+
+  it('should return Fair for 2MP to < 4MP', () => {
+    // 2MP: 2000 x 1000 = 2,000,000
+    expect(getImageQuality(2000, 1000)).toEqual({ label: 'Fair', color: 'yellow' });
+    // 3MP: 2000 x 1500 = 3,000,000
+    expect(getImageQuality(2000, 1500)).toEqual({ label: 'Fair', color: 'yellow' });
+    // Just under 4MP
+    expect(getImageQuality(3999, 1000)).toEqual({ label: 'Fair', color: 'yellow' });
+  });
+
+  it('should return Low for less than 2MP', () => {
+    // 1MP: 1000 x 1000 = 1,000,000
+    expect(getImageQuality(1000, 1000)).toEqual({ label: 'Low', color: 'red' });
+    // 0.25MP: 500 x 500 = 250,000
+    expect(getImageQuality(500, 500)).toEqual({ label: 'Low', color: 'red' });
+    // Just under 2MP
+    expect(getImageQuality(1999, 1000)).toEqual({ label: 'Low', color: 'red' });
+  });
+
+  it('should handle zero or near-zero dimensions', () => {
+    expect(getImageQuality(0, 0)).toEqual({ label: 'Low', color: 'red' });
+    expect(getImageQuality(1, 1)).toEqual({ label: 'Low', color: 'red' });
   });
 });
