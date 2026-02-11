@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advanced Glass Tree Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    boxShadow: {
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+                        'glow': '0 0 15px rgba(255, 255, 255, 0.5), 0 0 5px rgba(255, 255, 255, 0.3)',
+                        'glow-primary': '0 0 20px rgba(17, 115, 212, 0.6), 0 0 10px rgba(17, 115, 212, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .tree-line-vertical {
+            width: 2px;
+            background-color: #475569; 
+        }
+        .tree-line-horizontal {
+            height: 2px;
+            background-color: #475569; 
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .glass-panel {
+            background: rgba(16, 25, 34, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .memory-glow {
+            animation: pulse-glow 3s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4); border-color: rgba(255, 165, 0, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 165, 0, 0); border-color: rgba(255, 165, 0, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0); border-color: rgba(255, 165, 0, 0.6); }
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#0f151b] text-slate-900 dark:text-white font-display overflow-hidden h-screen flex flex-col selection:bg-primary selection:text-white">
+<header class="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-4 glass-panel border-b-0 rounded-b-3xl mx-2 mt-2">
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full hover:bg-white/10 transition-colors text-white/80">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+<div>
+<h1 class="text-lg font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Johnson Ancestry</h1>
+<p class="text-[10px] text-slate-400 font-medium tracking-wide">EDITING NOW</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="glass-card px-3 py-1.5 rounded-full flex items-center gap-1.5 hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-lg text-primary">filter_alt</span>
+<span class="text-xs font-medium">Filter</span>
+</button>
+<button class="p-2 rounded-full bg-primary text-white shadow-glow-primary hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-xl">person_add</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-hidden relative cursor-grab active:cursor-grabbing bg-[#0b0f14]" style="background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 32px 32px;">
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="w-full h-full overflow-auto no-scrollbar flex flex-col items-center justify-center py-20 px-4">
+<div class="min-w-[800px] min-h-[1000px] flex flex-col items-center relative">
+<div class="flex gap-16 mb-16 relative z-10">
+<div class="flex flex-col items-center">
+<div class="w-32 h-44 glass-card rounded-2xl flex flex-col items-center p-3 relative hover:scale-105 transition-transform duration-300 group">
+<div class="w-16 h-16 rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20 shadow-lg group-hover:border-primary/50 transition-colors">
+<img class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" data-alt="Vintage portrait of an elderly woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC49n3EAp46HNYDwvC-xt5qXKZ3S2IumuZDdO9rHLwhl5brd2FRqA-4nwAIwcc04t2HuPo18VHwXFYrdpQfPGjXQkT3bDJ1rqUF9bD0dd3Ad8PjagcQAz2jHJLYJAFMHDZ864SwvPzDLicuHuGYwJkps71-AArAyEtF5E1pxzioTPUehxR_5ka1WH2-b77G8H7JWT7GzZSIJrO16B8WY916TUEwUcKRW4FcZ-8yYqCUb8Uz5BQx0frvptf9N8XSRsjEkglZ3FBfqc0"/>
+</div>
+<p class="text-xs font-bold text-center text-white/90 truncate w-full">Great Grandma</p>
+<p class="text-[10px] text-slate-400 mb-2">1920 - 1998</p>
+<div class="w-1.5 h-1.5 rounded-full bg-orange-400 absolute top-3 right-3 shadow-[0_0_8px_rgba(255,165,0,0.8)] animate-pulse" title="New Memory"></div>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-32 h-44 glass-card bg-white/5 rounded-2xl border-dashed border-white/20 flex flex-col items-center justify-center p-3 relative group hover:bg-white/10 transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-white/5 mb-2 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors border border-white/5">
+<span class="material-symbols-outlined text-3xl">person</span>
+</div>
+<p class="text-xs font-medium text-center text-slate-400 group-hover:text-white/80">Unknown</p>
+<button class="absolute -bottom-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-600 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform border border-white/10">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="w-64 h-8 border-t border-white/20 mb-0 relative -mt-12 mx-auto rounded-t-xl z-0"></div>
+<div class="h-8 w-[1px] bg-white/20 mb-8"></div>
+<div class="flex gap-24 mb-16 relative z-10">
+<div class="flex gap-6 relative">
+<div class="absolute top-full left-1/2 w-[1px] h-12 bg-white/20 -translate-x-1/2 z-0"></div>
+<div class="w-36 h-48 glass-card rounded-2xl shadow-glass flex flex-col items-center p-3 relative z-10 memory-glow">
+<div class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_8px_orange]"></div>
+<div class="w-20 h-20 rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20">
+<img class="w-full h-full object-cover" data-alt="Portrait of an older man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsfH8sC_znXauPce6RI4k93wC0K1QPHB0mvcJ8oS9qsrnHOj7ZFmDzRL7lidFTQSZMgLCKCE1mWuF46n2SsSaOnbXylI_qGflmrQGgr32gswKjvji-0X4GdFMS7IBEw-xih6iVIaQHHY2NGaem4W8SEEQhcdwlRPNHzWFK335cdLF4ofAtm1kkmFUBuFujOR47qLWov6OfTzwlpqcfqBN65l9kYbuuMxbSJIGIGyw_GZXdicEei6Hj9k7p1LtFphAQQRZL2kQYXa0"/>
+</div>
+<p class="text-sm font-bold text-center text-white truncate w-full">Grandpa John</p>
+<p class="text-xs text-slate-400">1945 - 2018</p>
+<span class="mt-2 text-[9px] text-orange-300 font-medium px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20">New Story</span>
+</div>
+<div class="self-center w-6 h-[1px] bg-white/20"></div>
+<div class="w-36 h-48 glass-card rounded-2xl shadow-glass flex flex-col items-center p-3 relative z-10">
+<div class="w-20 h-20 rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20">
+<img class="w-full h-full object-cover" data-alt="Portrait of an older woman smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_8Du2RPciLGr-K63SXKWPYNqJyj8UyWFBF7Snq4LCWgrpddw3JmKAZPMYQyGp2zOKoprIuE15zO-aVTJFVlZn4uCJ1ZJb-nY9Zn6aNcg6BWE8G2vWcXPSAzji9AcE46XcZYaAKj7oXQEHjt72oERCVpdhF_RYSIKid8QG6ubu5vEa_zJ2qXHF6ulqaGZ7bd-nvAFCqKX73aWAwk7-scJqOLF7o6ujqwFU-iLYCWwQTdHFZJV4vCnhsA2VKz6wEpC7cMVhqB8-P7o"/>
+</div>
+<p class="text-sm font-bold text-center text-white truncate w-full">Grandma Mary</p>
+<p class="text-xs text-slate-400">1948 - Present</p>
+</div>
+</div>
+<div class="flex gap-4 items-center opacity-60 hover:opacity-100 transition-opacity">
+<div class="w-16 h-16 rounded-full glass-card flex items-center justify-center text-white text-xs font-bold shadow-glass cursor-pointer hover:scale-110 transition-transform border border-white/20">
+                            +2
+                        </div>
+</div>
+</div>
+<div class="w-[340px] h-12 border-t border-white/20 relative -mt-12 rounded-t-3xl"></div>
+<div class="h-8 w-[1px] bg-white/20 mb-8"></div>
+<div class="flex gap-32 mb-16 relative z-10">
+<div class="flex flex-col items-center relative">
+<div class="w-40 h-52 glass-card rounded-2xl flex flex-col items-center p-4 relative z-10 hover:border-primary/50 transition-colors">
+<div class="w-20 h-20 rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20 ring-4 ring-white/5">
+<img class="w-full h-full object-cover" data-alt="Portrait of a middle-aged man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFNoCUAThY_enku-xJMxTZ6u6XcpinYrgacoAoTvfMeQsMsuvFWOx4Gk16k7zzGFvFqiDal7yetoigjEeX-eVPlQu2PZFWAXUUeFQMoe1SvPc6rA55qxI_4pqMrSKWKd0J-N06Igvt8Fe3FXQOVYLT3Z_ANtdPLqz2mU9gfGKEwRCcqInJPR6wq_Cabc4gvaxYOYirXUUd0DU7nvxX8RcRJAGfawZPQktuMOknnllHMghuAgPvH-c2t2khb-i_bjSUDXo1THOnOPI"/>
+</div>
+<p class="text-base font-bold text-center text-white truncate w-full">Michael Johnson</p>
+<p class="text-xs text-slate-400">1970 - Present</p>
+<div class="mt-3 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">Father</div>
+</div>
+<div class="absolute top-full left-1/2 w-[1px] h-16 bg-white/20 -translate-x-1/2 z-0"></div>
+</div>
+<div class="flex flex-col items-center relative">
+<div class="w-40 h-52 glass-card rounded-2xl flex flex-col items-center p-4 relative z-10 hover:border-primary/50 transition-colors">
+<div class="w-20 h-20 rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20 ring-4 ring-white/5">
+<img class="w-full h-full object-cover" data-alt="Portrait of a middle-aged woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxV1U4tjHVEyPgxmTsQr_ANdHlstxxsyxHU6i_Pqv6x4u76IpKix6ZcxqWAR0h-H1RjbAlgR1dIwtA1dTxZoFW6GhiGTUtUK0XrDk2nBjusNbhfgEJ7kVM0Y4foL129avPSfpikKPghb4brWm3ppBnotHTtkP-ziLaGfiXNwWVM4NIM76MDj0_24XvhqgAjTYiVR1e4DjiUyqw1vFl9SGfCQlxE4nm_pBSWH5vBajPz90nQevQUxT9dGNjFGqBUrGQuJAsYKfJdas"/>
+</div>
+<p class="text-base font-bold text-center text-white truncate w-full">Sarah Johnson</p>
+<p class="text-xs text-slate-400">1972 - Present</p>
+<div class="mt-3 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-300 text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">Mother</div>
+</div>
+<div class="absolute top-full left-1/2 w-[1px] h-16 bg-white/20 -translate-x-1/2 z-0"></div>
+</div>
+</div>
+<div class="w-[300px] border-t border-white/20 h-10 relative -mt-12 rounded-t-full"></div>
+<div class="h-10 w-[2px] bg-gradient-to-b from-white/20 to-primary mb-4 shadow-[0_0_15px_rgba(17,115,212,0.5)]"></div>
+<div class="relative z-20 mb-12">
+<div class="w-60 h-72 glass-card rounded-3xl border-2 border-primary/30 shadow-glow-primary flex flex-col items-center p-0 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent"></div>
+<div class="mt-8 mb-4 relative z-10">
+<div class="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-primary via-blue-400 to-transparent shadow-2xl">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-[#1e293b]">
+<img class="w-full h-full object-cover" data-alt="Portrait of a young man, the user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuz4J3gyQLdpRSsMEvKzvTw6eZYFYbaCHhkLUshrbxFcawhprTjaVQtiIuzHGdcpS8H4qJIJTsRjcuG2J83ImDn_WXy4z70I-D4fGNLN32GWwJU9SSYVqDxegRvkOtEgeZB-aXMaozdN78Mq1PUXxtVBKx0aNcUCnXjNckfml-9DR1BftUhTUJZ9F9SaeNMn9l2YxB-fuL_kc6fd5OZqurZV_rtTMJHYdeMFKN-VG0H8FFKYPnCjvk761kg9IgtPyKs18PpDejufE"/>
+</div>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full border border-slate-900 shadow-lg">YOU</div>
+</div>
+<div class="relative z-10 text-center px-4 w-full">
+<p class="text-xl font-bold text-white tracking-tight">Alex Johnson</p>
+<p class="text-sm text-slate-400 mt-1">1995 - Present</p>
+<div class="flex gap-3 justify-center mt-5 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+<button class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors border border-white/10 backdrop-blur-md">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors border border-white/10 backdrop-blur-md">
+<span class="material-symbols-outlined text-sm">add_a_photo</span>
+</button>
+<button class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors border border-white/10 backdrop-blur-md">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+</div>
+</div>
+<div class="absolute top-full left-1/2 w-[1px] h-12 bg-white/20 -translate-x-1/2 z-0"></div>
+</div>
+<div class="flex gap-8 relative z-10">
+<div class="flex flex-col items-center">
+<button class="w-14 h-14 rounded-full glass-card border-dashed border-white/30 flex items-center justify-center text-slate-400 hover:text-white hover:border-white transition-all shadow-glass hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">add</span>
+</button>
+<p class="mt-3 text-xs text-slate-500 font-medium">Add Child</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="absolute bottom-28 right-6 z-30">
+<div class="relative w-32 h-32">
+<div class="absolute inset-0 glass-panel rounded-full shadow-2xl flex items-center justify-center">
+<div class="w-12 h-12 rounded-full bg-white/5 border border-white/10"></div>
+<span class="absolute top-2 left-1/2 -translate-x-1/2 material-symbols-outlined text-slate-400 text-sm pointer-events-none">expand_less</span>
+<span class="absolute bottom-2 left-1/2 -translate-x-1/2 material-symbols-outlined text-slate-400 text-sm pointer-events-none">expand_more</span>
+<span class="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-sm pointer-events-none">chevron_left</span>
+<span class="absolute right-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-sm pointer-events-none">chevron_right</span>
+</div>
+<button class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-gradient-to-b from-slate-700 to-slate-900 border border-slate-600 shadow-[0_4px_10px_rgba(0,0,0,0.5),inset_0_2px_4px_rgba(255,255,255,0.1)] active:scale-95 transition-transform z-10 flex items-center justify-center group">
+<span class="material-symbols-outlined text-white/70 text-2xl group-active:text-primary transition-colors">pan_tool</span>
+</button>
+<button class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-all z-20 border-2 border-[#0f151b]">
+<span class="material-symbols-outlined text-lg">center_focus_weak</span>
+</button>
+</div>
+<p class="text-center text-[10px] text-slate-500 font-medium mt-2 bg-black/40 px-2 py-0.5 rounded-full w-max mx-auto backdrop-blur-sm">Infinite Pan</p>
+</div>
+<div class="absolute bottom-28 left-6 z-30 flex flex-col gap-3">
+<div class="glass-panel p-1.5 rounded-full flex flex-col gap-2 shadow-lg">
+<button class="w-10 h-10 rounded-full hover:bg-white/10 text-white flex items-center justify-center transition-colors" title="Zoom In">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+<button class="w-10 h-10 rounded-full hover:bg-white/10 text-white flex items-center justify-center transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+</div>
+<button class="w-12 h-12 rounded-full glass-panel text-white/90 shadow-lg flex items-center justify-center border border-white/10 hover:bg-white/5 transition-colors group relative">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">visibility</span>
+<span class="absolute left-full ml-2 px-2 py-1 bg-black/80 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Focus Mode</span>
+</button>
+</div>
+<nav class="glass-panel border-t-0 rounded-t-3xl pb-safe z-40 mx-2 mb-2 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+<div class="flex items-center justify-around px-2 py-3">
+<a class="flex flex-col items-center gap-1 p-2 min-w-[64px] text-primary relative" href="#">
+<div class="absolute -top-1 w-8 h-1 bg-primary rounded-b-full shadow-[0_0_10px_#1173d4]"></div>
+<span class="material-symbols-outlined text-2xl filled">account_tree</span>
+<span class="text-[10px] font-medium">Tree</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">photo_library</span>
+<span class="text-[10px] font-medium">Memories</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">search</span>
+<span class="text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors" href="#">
+<div class="w-6 h-6 rounded-full overflow-hidden border border-slate-500">
+<img class="w-full h-full object-cover" data-alt="Small profile avatar of user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-BYcwYglHbIlbJLTB2YbiScF_Ry1BTuwm66EsQlLnsJFqBFwxwbK0p2Mwu6h77FC6D02Z5xYZuUr-EPRS9R1wRcqTJ5GHlWrSGDmK_8vMKCAWI4su8WzInKYz0SZd2qluAhFO6gEDXCDTGqBlAWnqtXdiBHx0auILWtL_alXuIdJ2pKfsaTxrpqxJopwQXxX5AAphDpe3zQWM07qNKd7FGzm63hgnarPY8AhVa42s3K-B7bIkaj8obsikF1sHtL3MH4avyl6kLjg"/>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+<div class="h-1 w-full"></div>
+</nav>
+<style>
+        .filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+
+</body></html>

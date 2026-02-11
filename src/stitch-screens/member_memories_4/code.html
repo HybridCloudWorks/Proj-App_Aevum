@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bento Memory Vault</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "background-light": "#f0f2f5",
+                        "background-dark": "#0f172a",
+                        "surface-glass": "rgba(255, 255, 255, 0.1)",
+                        "surface-glass-dark": "rgba(30, 41, 59, 0.4)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "3xl": "2.5rem", "full": "9999px" },
+                    backdropBlur: {
+                        'xs': '2px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 180px;
+            gap: 16px;
+        }
+        .bento-item-large {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+        .bento-item-tall {
+            grid-row: span 2;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden antialiased">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-gray-50 dark:bg-[#0B1121]">
+<div class="relative w-full h-[320px] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzJrvtRiuf5UIaUM0d3Hj1OvYpO6NQMQ_Z37YGiWkhlSztdCH5ummpBS11d20I2OXAfh35U2Ob_nBs0kMXIslYN6_z8U2Rzd_Xc5eU78eJHzlNmk5e5rOeuTCniNQfa2h4oU8KH9n6SQqgyEZ3eLgRlKjmkJOcye-b_vbOXVw5SRzYFehdK8ofq3Oo2ZwX1C1QYZM4j0K-ei4qDPJPn_qNg5byhDKWX-qN9YSjuwDlYsgnEsdtkD8K656wRa9iwOM4xLeuohRKoOg");'></div>
+<div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background-light dark:to-[#0B1121]"></div>
+<div class="absolute inset-0 backdrop-blur-[2px]"></div>
+<div class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4 pt-12">
+<button class="flex size-10 items-center justify-center rounded-full glass-card hover:bg-white/20 transition-colors text-white">
+<span class="material-symbols-outlined" style="font-size: 20px;">arrow_back_ios_new</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full glass-card hover:bg-white/20 transition-colors text-white">
+<span class="material-symbols-outlined" style="font-size: 20px;">more_horiz</span>
+</button>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+<div>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white drop-shadow-sm">Joseph Miller</h1>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-md text-xs font-semibold text-slate-800 dark:text-slate-200 border border-white/20">1945 – 2022</span>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300">Grandfather</span>
+</div>
+</div>
+<div class="relative">
+<div class="h-20 w-20 rounded-2xl overflow-hidden border-2 border-white/50 dark:border-white/20 shadow-lg">
+<img alt="Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCypW0HCtYaKHH0MjMWX5XSsEKnu7uoyRGpXiybm9VCSMSScwMkgC9ez5DGxTI5aZ9R8qtdmEhpP57FWjs1FEoF71D4bCGguhT8QavCYCK0Hq6QmPi5gBbq-toXZJYB2YAyY3ACa7I9D_xT4aNPKnATilfv4r2mIsfkVXaKiuzT4E6wh8xuMRQ2gs1XjSq71o-iw17bRamMPrWJPA1F8-lYYaF3HAZYx3KtIUk3CtH-NetUq8Av_FjlDt-4jo7Pxw5GiiDB9tT_y0w"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-blue-500 text-white p-1 rounded-full shadow-lg border border-white dark:border-gray-800">
+<span class="material-symbols-outlined block" style="font-size: 14px;">edit</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 px-4 -mt-4 relative z-10 pb-32">
+<div class="grid grid-cols-2 gap-3 mb-6">
+<button class="glass-panel p-4 rounded-2xl flex flex-col items-start gap-2 hover:bg-white/80 dark:hover:bg-slate-700/80 transition-all group">
+<div class="p-2 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">add_a_photo</span>
+</div>
+<div>
+<span class="block text-sm font-bold text-slate-900 dark:text-white">Add Memory</span>
+<span class="text-[10px] text-slate-500 dark:text-slate-400">Upload new photos</span>
+</div>
+</button>
+<button class="glass-panel p-4 rounded-2xl flex flex-col items-start gap-2 hover:bg-white/80 dark:hover:bg-slate-700/80 transition-all group">
+<div class="p-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">auto_fix_high</span>
+</div>
+<div>
+<span class="block text-sm font-bold text-slate-900 dark:text-white">AI Restore</span>
+<span class="text-[10px] text-slate-500 dark:text-slate-400">Colorize &amp; sharpen</span>
+</div>
+</button>
+</div>
+<div class="flex items-center justify-between mb-4 px-1">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Featured Moments</h3>
+<span class="text-xs font-semibold text-blue-500 cursor-pointer">View All</span>
+</div>
+<div class="bento-grid">
+<div class="bento-item-large relative group rounded-3xl overflow-hidden glass-card shadow-sm hover:shadow-md transition-all">
+<img alt="Vintage car" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0w_7LgeGvO_40XKSE8_u9BlvBlyoFqmsb1rRwBgV3p4LIpenJmAItYk0k2ZIRvGLwhtqqGIt9Jlv7eLRCHRag_AyVxwGyInXcEdoNon2qyjhBmDwhrh5MmEBUUPeiAIJhY7byAEJWebCT44LqMdSrnmEFL8NvjlI4KwQla_aefPelwUwi4_hmF41W3_pkfzLbf8CDDmy2qvacKOnMMpvnvvqOb31CmqCzgLHtbuVMQ6Qj0p9Fhij8p0-UhJn1g9ODbjQORkH_uDU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-5 w-full">
+<div class="flex justify-between items-end">
+<div>
+<span class="px-2 py-1 rounded-lg bg-white/20 backdrop-blur-md text-[10px] font-bold text-white mb-2 inline-block border border-white/10">1968</span>
+<p class="text-white font-semibold text-sm leading-tight">First Car Purchase</p>
+<p class="text-white/70 text-xs mt-0.5">Chevrolet Impala</p>
+</div>
+<button class="bg-white/20 hover:bg-white/30 p-2 rounded-full backdrop-blur-md text-white transition-colors border border-white/10">
+<span class="material-symbols-outlined" style="font-size: 18px;">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bento-item-tall relative group rounded-3xl overflow-hidden glass-card shadow-sm">
+<img alt="Portrait" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6rLWYNqR4sQgKqUxA8itpYbWXVX2-AazxpOq2ruKAUHeE88QzbLzddOdrSSPueXXolY0mRc53w7JH1MHgnxowqUH38duGKayQBL3QGkFmy67PfrafwkAncBVgXFshhCrlV5O9l5XYFtSWDjvsZgOmDibOqOf9VfohVZPB8t3L1XsH0o7Gc8wHDiTMDJLR3Mkv8u1JKpekBv7hqaZN-XbkutgK1HMXkryD667osEYGmVBJUXNSmRkMazqU6vZYrXp21beGfnhnR_Q"/>
+<div class="absolute top-3 right-3 bg-purple-500/90 text-white p-1.5 rounded-full shadow-lg backdrop-blur-md z-10">
+<span class="material-symbols-outlined block" style="font-size: 14px;">auto_awesome</span>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-white font-semibold text-sm">Portrait</p>
+<p class="text-white/60 text-xs">Restored • 1970</p>
+</div>
+</div>
+<div class="relative group rounded-3xl overflow-hidden glass-card shadow-sm">
+<img alt="School" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWscasPduzMbADc5Zs38ALSTI6Oan1y4-FKMdAeNvtTEJ-1K3cVodl_pFhXF8a6i-REOo23jaB_5wVBNieVLvGPFIZyTdHu6EgOvzFczDTHD9Elanoz8xmSTLSZ11FgLqtYPa8zKkTnyiy9gyII1kokAkiw1iVPgzoqMDRCqhDKEhOAauTpfk0kpDD4QS98DsNQfQkmQCQQiV_xERwi6rv4p8uA6joXRG5nEF9E2BzfUdnk-rpa-yKOvfw2A7cjvlC-1zZrKGSYjg"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors"></div>
+<div class="absolute top-3 left-3 bg-black/40 text-white px-2 py-0.5 rounded-full backdrop-blur-md">
+<span class="text-[10px] font-bold">School</span>
+</div>
+</div>
+<div class="relative group rounded-3xl overflow-hidden glass-card shadow-sm">
+<img alt="Wedding" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5n5doYCkY-YpRrJdRCEC4_j3RHMdF7UNO_U-zdqhtQqCfRQkDGub_myiBzSbIVEdZVY8N8WT3FYlKEdWwlYyZgXI00wnZTvtH658N2Zy8S26IqRb3wjBBdjzhRLv1_qJyJ7mG21vqFdE3O-dBMC61_M5TjLzrTwIx5TmHL_DIssIkwmrTb-Zm_YaQ6VPQ1Uwht8jeyqrqqYE3aiTO2qttDWTmw1rO7eEXBN-sffm2UeQuwVcLaLtfuV7viy1lscKMSKbyCvfFpt4"/>
+<div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+<p class="text-white text-xs font-medium text-center">Wedding Day</p>
+</div>
+</div>
+<div class="bento-item-large relative group rounded-3xl overflow-hidden glass-card shadow-sm">
+<img alt="Park" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNgJYKQvFHe-9LeuQ5ivvK4C_HDOwhkhs6cph24zCDb8DlpCkipfSBnduvQywqwrn3HrU3uH7PXY-5hEek_X_1OkaTszZS5w83tu8eFrwGhmpxqu2IV_54mO5OnPB4FGS69q_cEcnonsUHTIfKZjKkrDoSWAcYYg_0yt9oB2c-Dd2I713DC2YtF59CeoqSkhCGVtWNbwtlFar7__FY0IV5_WTdf0JXf5VOJfOeRicM8YVmiMwO1hAJhfiAlImmphkOLs_yH4bKgVg"/>
+<div class="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-white drop-shadow-md" style="font-size: 18px;">location_on</span>
+<span class="text-white text-xs font-semibold drop-shadow-md">Central Park, 1985</span>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed bottom-24 right-4 z-50 flex flex-col gap-3 items-end pointer-events-none">
+<button class="pointer-events-auto flex items-center gap-2 pr-4 pl-1 py-1 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-xl border border-white/20 backdrop-blur-xl transform translate-y-4 opacity-0 scale-90 transition-all duration-300 hover:translate-y-0 hover:opacity-100 hover:scale-100 group">
+<div class="size-8 rounded-full bg-indigo-500 flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined" style="font-size: 18px;">person_add</span>
+</div>
+<span class="text-xs font-bold text-slate-700 dark:text-slate-200">Magic Tagging</span>
+</button>
+<button class="pointer-events-auto flex items-center gap-2 pr-4 pl-1 py-1 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-xl border border-white/20 backdrop-blur-xl transform translate-y-2 opacity-100 scale-100 hover:scale-105 transition-all duration-300 group mb-1">
+<div class="size-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined" style="font-size: 22px;">auto_fix</span>
+</div>
+<span class="text-sm font-bold gradient-text">AI Enhance</span>
+</button>
+<button class="pointer-events-auto bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-4 rounded-2xl shadow-2xl shadow-black/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300" style="font-size: 28px;">add</span>
+</button>
+</div>
+<div class="fixed bottom-0 w-full max-w-md pb-safe z-50">
+<div class="mx-4 mb-4 rounded-3xl glass-panel shadow-2xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/40 dark:border-white/10">
+<div class="flex justify-around items-center h-16 px-2">
+<button class="flex flex-col items-center gap-1 w-14 group">
+<div class="p-1.5 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined filled" style="font-size: 22px; font-variation-settings: 'FILL' 1;">photo_library</span>
+</div>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">account_tree</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">search</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">person</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+
+</body></html>

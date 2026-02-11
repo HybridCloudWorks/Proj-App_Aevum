@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Firebase Nerve Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5a5cf2",
+                        "primary-glow": "#5a5cf280",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(28, 28, 39, 0.6)",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0F0F12",
+                        "success": "#0bda68",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(90, 92, 242, 0.3);
+            border-radius: 4px;
+        }
+        
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(28, 28, 39, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-panel-heavy {
+            background: rgba(20, 20, 30, 0.75);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Subtle grid background pattern */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Pulse Animation for Status */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px #0bda68; opacity: 1; }
+            50% { box-shadow: 0 0 15px #0bda68; opacity: 0.6; }
+        }
+        .status-dot {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white antialiased selection:bg-primary selection:text-white overflow-hidden">
+<!-- Background Decoration -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] opacity-40"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] opacity-30"></div>
+<div class="absolute inset-0 bg-grid-pattern z-0"></div>
+</div>
+<!-- Main Content Container -->
+<div class="relative z-10 flex flex-col h-screen w-full max-w-md mx-auto bg-transparent border-x border-glass-border/30 shadow-2xl">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 pt-14 pb-4 glass-panel-heavy sticky top-0 z-50">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success status-dot"></span>
+<span class="text-xs font-mono text-success uppercase tracking-wider">System Operational</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-white mt-1">Nerve Center</h1>
+</div>
+<button class="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white">notifications</span>
+</button>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto px-4 py-6 pb-24 space-y-4 no-scrollbar">
+<!-- Realtime Database Bento Card (Large) -->
+<div class="glass-panel rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary text-3xl">database</span>
+</div>
+<div class="flex flex-col h-full justify-between gap-8">
+<div>
+<h3 class="text-sm font-medium text-gray-400">Firestore Sync</h3>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-3xl font-bold text-white tracking-tight">Active</span>
+<span class="text-xs font-mono text-success bg-success/10 px-2 py-0.5 rounded">+99.9% uptime</span>
+</div>
+</div>
+<!-- Abstract Wave Chart -->
+<div class="h-16 w-full flex items-end justify-between gap-1">
+<div class="w-1.5 bg-primary/30 rounded-t-sm h-[40%] animate-pulse"></div>
+<div class="w-1.5 bg-primary/50 rounded-t-sm h-[70%] animate-pulse" style="animation-delay: 0.1s"></div>
+<div class="w-1.5 bg-primary rounded-t-sm h-[50%] animate-pulse" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 bg-primary/60 rounded-t-sm h-[85%] animate-pulse" style="animation-delay: 0.3s"></div>
+<div class="w-1.5 bg-primary/40 rounded-t-sm h-[60%] animate-pulse" style="animation-delay: 0.15s"></div>
+<div class="w-1.5 bg-primary/70 rounded-t-sm h-[90%] animate-pulse" style="animation-delay: 0.4s"></div>
+<div class="w-1.5 bg-primary/30 rounded-t-sm h-[45%] animate-pulse" style="animation-delay: 0.25s"></div>
+<div class="w-1.5 bg-primary/20 rounded-t-sm h-[30%] animate-pulse" style="animation-delay: 0.05s"></div>
+<div class="w-1.5 bg-primary/50 rounded-t-sm h-[65%] animate-pulse" style="animation-delay: 0.35s"></div>
+<div class="w-1.5 bg-primary/80 rounded-t-sm h-[55%] animate-pulse" style="animation-delay: 0.1s"></div>
+<div class="w-1.5 bg-primary/40 rounded-t-sm h-[40%] animate-pulse" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 bg-primary/20 rounded-t-sm h-[20%] animate-pulse" style="animation-delay: 0.5s"></div>
+</div>
+<div class="flex justify-between items-center text-xs text-gray-400 font-mono">
+<span>Latency: 24ms</span>
+<span>Writes: 1.2k/s</span>
+</div>
+</div>
+</div>
+<!-- Grid for Auth & Storage -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Authentication Card -->
+<div class="glass-panel rounded-2xl p-5 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary text-xl">fingerprint</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+<div class="mt-4">
+<h3 class="text-sm font-medium text-gray-400">Identity</h3>
+<p class="text-lg font-bold text-white leading-tight mt-1">Biometric<br/>Enabled</p>
+<p class="text-[10px] text-gray-500 mt-2 font-mono">Last login: Just now</p>
+</div>
+</div>
+<!-- Storage BYOB Card -->
+<div class="glass-panel rounded-2xl p-5 flex flex-col justify-between aspect-square relative overflow-hidden">
+<!-- Background gradient for visual interest -->
+<div class="absolute -right-4 -bottom-4 w-20 h-20 bg-orange-500/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start">
+<div class="p-2 bg-orange-500/10 rounded-lg">
+<span class="material-symbols-outlined text-orange-400 text-xl">cloud_upload</span>
+</div>
+<span class="material-symbols-outlined text-gray-600 text-sm">link</span>
+</div>
+<div class="mt-4 relative z-10">
+<h3 class="text-sm font-medium text-gray-400">Media Vault</h3>
+<p class="text-lg font-bold text-white leading-tight mt-1">BYOB<br/>Connected</p>
+<p class="text-[10px] text-gray-500 mt-2 font-mono">AWS S3 Bucket</p>
+</div>
+</div>
+</div>
+<!-- Cloud Functions / AI Cortex -->
+<div class="glass-panel rounded-2xl p-0 overflow-hidden">
+<div class="p-5 border-b border-glass-border flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-purple-500/10 rounded-lg">
+<span class="material-symbols-outlined text-purple-400">neurology</span>
+</div>
+<div>
+<h3 class="text-white font-bold">AI Cortex</h3>
+<p class="text-xs text-gray-400">Cloud Functions</p>
+</div>
+</div>
+<button class="text-xs bg-white/5 hover:bg-white/10 text-white px-3 py-1.5 rounded-full transition-colors border border-white/5">
+                        View Logs
+                    </button>
+</div>
+<div class="p-2">
+<!-- Function Item 1 -->
+<div class="flex items-center justify-between p-3 hover:bg-white/5 rounded-lg transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-sm">image_search</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-gray-200">Image Tagging</span>
+<span class="text-[10px] text-gray-500 font-mono">Completed 2m ago</span>
+</div>
+</div>
+<span class="text-xs text-success bg-success/10 px-2 py-0.5 rounded font-mono">Success</span>
+</div>
+<!-- Function Item 2 -->
+<div class="flex items-center justify-between p-3 hover:bg-white/5 rounded-lg transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-sm">history_edu</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-gray-200">GEDCOM Parse</span>
+<span class="text-[10px] text-gray-500 font-mono">Last run: 1h ago</span>
+</div>
+</div>
+<span class="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded font-mono">Idle</span>
+</div>
+<!-- Function Item 3 -->
+<div class="flex items-center justify-between p-3 hover:bg-white/5 rounded-lg transition-colors group">
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined text-gray-500 group-hover:text-white transition-colors text-sm">face</span>
+<span class="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-gray-200">Face Clustering</span>
+<span class="text-[10px] text-gray-500 font-mono">Running...</span>
+</div>
+</div>
+<span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded font-mono">Active</span>
+</div>
+</div>
+</div>
+<!-- Map / Locations Block -->
+<div class="glass-panel rounded-2xl p-5 flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg bg-gray-800 overflow-hidden flex-shrink-0 relative border border-white/5">
+<div class="absolute inset-0 bg-primary/20 z-10"></div>
+<!-- Placeholder map image -->
+<div class="w-full h-full bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-122.4241,37.78,13.0,0/300x300@2x?access_token=pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGZ5c3o5c3gwMDBtM3FwaXZ4ZG50b3J4In0.XXXXXX')] bg-cover bg-center" data-alt="Dark mode map of San Francisco showing server locations" data-location="San Francisco, US" style=""></div>
+</div>
+<div class="flex flex-col flex-1">
+<h3 class="text-sm font-bold text-white">Server Region</h3>
+<p class="text-xs text-gray-400 mt-1">US-WEST-1 (N. California)</p>
+<div class="w-full bg-gray-700/50 rounded-full h-1.5 mt-3">
+<div class="bg-primary h-1.5 rounded-full" style="width: 35%"></div>
+</div>
+<p class="text-[10px] text-gray-500 mt-1 text-right font-mono">35% Load</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Glassmorphic Tab Bar) -->
+<nav class="absolute bottom-0 w-full glass-panel-heavy pb-8 pt-4 px-6 z-50">
+<div class="flex justify-between items-center">
+<button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">account_tree</span>
+<span class="text-[10px] font-medium">Tree</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">search</span>
+<span class="text-[10px] font-medium">Discover</span>
+</button>
+<!-- Center Action Button -->
+<button class="w-12 h-12 bg-primary rounded-full shadow-[0_0_15px_rgba(90,92,242,0.5)] flex items-center justify-center -mt-8 border-4 border-[#14141e] hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-white">add</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl fill-current">hub</span>
+<span class="text-[10px] font-medium">System</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

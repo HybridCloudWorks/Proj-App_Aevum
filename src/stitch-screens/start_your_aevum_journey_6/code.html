@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Start Your Aevum Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Glassmorphism Utilities */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ambient background glow */
+        .ambient-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(17, 115, 212, 0.4) 0%, rgba(17, 115, 212, 0) 70%);
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-glow-bottom {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(17, 115, 212, 0.2) 0%, rgba(17, 115, 212, 0) 70%);
+            bottom: 0;
+            right: -50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-white">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Ambient Background Effects -->
+<div class="ambient-glow"></div>
+<div class="ambient-glow-bottom"></div>
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between p-4 pb-2 bg-transparent backdrop-blur-sm">
+<button class="text-white hover:bg-white/10 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center drop-shadow-md">Start Your Journey</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="glass-button flex h-10 w-10 items-center justify-center rounded-full text-white transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 flex flex-col gap-4 p-4 pb-24">
+<!-- Hero Card: Planting Your Roots -->
+<section class="@container">
+<div class="glass-card flex flex-col items-stretch justify-start rounded-2xl overflow-hidden @xl:flex-row @xl:items-start group hover:border-white/20 transition-all duration-300">
+<div class="relative h-48 w-full shrink-0 overflow-hidden @xl:h-full @xl:w-1/2">
+<div class="absolute inset-0 bg-gradient-to-t from-[#101922] via-transparent to-transparent z-10 opacity-60"></div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-105 transition-transform duration-700" data-alt="Abstract glowing plant seedling growing from digital soil representing genealogy" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCPahOG810tTA0CDJ7hQ78KbqeMIHCm353JThEuV8KMDo6TMp0GE5bt2WCvf0aOGkzAAuXqC_GK5Hf_1M_e_XTmBVoYw7wFLaIde2L2Dn2NZF3N4Y3Fve7iqCFFFwyw3IydRYQvrSYh8RJL03rL6xX5A4y6Pj8KxVvzqybyLwFAUBwkuKWtKsiSiodFj77JYYwJOA2zzf69Dc-kk28VcIE7TULK8C8xSQkOLqoO9cPQ2idl1OwX55upHy-wWdt1pm0sDlb7h-CSPYs");'>
+</div>
+</div>
+<div class="flex w-full grow flex-col items-start justify-center gap-2 p-5">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider border border-primary/20">New Branch</span>
+</div>
+<h3 class="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">Planting Your Roots</h3>
+<p class="text-slate-300 text-sm font-normal leading-relaxed">Every great family story starts with a single memory. Begin building your legacy today.</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid Action Cards -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Action 1: Upload Photo -->
+<div class="col-span-2 @[480px]:col-span-1">
+<div class="glass-card h-full flex flex-col justify-between gap-4 rounded-2xl p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-start justify-between">
+<div class="bg-primary/20 p-2 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">add_a_photo</span>
+</div>
+<span class="material-symbols-outlined text-slate-500">arrow_outward</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-white text-lg font-bold leading-tight">Upload Photo</p>
+<p class="text-slate-400 text-xs font-medium">Add a memory to start the tree</p>
+</div>
+<button class="mt-2 w-full flex items-center justify-center rounded-xl h-10 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-blue-600 active:scale-95 transition-all">
+                            Add Photo
+                        </button>
+</div>
+</div>
+<!-- Action 2: Invite Family -->
+<div class="col-span-2 @[480px]:col-span-1">
+<div class="glass-card h-full flex flex-col justify-between gap-4 rounded-2xl p-4 hover:bg-white/5 transition-colors cursor-pointer group">
+<div class="flex items-start justify-between">
+<div class="bg-purple-500/20 p-2 rounded-xl text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">group_add</span>
+</div>
+<span class="material-symbols-outlined text-slate-500">arrow_outward</span>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-white text-lg font-bold leading-tight">Invite Family</p>
+<p class="text-slate-400 text-xs font-medium">Build your history together</p>
+</div>
+<button class="mt-2 w-full flex items-center justify-center rounded-xl h-10 bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold active:scale-95 transition-all">
+                            Invite
+                        </button>
+</div>
+</div>
+<!-- AI Assistant Card -->
+<div class="col-span-2">
+<div class="glass-card relative overflow-hidden rounded-2xl p-5 border-t-white/10 border-b-black/20 flex flex-col @[480px]:flex-row items-center gap-4 bg-gradient-to-br from-white/5 to-transparent">
+<!-- Decorative glow for AI -->
+<div class="absolute -left-4 -top-4 h-24 w-24 rounded-full bg-primary blur-3xl opacity-20"></div>
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-primary to-cyan-400 shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-white text-[24px]">colors_spark</span>
+</div>
+<div class="flex flex-1 flex-col gap-1 text-center @[480px]:text-left">
+<p class="text-white text-base font-bold leading-tight">Aevum AI Assistant</p>
+<p class="text-slate-300 text-sm font-normal leading-normal">Not sure where to start? I can help you find records based on what you already know.</p>
+</div>
+<button class="flex shrink-0 items-center justify-center rounded-full h-9 px-5 bg-white text-slate-900 text-xs font-bold hover:bg-slate-200 transition-colors">
+                            Ask AI
+                        </button>
+</div>
+</div>
+<!-- Recent Activity / Example Data (Visual Filler) -->
+<div class="col-span-2 mt-2">
+<h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3 ml-1">Example Branches</h3>
+<div class="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+<div class="glass-card shrink-0 w-32 p-3 rounded-xl flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-slate-700 bg-cover bg-center border-2 border-white/10" data-alt="Portrait of a woman" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB5VBZhM5VzXhfu9SvegoT9Pv4b9Fa6pvmZbzfCN90nf3Z-qIcBALR5R2sTODFd3s4N5wkPzKF0dQH8OKfxmkjbyzQ0PUsw3Uk5XPy2tWBN1c2Jj0MexMFQnuquwYFIoj-6cY3407_XOdLvufiH7UzhsAyh66OZCvI_HRuUfR0RmeVYs8N1h7VIw_006yzmqL3kayWER4--oKCJJmhLGsF0f3JM7v6TtC7bF09hXSvzjO19yX8u2p-wcj0bsG7qw35DQpg3hinhxaE");'></div>
+<span class="text-xs font-medium text-white text-center">Grandma<br/>Sarah</span>
+</div>
+<div class="glass-card shrink-0 w-32 p-3 rounded-xl flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-slate-700 bg-cover bg-center border-2 border-white/10" data-alt="Portrait of a man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcxrzPy7OIC6fd_Q2YDezWIUxp5TQ5fc26rSRExBWQAogSbHqAcIW5X7KuWlU7plAP0P5KH9OR86Z0I-qFYPQIkHsqp_-Xd-bKT6GS_SbQwkMF_v21eWMHQNg-ncKsK7-OX67k9A1pjiZdgepQFPOA7uaYgzbKptnvYNvioTH6t1YsrVLoDcrW92mP2MS1oDyzCDt64EufsU6g4OIatEOy63KXakhwlJMKB2X9LUQnMS2V07kb0vgKx7tJ26GmURB4xILcTyY3So8");'></div>
+<span class="text-xs font-medium text-white text-center">Grandpa<br/>John</span>
+</div>
+<div class="glass-card shrink-0 w-32 p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-dashed border-slate-600 bg-transparent">
+<div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-400 text-[20px]">add</span>
+</div>
+<span class="text-xs font-medium text-slate-400 text-center">Add<br/>Relative</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 px-6 pb-6 pt-2 pointer-events-none">
+<div class="glass-card pointer-events-auto mx-auto flex h-16 max-w-[400px] items-center justify-around rounded-full bg-[#101922]/80 backdrop-blur-xl shadow-2xl border border-white/10">
+<a class="flex flex-col items-center gap-1 p-2 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] filled">home</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-white transition-colors" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+</div>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

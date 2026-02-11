@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Catalog Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(255, 255, 255, 0.03)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Subtle pulse for active elements */
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-slow {
+            animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display text-slate-900 dark:text-white overflow-x-hidden selection:bg-primary selection:text-white">
+<div class="relative flex h-full w-full max-w-md mx-auto flex-col pb-24">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 pb-2">
+<div class="flex items-center gap-3">
+<div class="flex size-10 items-center justify-center rounded-xl bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight tracking-tight">Aevum Engine</h1>
+<p class="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-widest uppercase">v2.4 // Build 892</p>
+</div>
+</div>
+<div class="flex items-center gap-2 rounded-full bg-green-500/10 px-3 py-1 border border-green-500/20">
+<div class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-bold text-green-500 uppercase tracking-wide">Online</span>
+</div>
+</header>
+<!-- Main Dashboard Title -->
+<div class="px-6 py-4">
+<h2 class="text-2xl font-bold tracking-tight text-white/90">Cataloging &amp;<br/>Indexing</h2>
+</div>
+<!-- Bento Grid -->
+<div class="flex flex-col gap-4 px-4">
+<!-- Storage Path Card -->
+<div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+<!-- Background visual effect -->
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Storage Path</span>
+<h3 class="text-lg font-bold">High-Res Vault</h3>
+</div>
+<span class="material-symbols-outlined text-primary/80">cloud_upload</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="h-32 w-full rounded-xl bg-slate-900/50 border border-white/5 relative overflow-hidden" data-alt="Abstract visualization of data blocks moving into a cloud storage vault" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDboHInGxe63iPNEbsLh5xcXR14DFxxtfFKFe1r9GmUhnoM1lP1df3ePk9RHUUAgVSomUQFxFpHJFEtbbRWw2bYzoXMNVRTwkY4_JnkLvJlXT4JL939aD64el3ZFOXfNqK-NeGzlPxXVs_4RtjvqmytIM2wlrfd7mrXAV_oO_E6PWFwALHdJvEqVBg8tnsdIk4hWpT3ItAo8jwamk51MXQGFZbVbQfiKsvMmkhJWjJdmBJt8F6BsPELRcTU38Oqhyv47O5rjOCrgm4'); background-size: cover; background-position: center;">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-90"></div>
+<div class="absolute bottom-3 left-3 right-3">
+<div class="flex items-center justify-between text-xs text-white/70 mb-1">
+<span>Throughput</span>
+<span class="text-primary font-mono">45 MB/s</span>
+</div>
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%] rounded-full animate-pulse-slow"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between rounded-lg bg-white/5 p-3 border border-white/5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-sm text-slate-400">dns</span>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-white">AWS S3 (us-east-1)</span>
+<span class="text-[10px] text-slate-400">Managed Cloud • Encrpyted</span>
+</div>
+</div>
+<div class="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(17,115,212,0.6)]"></div>
+</div>
+</div>
+</div>
+<!-- Health Stats Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Indexed Items -->
+<div class="glass-card rounded-2xl p-4 flex flex-col justify-between min-h-[140px]">
+<div class="flex items-start justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Indexed</span>
+<span class="material-symbols-outlined text-sm text-slate-600">perm_media</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-3xl font-bold tabular-nums tracking-tight">14,203</span>
+<div class="flex items-center gap-1 text-xs text-green-400 font-medium">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>+120 today</span>
+</div>
+</div>
+</div>
+<!-- Storage Volume -->
+<div class="glass-card rounded-2xl p-4 flex flex-col justify-between min-h-[140px]">
+<div class="flex items-start justify-between">
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Volume</span>
+<span class="material-symbols-outlined text-sm text-slate-600">hard_drive</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-3xl font-bold tabular-nums tracking-tight">452<span class="text-lg text-slate-500 ml-1">GB</span></span>
+<div class="flex items-center gap-1 text-xs text-slate-400 font-medium">
+<span>Of 2TB Allocation</span>
+</div>
+</div>
+<!-- Mini progress bar for storage -->
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden mt-1">
+<div class="h-full bg-slate-400 w-[22%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Intelligence Layer Card -->
+<div class="glass-card rounded-2xl p-5">
+<div class="flex justify-between items-center mb-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">psychology</span>
+<h3 class="text-base font-bold text-white">Neural Processing</h3>
+</div>
+<span class="text-xs font-mono text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">ACTIVE</span>
+</div>
+<div class="relative pl-2 space-y-6 before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-px before:bg-gradient-to-b before:from-primary before:via-primary/20 before:to-transparent">
+<!-- Step 1 -->
+<div class="relative pl-6">
+<div class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full bg-background-dark border-2 border-primary z-10"></div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-white">EXIF Extraction</h4>
+<span class="text-xs text-slate-400 font-mono">12ms</span>
+</div>
+<p class="text-xs text-slate-400 leading-relaxed">Parsing metadata, geolocation, and device headers.</p>
+</div>
+<!-- Step 2 -->
+<div class="relative pl-6">
+<div class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full bg-background-dark border-2 border-primary z-10"></div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-white">WebP Optimization</h4>
+<span class="text-xs text-green-400 font-mono">85% Ratio</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="h-8 w-12 rounded bg-slate-800 border border-white/10 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-xs text-white/20">image</span>
+</div>
+<span class="material-symbols-outlined text-slate-600 text-xs">arrow_right_alt</span>
+<div class="h-8 w-12 rounded bg-slate-800 border border-primary/30 flex items-center justify-center overflow-hidden shadow-[0_0_10px_rgba(17,115,212,0.1)]">
+<span class="material-symbols-outlined text-xs text-primary">image</span>
+</div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative pl-6 opacity-80">
+<div class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full bg-background-dark border-2 border-slate-600 z-10"></div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-sm font-bold text-white">Vector Embedding</h4>
+<span class="text-xs text-slate-400 font-mono">Queue: 4</span>
+</div>
+<div class="mt-2 w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+<div class="bg-gradient-to-r from-primary to-purple-500 h-full w-[65%]"></div>
+</div>
+<p class="text-[10px] text-slate-500 mt-1 font-mono">Generative 1536-dim vectors</p>
+</div>
+</div>
+</div>
+<!-- Semantic Readiness -->
+<div class="glass-card rounded-2xl p-4 flex items-center gap-4">
+<div class="relative size-12 shrink-0">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-slate-800" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="98, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] font-bold text-white">98%</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Semantic Readiness</span>
+<span class="text-xs text-slate-400">Search index is healthy and optimized.</span>
+</div>
+</div>
+<!-- Terminal / Stream Log -->
+<div class="w-full bg-[#050505] rounded-xl p-3 font-mono text-[10px] border border-white/5 shadow-inner opacity-80 mt-2">
+<div class="flex items-center gap-2 mb-2 border-b border-white/5 pb-1">
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-red-500"></div>
+<div class="size-1.5 rounded-full bg-yellow-500"></div>
+<div class="size-1.5 rounded-full bg-green-500"></div>
+</div>
+<span class="text-slate-500 uppercase tracking-wider">System Log</span>
+</div>
+<div class="flex flex-col gap-1 text-slate-400 h-20 overflow-hidden relative">
+<div class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#050505] to-transparent pointer-events-none"></div>
+<p><span class="text-blue-500">14:23:01</span> [IMG_2901] Upload complete</p>
+<p><span class="text-blue-500">14:23:02</span> [IMG_2901] EXIF: lat:40.7128, long:-74.0060</p>
+<p><span class="text-purple-500">14:23:04</span> [IMG_2900] Vector embedding generated</p>
+<p><span class="text-green-500">14:23:05</span> Index update: +1 item</p>
+</div>
+</div>
+<div class="h-10"></div> <!-- Spacer for scrolling -->
+</div>
+<!-- Floating Navigation -->
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] glass-card rounded-full p-2 flex justify-between items-center z-50">
+<button class="size-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">home</span>
+</button>
+<button class="size-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="size-12 rounded-full bg-primary flex items-center justify-center text-white shadow-[0_0_15px_rgba(17,115,212,0.5)] -mt-6 border-4 border-background-dark">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="size-10 rounded-full flex items-center justify-center text-white bg-white/5 transition-colors">
+<span class="material-symbols-outlined fill-1">grid_view</span>
+</button>
+<button class="size-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</nav>
+</div>
+</body></html>

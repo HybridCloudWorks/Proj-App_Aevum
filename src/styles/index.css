@@ -1,0 +1,156 @@
+/**
+ * Aevum Design System
+ * TailwindCSS base with custom utilities from Stitch designs
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   Base Layer
+   ========================================== */
+
+@layer base {
+  html {
+    font-family: "Manrope", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background-dark text-white;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+
+  ::selection {
+    @apply bg-primary text-white;
+  }
+}
+
+/* ==========================================
+   Component Layer - Glassmorphism
+   ========================================== */
+
+@layer components {
+  /* Glass Card - Light */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Glass Card - Dark */
+  .glass-card-darker {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Glass Panel - Auth style */
+  .glass-panel {
+    background: rgba(16, 17, 34, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* Mesh Background */
+  .mesh-bg {
+    background-color: #101122;
+    background-image:
+      radial-gradient(at 0% 0%, hsla(239, 84%, 65%, 0.25) 0px, transparent 50%),
+      radial-gradient(
+        at 100% 0%,
+        hsla(260, 90%, 65%, 0.3) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 100% 100%,
+        hsla(240, 80%, 40%, 0.3) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 0% 100%,
+        hsla(260, 90%, 65%, 0.25) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 50% 50%,
+        hsla(239, 84%, 65%, 0.15) 0px,
+        transparent 50%
+      );
+  }
+
+  /* Bento Item */
+  .bento-item {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .bento-item:active {
+    transform: scale(0.98);
+  }
+
+  /* No Scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Button Primary */
+  .btn-primary {
+    @apply px-6 py-3 bg-primary hover:bg-primary-600 text-white font-semibold rounded-xl transition-all duration-200;
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* Button Secondary */
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl transition-all duration-200;
+  }
+}
+
+/* ==========================================
+   Utility Layer
+   ========================================== */
+
+@layer utilities {
+  /* Gradient backgrounds */
+  .gradient-primary {
+    @apply bg-gradient-to-br from-blue-500 to-purple-600;
+  }
+
+  .gradient-accent {
+    @apply bg-gradient-to-tr from-blue-400 to-purple-500;
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(90, 92, 242, 0.4);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
+  }
+
+  /* Filled Material Icons */
+  .material-symbols-outlined.filled {
+    font-variation-settings: "FILL" 1;
+  }
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum: Vibrant Legacy Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6",
+                        "accent": "#F472B6",
+                        "success": "#34D399",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#020617",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .bento-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .glass-button-glow {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 0 20px rgba(59, 130, 246, 0.6), 
+                0 0 40px rgba(236, 72, 153, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .glass-button-glow:hover {
+            box-shadow: 
+                0 0 30px rgba(59, 130, 246, 0.8), 
+                0 0 60px rgba(236, 72, 153, 0.6),
+                inset 0 0 25px rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.02);
+        }
+        .mesh-gradient {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 4% 12%, hsla(253, 73%, 65%, 0.7) 0px, transparent 50%),
+                radial-gradient(at 93% 8%, hsla(305, 91%, 65%, 0.7) 0px, transparent 50%),
+                radial-gradient(at 12% 89%, hsla(217, 91%, 65%, 0.7) 0px, transparent 50%),
+                radial-gradient(at 89% 82%, hsla(284, 82%, 60%, 0.7) 0px, transparent 50%),
+                radial-gradient(at 48% 52%, hsla(258, 86%, 30%, 0.5) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, hsla(340, 100%, 76%, 0.5) 0px, transparent 50%);
+            background-size: 150% 150%;
+            animation: mesh-move 20s ease infinite alternate;
+        }
+        @keyframes mesh-move {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        .text-glow {
+            text-shadow: 0 0 30px rgba(255,255,255,0.25);
+        }
+        .shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            transform: skewX(-20deg) translateX(-150%);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            100% {
+                transform: skewX(-20deg) translateX(150%);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-white font-display antialiased selection:bg-accent selection:text-white h-full min-h-screen">
+<div class="fixed inset-0 mesh-gradient z-0"></div>
+<div class="relative z-10 flex flex-col h-full min-h-screen w-full px-6 py-8">
+<header class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white text-xl">all_inclusive</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-white drop-shadow-md">Aevum</span>
+</div>
+<button class="text-white/70 hover:text-white text-sm font-semibold transition-colors px-3 py-1 rounded-full hover:bg-white/10">Skip</button>
+</header>
+<main class="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+<div class="mb-10 text-center relative">
+<div class="absolute -top-20 left-1/2 -translate-x-1/2 w-48 h-48 bg-blue-500/30 rounded-full blur-[80px] -z-10"></div>
+<h1 class="text-5xl font-extrabold mb-4 leading-tight text-glow tracking-tight">
+                    Build Your <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-pink-200 drop-shadow-sm">Living Legacy</span>
+</h1>
+<p class="text-blue-100/90 text-lg leading-relaxed font-medium drop-shadow-md">
+                    Uncover your roots with AI and preserve your history for generations to come.
+                </p>
+</div>
+<div class="glass-card-container rounded-[2rem] p-2 mb-8 overflow-hidden relative">
+<div class="grid grid-cols-2 gap-2 p-1">
+<div class="col-span-2 bento-glass rounded-[1.5rem] p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-8xl text-white">account_tree</span>
+</div>
+<div class="relative z-10">
+<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400/30 to-blue-600/30 backdrop-blur-md flex items-center justify-center mb-4 border border-blue-300/40 shadow-inner">
+<span class="material-symbols-outlined text-blue-100">group_add</span>
+</div>
+<h3 class="text-xl font-bold mb-2 text-white drop-shadow-md">Collaborative Branch</h3>
+<p class="text-sm text-blue-50 leading-relaxed font-medium opacity-90">Invite family to co-edit your tree. Watch your history grow in real-time as memories are shared.</p>
+</div>
+<div class="absolute -bottom-2 -right-2 flex -space-x-4 opacity-60 scale-90 mix-blend-overlay">
+<div class="w-12 h-12 rounded-full bg-slate-400 border-2 border-white/30 backdrop-blur-sm"></div>
+<div class="w-12 h-12 rounded-full bg-slate-300 border-2 border-white/30 backdrop-blur-sm"></div>
+<div class="w-12 h-12 rounded-full bg-slate-200 border-2 border-white/30 backdrop-blur-sm"></div>
+</div>
+</div>
+<div class="col-span-1 bento-glass rounded-[1.5rem] p-5 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -top-8 -left-8 w-24 h-24 bg-pink-400/40 rounded-full blur-2xl group-hover:bg-pink-400/50 transition-colors"></div>
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400/30 to-purple-500/30 backdrop-blur-md flex items-center justify-center mb-3 border border-pink-300/40 shadow-inner relative z-10">
+<span class="material-symbols-outlined text-pink-100 text-lg">smart_toy</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-base font-bold mb-1 text-white drop-shadow-md">AI Architect</h3>
+<p class="text-xs text-pink-50/90 leading-tight font-medium">Smart hints from billions of records.</p>
+</div>
+</div>
+<div class="col-span-1 bento-glass rounded-[1.5rem] p-5 flex flex-col justify-between relative overflow-hidden group">
+<div class="absolute -bottom-8 -right-8 w-24 h-24 bg-purple-500/40 rounded-full blur-2xl group-hover:bg-purple-500/50 transition-colors"></div>
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400/30 to-indigo-500/30 backdrop-blur-md flex items-center justify-center mb-3 border border-purple-300/40 shadow-inner relative z-10">
+<span class="material-symbols-outlined text-purple-100 text-lg">lock</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-base font-bold mb-1 text-white drop-shadow-md">Time Vault</h3>
+<p class="text-xs text-purple-50/90 leading-tight font-medium">Preserve photos &amp; audio forever.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-center gap-10 mb-8">
+<div class="text-center group cursor-default">
+<p class="text-2xl font-black text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-300">10M+</p>
+<p class="text-[10px] uppercase tracking-widest text-blue-200 font-bold">Records</p>
+</div>
+<div class="w-px h-10 bg-gradient-to-b from-transparent via-white/40 to-transparent"></div>
+<div class="text-center group cursor-default">
+<p class="text-2xl font-black text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-300">99%</p>
+<p class="text-[10px] uppercase tracking-widest text-blue-200 font-bold">Accuracy</p>
+</div>
+</div>
+</main>
+<footer class="mt-auto pt-2 pb-8">
+<button class="glass-button-glow relative w-full h-16 rounded-2xl flex items-center justify-center group overflow-hidden">
+<div class="shimmer"></div>
+<span class="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+<span class="relative z-10 text-lg font-bold tracking-wide flex items-center gap-3 text-white drop-shadow-md">
+                    Start My Tree
+                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1 group-hover:text-blue-200">arrow_forward</span>
+</span>
+</button>
+<p class="text-center text-[10px] text-blue-200/60 mt-5 font-medium tracking-wide">
+                By continuing, you agree to our Terms of Service &amp; Privacy Policy.
+            </p>
+</footer>
+</div>
+</body></html>

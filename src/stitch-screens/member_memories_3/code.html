@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Memories</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#283039",
+                        "text-secondary": "#9dabb9",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden antialiased">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Header -->
+<div class="sticky top-0 z-50 flex items-center bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md p-4 pb-2 justify-between border-b border-gray-200 dark:border-gray-800">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white" style="font-size: 24px;">arrow_back_ios_new</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center truncate px-4">Joseph Miller</h2>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white" style="font-size: 24px;">more_vert</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Profile Section -->
+<div class="flex flex-col items-center pt-6 pb-2 px-4 gap-4">
+<div class="relative group cursor-pointer">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-32 w-32 border-4 border-white dark:border-surface-dark shadow-lg transition-transform transform group-hover:scale-105" data-alt="Portrait of an elderly man looking dignified" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCypW0HCtYaKHH0MjMWX5XSsEKnu7uoyRGpXiybm9VCSMSScwMkgC9ez5DGxTI5aZ9R8qtdmEhpP57FWjs1FEoF71D4bCGguhT8QavCYCK0Hq6QmPi5gBbq-toXZJYB2YAyY3ACa7I9D_xT4aNPKnATilfv4r2mIsfkVXaKiuzT4E6wh8xuMRQ2gs1XjSq71o-iw17bRamMPrWJPA1F8-lYYaF3HAZYx3KtIUk3CtH-NetUq8Av_FjlDt-4jo7Pxw5GiiDB9tT_y0w");'></div>
+<div class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow-md border-2 border-white dark:border-background-dark flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center gap-1">
+<h1 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight text-center">Joseph Miller</h1>
+<div class="flex items-center gap-2 text-text-secondary text-sm font-medium">
+<span>1945 – 2022</span>
+<span class="w-1 h-1 rounded-full bg-text-secondary"></span>
+<span>Grandfather</span>
+</div>
+<p class="text-text-secondary text-xs opacity-80 mt-1">Maternal Side • New York, USA</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex justify-center px-4 py-6 w-full">
+<div class="grid grid-cols-2 gap-3 w-full max-w-[400px]">
+<button class="flex flex-col items-center justify-center gap-2 bg-primary hover:bg-blue-600 active:scale-95 transition-all rounded-xl h-20 text-white shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined" style="font-size: 24px;">add_a_photo</span>
+<span class="text-xs font-bold tracking-wide">Add Memory</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-[#343e4a] active:scale-95 transition-all rounded-xl h-20 text-slate-900 dark:text-white border border-gray-200 dark:border-transparent shadow-sm">
+<span class="material-symbols-outlined text-purple-500" style="font-size: 24px;">auto_fix_high</span>
+<span class="text-xs font-bold tracking-wide">AI Restore</span>
+</button>
+</div>
+</div>
+<!-- Filters -->
+<div class="sticky top-[68px] z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm py-3 mb-2">
+<div class="flex gap-2 px-4 overflow-x-auto no-scrollbar scroll-smooth snap-x">
+<button class="snap-start shrink-0 flex items-center gap-x-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 text-xs font-bold transition-transform active:scale-95">
+                        All Photos
+                    </button>
+<button class="snap-start shrink-0 flex items-center gap-x-2 rounded-full bg-gray-200 dark:bg-surface-dark text-slate-700 dark:text-gray-300 border border-transparent dark:border-gray-700 hover:border-gray-500 px-4 py-2 text-xs font-bold transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-size: 16px;">face</span>
+                        Portraits
+                    </button>
+<button class="snap-start shrink-0 flex items-center gap-x-2 rounded-full bg-gray-200 dark:bg-surface-dark text-slate-700 dark:text-gray-300 border border-transparent dark:border-gray-700 hover:border-gray-500 px-4 py-2 text-xs font-bold transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-size: 16px;">groups</span>
+                        Group Shots
+                    </button>
+<button class="snap-start shrink-0 flex items-center gap-x-2 rounded-full bg-gray-200 dark:bg-surface-dark text-slate-700 dark:text-gray-300 border border-transparent dark:border-gray-700 hover:border-gray-500 px-4 py-2 text-xs font-bold transition-all active:scale-95">
+<span class="material-symbols-outlined text-purple-400" style="font-size: 16px;">auto_awesome</span>
+                        Restored
+                    </button>
+</div>
+</div>
+<!-- Masonry Grid -->
+<div class="columns-2 gap-3 px-4 space-y-3 pb-4">
+<!-- Photo Item 1 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Vintage photo of a man standing near a car" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Black and white photo of a man in 1960s attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0w_7LgeGvO_40XKSE8_u9BlvBlyoFqmsb1rRwBgV3p4LIpenJmAItYk0k2ZIRvGLwhtqqGIt9Jlv7eLRCHRag_AyVxwGyInXcEdoNon2qyjhBmDwhrh5MmEBUUPeiAIJhY7byAEJWebCT44LqMdSrnmEFL8NvjlI4KwQla_aefPelwUwi4_hmF41W3_pkfzLbf8CDDmy2qvacKOnMMpvnvvqOb31CmqCzgLHtbuVMQ6Qj0p9Fhij8p0-UhJn1g9ODbjQORkH_uDU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+<span class="text-white text-xs font-medium">1968</span>
+</div>
+</div>
+<!-- Photo Item 2 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Close up portrait of a smiling woman" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Sepia toned portrait of a young woman smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6rLWYNqR4sQgKqUxA8itpYbWXVX2-AazxpOq2ruKAUHeE88QzbLzddOdrSSPueXXolY0mRc53w7JH1MHgnxowqUH38duGKayQBL3QGkFmy67PfrafwkAncBVgXFshhCrlV5O9l5XYFtSWDjvsZgOmDibOqOf9VfohVZPB8t3L1XsH0o7Gc8wHDiTMDJLR3Mkv8u1JKpekBv7hqaZN-XbkutgK1HMXkryD667osEYGmVBJUXNSmRkMazqU6vZYrXp21beGfnhnR_Q"/>
+<div class="absolute top-2 right-2 bg-purple-600/90 text-white p-1 rounded-full shadow-sm backdrop-blur-sm">
+<span class="material-symbols-outlined block" style="font-size: 12px;">auto_awesome</span>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+<span class="text-white text-xs font-medium">Restored • 1970</span>
+</div>
+</div>
+<!-- Photo Item 3 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Group of students in a classroom" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="School class photo from the 1950s" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWscasPduzMbADc5Zs38ALSTI6Oan1y4-FKMdAeNvtTEJ-1K3cVodl_pFhXF8a6i-REOo23jaB_5wVBNieVLvGPFIZyTdHu6EgOvzFczDTHD9Elanoz8xmSTLSZ11FgLqtYPa8zKkTnyiy9gyII1kokAkiw1iVPgzoqMDRCqhDKEhOAauTpfk0kpDD4QS98DsNQfQkmQCQQiV_xERwi6rv4p8uA6joXRG5nEF9E2BzfUdnk-rpa-yKOvfw2A7cjvlC-1zZrKGSYjg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+<span class="text-white text-xs font-medium">School Days</span>
+</div>
+</div>
+<!-- Photo Item 4 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Family gathering at a dinner table" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Faded color photo of a family dinner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzJrvtRiuf5UIaUM0d3Hj1OvYpO6NQMQ_Z37YGiWkhlSztdCH5ummpBS11d20I2OXAfh35U2Ob_nBs0kMXIslYN6_z8U2Rzd_Xc5eU78eJHzlNmk5e5rOeuTCniNQfa2h4oU8KH9n6SQqgyEZ3eLgRlKjmkJOcye-b_vbOXVw5SRzYFehdK8ofq3Oo2ZwX1C1QYZM4j0K-ei4qDPJPn_qNg5byhDKWX-qN9YSjuwDlYsgnEsdtkD8K656wRa9iwOM4xLeuohRKoOg"/>
+</div>
+<!-- Photo Item 5 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Wedding couple walking down the aisle" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Black and white wedding photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5n5doYCkY-YpRrJdRCEC4_j3RHMdF7UNO_U-zdqhtQqCfRQkDGub_myiBzSbIVEdZVY8N8WT3FYlKEdWwlYyZgXI00wnZTvtH658N2Zy8S26IqRb3wjBBdjzhRLv1_qJyJ7mG21vqFdE3O-dBMC61_M5TjLzrTwIx5TmHL_DIssIkwmrTb-Zm_YaQ6VPQ1Uwht8jeyqrqqYE3aiTO2qttDWTmw1rO7eEXBN-sffm2UeQuwVcLaLtfuV7viy1lscKMSKbyCvfFpt4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+<span class="text-white text-xs font-medium">Wedding Day</span>
+</div>
+</div>
+<!-- Photo Item 6 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Sweets on a table" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Close up of a birthday cake with candles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPJgW-RdUtLRai54yiWXJ9VSPXlRJ5KA2K-ebBJiUJR5FQqOtcb4uM7GET9ojASBVMnuFxgEyuucpHSOF48m7xCIWLqUuOy3wCLN4JvC9VXhnMyArbhN7pbJUIYuppMznaoj_j-wKDpYyHRaxcA0mBXbMnzM5n8gXknTQSQMNOuA1nw9cVAoUH4Y7NLNyrLAUkc2x4s26coX7n2MioS6m0XowtX0Zrswgf41AMB9_i1_at2utrDDOSlnuf169xV94R6p44s3QXLgo"/>
+</div>
+<!-- Photo Item 7 -->
+<div class="break-inside-avoid relative group rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800">
+<img alt="Landscape of a park with trees" class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110" data-alt="Faded photo of a family picnic in a park" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNgJYKQvFHe-9LeuQ5ivvK4C_HDOwhkhs6cph24zCDb8DlpCkipfSBnduvQywqwrn3HrU3uH7PXY-5hEek_X_1OkaTszZS5w83tu8eFrwGhmpxqu2IV_54mO5OnPB4FGS69q_cEcnonsUHTIfKZjKkrDoSWAcYYg_0yt9oB2c-Dd2I713DC2YtF59CeoqSkhCGVtWNbwtlFar7__FY0IV5_WTdf0JXf5VOJfOeRicM8YVmiMwO1hAJhfiAlImmphkOLs_yH4bKgVg"/>
+<div class="absolute top-2 right-2 bg-purple-600/90 text-white p-1 rounded-full shadow-sm backdrop-blur-sm">
+<span class="material-symbols-outlined block" style="font-size: 12px;">auto_awesome</span>
+</div>
+</div>
+</div>
+<div class="h-8"></div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-4 z-50 bg-primary hover:bg-blue-600 text-white p-4 rounded-full shadow-xl shadow-blue-900/30 transition-transform active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 28px;">add</span>
+</button>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 w-full max-w-md bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 pb-safe pt-2 px-2 z-50">
+<div class="flex justify-around items-end pb-2">
+<button class="flex flex-col items-center gap-1 p-2 w-16 text-primary">
+<span class="material-symbols-outlined filled" style="font-size: 24px; font-variation-settings: 'FILL' 1;">photo_library</span>
+<span class="text-[10px] font-medium">Album</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 w-16 text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">account_tree</span>
+<span class="text-[10px] font-medium">Tree</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 w-16 text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+<span class="text-[10px] font-medium">Search</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 w-16 text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-5 w-full"></div>
+</div>
+</div>
+<style>
+        /* Custom Scrollbar hide for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Safe area padding for bottom nav on older browsers/devices */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</body></html>

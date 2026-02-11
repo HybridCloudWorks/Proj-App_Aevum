@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Identity Matcher - Aevum</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel-active {
+            background: rgba(17, 115, 212, 0.15);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(17, 115, 212, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display antialiased overflow-x-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-slate-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">Identify Faces</h1>
+<button class="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors">Skip</button>
+</header>
+<main class="flex-1 flex flex-col gap-4 p-4 pb-8 max-w-md mx-auto w-full">
+<!-- Main Recognition Card (Top Bento) -->
+<div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden glass-panel group shadow-2xl">
+<!-- Background Image -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Vintage black and white family photo showing a group of people sitting on a porch" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC31RpQX57UnykwreUCc1soshAuPgixpGwElecNvQXJSif9R6dIbPPm0zmW6RHa7tjxEgZtuSVpi3k2_i1U5keZSMfcKSoN63rF_cmlAs4G6EciEafIpZyLQqrzMwKGBmucasxYidpGUFHoDgS_YjYEDpWZzRUl3QLJ3gaNFw8-T2Ey2fboKwpq3-4GLm_vuhp7DZEHLbAN---O1iWdAKzJkHVHEp_pYQ7H-gYYgBoj5mcHx-Vo76VwBxdADbZ-gQk6LFwU29mfDRs');">
+<!-- Dark overlay for focus -->
+<div class="absolute inset-0 bg-black/20"></div>
+</div>
+<!-- Face Detection Overlays -->
+<!-- Active Face -->
+<div class="absolute top-[30%] left-[45%] w-[20%] h-[26%] border-2 border-primary rounded-xl shadow-[0_0_15px_rgba(17,115,212,0.6)] z-20">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg">
+                    Selected
+                </div>
+</div>
+<!-- Inactive Face 1 -->
+<div class="absolute top-[35%] left-[20%] w-[16%] h-[20%] border border-white/40 rounded-xl z-10 opacity-70"></div>
+<!-- Inactive Face 2 -->
+<div class="absolute top-[28%] left-[70%] w-[18%] h-[22%] border border-white/40 rounded-xl z-10 opacity-70"></div>
+<!-- Image Metadata Badge -->
+<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white/80 text-[10px] px-2 py-1 rounded-md font-medium flex items-center gap-1 border border-white/10">
+<span class="material-symbols-outlined text-[12px]">calendar_today</span> 1964
+            </div>
+</div>
+<!-- Dynamic Question -->
+<div class="px-1 pt-2">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+                Is this <span class="text-primary">Grandpa Joe</span>?
+            </h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Found in "Summer Vacation 1964"</p>
+</div>
+<!-- Suggested Matches (Middle Bento) -->
+<div class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide snap-x">
+<!-- Best Match -->
+<div class="snap-center shrink-0 flex flex-col gap-3 p-4 rounded-2xl glass-panel-active min-w-[140px] cursor-pointer relative overflow-hidden">
+<div class="absolute top-2 right-2 flex items-center justify-center w-5 h-5 bg-primary rounded-full">
+<span class="material-symbols-outlined text-white text-[14px]">check</span>
+</div>
+<div class="w-14 h-14 rounded-full bg-cover bg-center border-2 border-primary shadow-lg mx-auto" data-alt="Portrait of an elderly man smiling" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQG7P7lNixOixWvE-uS3QVuXaZo73C1_JToDK4GOiaD53rADv7ZLGMfrfENeu5KKJCtFWoy0hiyQ6EPq4uOX6mu5eybJK8NXPVc1S_p77UXJ-z_2gk2HcIfj4MVG3AEW9ZqXROc5W3YnRZfLSo_YzzVJrA4D8XJqZzG_HQBr78F8alwK74qJkLeiVrNMAJb9jR2mPq3m1RN-L92BvA2qgUFYsht_QfWe8Crbu1KqY9H0gWRT9v1A9GpVzo9epCGr_ECpIFR7gs3kk');"></div>
+<div class="text-center">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Grandpa Joe</p>
+<p class="text-xs font-semibold text-primary mt-1">98% Match</p>
+</div>
+</div>
+<!-- Secondary Match -->
+<div class="snap-center shrink-0 flex flex-col gap-3 p-4 rounded-2xl glass-panel min-w-[140px] cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-14 h-14 rounded-full bg-cover bg-center border border-white/10 grayscale opacity-70 mx-auto" data-alt="Portrait of a middle-aged man" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBd-l6-9V3Ex2vMHKhRjeppS1TU2PWOD27Ok4JlbnfgpLrHhEp1NjFJpIgghXZfZW1RzYUnwfZMpThAHHQ5ePpwHVZy31S5xeTL2wrj4fOZbhU8aTT4HC4TJ_66d7Cw0jUv-YnvyThMPWmHuvHhCOLD8h67Zk8k5KaHttOXqEtPTllTUWMbp17pwIcd6v6LLmDTqQ1uudhu7r8Alhv3-6rqRScb32F-CNV9FIBvdadhlDnNMyME3QePtPLJaIAV3V0MYfqyrfQd2as');"></div>
+<div class="text-center">
+<p class="text-sm font-medium text-slate-700 dark:text-slate-300">Uncle Bob</p>
+<p class="text-xs text-slate-500 dark:text-slate-500 mt-1">45% Match</p>
+</div>
+</div>
+<!-- Add New -->
+<div class="snap-center shrink-0 flex flex-col items-center justify-center gap-2 p-4 rounded-2xl glass-panel min-w-[140px] cursor-pointer hover:bg-white/5 transition-colors border-dashed border-slate-300 dark:border-slate-700">
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined">add</span>
+</div>
+<p class="text-sm font-medium text-slate-700 dark:text-slate-300">New Person</p>
+</div>
+</div>
+<!-- Lower Bento Grid -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Seen Elsewhere Widget -->
+<div class="glass-panel p-4 rounded-2xl flex flex-col gap-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[18px]">face</span>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">AI Grouping</h3>
+</div>
+<p class="text-sm text-slate-800 dark:text-slate-200 font-medium leading-tight">
+                    Seen in <span class="text-primary font-bold">12 other photos</span>
+</p>
+<div class="flex -space-x-3 overflow-hidden py-1">
+<div class="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-cover bg-center" data-alt="Small thumbnail of a person in a garden" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEt93VvmPatuIdcvBAtnOsxhF60XyfQD21bTbIw0x_Pvx0GJV0L7SRZagvjhdUzqKVhqByw2c7d1RmaD5rfaPprFioXhjUnjLXnHP75wfR8ubwbnlSBUViwOW2PMgRFlFGQg62Y7FCcDQWdKgt1VBjA08nQnNj0oXk7WA8xs8DBGuNVoSKEE6Gi6uQGdWyg36MOk8D5RrgYktOxUhddQs3yM475s1oJhS0gf6I3OR147mUDZT68u5KNJCSlFDtmQfC74_D4f7eseU');"></div>
+<div class="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-cover bg-center" data-alt="Small thumbnail of a person at a dinner table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBf7xm8Z9piMx_mY5YoM2D0l6Bg3LC8L-t3BGxfhtL9dDdRvUI32SnovMSetReN1ZTOnZC2P-JKAvVU7rmoOQDUZtq_6EGx3X8OSsRMYW7a_cWJcF8IkIsKg8fvVoFlf-Qz4LWmGoJaBnusZQxXp_vfqNWZoiXlDSK2yVJB7rCPQAewLSUHiwTGV4vCcyWicr6hwa7w8uJN-JGVQUsU9Um-nwt8v8LhQ5kFcGkRNENBZ76K90zTVYjtqq2uYva7gMD4jNBiqP4UVVI');"></div>
+<div class="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-cover bg-center" data-alt="Small thumbnail of a person laughing" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvdZlAcdH-arBCQtllaYrgDaWwGGMRaMBu2q7Hc0-eUbz1eNmDdGj-oudRxM68nv_-ji303R8fmdTNpFErADfWJOvpQhrfwYAakGRy8j_dK9J7tY5j2gPsL7EeObEZWPepIRZSQ-Dcl-6wocNcFCmMpRmswVVinw0XyUomhavnm5IrVSyvCLMZnfRHQ2CTAqioFkjSI4H7X39tqnGCL2hVWz0L0IqD2hxNvkIlgUtAw1Ga6n9-ddBQA4dofF4ZvLq7PIsSA3Jg8O8');"></div>
+<div class="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                        +9
+                    </div>
+</div>
+</div>
+<!-- Quick Stats / Context -->
+<div class="glass-panel p-4 rounded-2xl flex flex-col justify-between">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Family Tree</h3>
+<p class="text-sm text-slate-800 dark:text-slate-200">Suggested from <span class="font-semibold text-slate-900 dark:text-white">Paternal Line</span></p>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
+<div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px]">share_location</span>
+<span>Detroit, MI</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Panel -->
+<div class="mt-auto pt-4 flex flex-col gap-3">
+<button class="w-full h-14 bg-primary hover:bg-blue-600 active:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all transform active:scale-[0.98]">
+<span class="material-symbols-outlined">person_check</span>
+                Confirm Match
+            </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="h-12 glass-panel hover:bg-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">person_off</span>
+                    Not a Person
+                </button>
+<button class="h-12 glass-panel hover:bg-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                    Edit Selection
+                </button>
+</div>
+</div>
+</main>
+</body></html>

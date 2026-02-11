@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Geographic Memory Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(23, 29, 37, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-orb {
+            background: rgba(17, 115, 212, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(17, 115, 212, 0.5);
+            box-shadow: 0 0 15px rgba(17, 115, 212, 0.4);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-hidden h-screen w-full relative">
+<!-- Main Map Container -->
+<div class="absolute inset-0 z-0 w-full h-full bg-[#0B1015]">
+<!-- Simulated Map Background -->
+<div class="relative w-full h-full bg-cover bg-center opacity-60" data-alt="Dark stylized map of Europe showing topographic details" data-location="Tuscany" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDipXXkhtdLez0uOSBrxpYrZ3aj5qn2LxSI410UIY4fwaYQARZvG6MI1UzRkWCJYSJhXrXOCNngHQSYbA5we3pwiUfffPFH285sYxxR5Dq5wDsiufbFYGHGkT8dc3JQTFkif3eJiJtrrhjUToQ44KqRbby586qGHYIuQ87Eo_yDXVuhl7coEQkdi7lIqutzHNFVsau7jIUQueow3tmdnnquZOBIkbM-Cid_NGGjaByeS1HGs0h-qsTlATRelHkC6w457cglF76Nkak'); filter: hue-rotate(200deg) saturate(20%) brightness(50%);">
+</div>
+<!-- Map Pins (Clusters & Orbs) -->
+<!-- Pin 1: Tuscany Cluster -->
+<div class="absolute top-[40%] left-[45%] flex flex-col items-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
+<div class="glass-orb w-12 h-12 rounded-full flex items-center justify-center relative z-10">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/50">
+<img alt="Ancestor portrait" class="w-full h-full object-cover" data-alt="Vintage portrait of a young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtLi3Kg6MacYJ8tK6FuMGwbBWGIy0aDc-zS-_TmdQUKxChBjCABdycrSGe9DvMvjMwGTVApKFbtr6BVDrKW_kkF_O24yeuNgKsVkK4ZK6BUQPXa6YtpuNgAvy8j_j15ZeV1qGH2MsoqygOzNh87ubF-G2mDzsw2v9GgFlek4Q5SRJyp106yECoumifEXauxho3vtM3yKaK5Tov8jiA0MxJGwchf2bGsRkk0EHR_nbGxdsT7RaRBlJvz4DEj62-EayRfdgukxx_b10"/>
+</div>
+<div class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg border border-white/20">
+                    +14
+                </div>
+</div>
+<div class="mt-2 glass-panel px-3 py-1 rounded-full text-xs font-medium text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                Tuscany Roots
+            </div>
+</div>
+<!-- Pin 2: Paris Single -->
+<div class="absolute top-[28%] left-[35%] flex flex-col items-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
+<div class="glass-orb w-10 h-10 rounded-full flex items-center justify-center relative z-10 bg-white/5 border-white/20">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/30">
+<img alt="Ancestor portrait male" class="w-full h-full object-cover grayscale" data-alt="Black and white portrait of a man with a mustache" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC09m8XmORd7jMBDvGyk68B4PyuJwDzSlTQyZg8C2HPMBWPugQyF0o_p6KFmEaZyjHvaDW4BO4dHKjnGXwKp3DjvC43HAQIDJccNyWg0k5bt7BfGhwfpEzBjNp3-wb5rajC-Pv8Q3uroaiPAO8lAhN2qBKj-22_iOQzO_57tMUqMPofxEOsTxkyTNtos8yjRstoQQNPQKRMlHySo_fydxbbsgazrREQVIlgnZ4cID2rK1zOkQhdvSJWCEqK212_v8IZvanmNGlj21I"/>
+</div>
+</div>
+</div>
+<!-- Pin 3: Rome -->
+<div class="absolute top-[55%] left-[52%] flex flex-col items-center group cursor-pointer transform hover:scale-110 transition-transform duration-300">
+<div class="glass-orb w-10 h-10 rounded-full flex items-center justify-center relative z-10">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/40">
+<img alt="Family travel photo" class="w-full h-full object-cover" data-alt="Modern photo of a smiling man outdoors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpT9fqAYWWjViykT-ROnMfPQBZFpiUXJQ9wPmsYWrF0R93jiyZcw_XVhB3KOxAcOr-hO20FrXz3q27yAscGG614vwb-Qd-XZLx-_6J_TOHI9NdtdgE2Pmc4EzvO6zgKylgazBhTna2JuVidRu2w70rzTTEYmh_kNtQsXBbGR3AiHhnjPDCa0I48R2ZEmH9KvWFkjpROs-oOJ5aQ1MFCKGVnzAg4OkLNN1wDhAhOFPsQWBaIsbJxf58DYIpGZsV1q91CgvmcWyplXc"/>
+</div>
+</div>
+</div>
+</div>
+<!-- UI Overlay Layer -->
+<div class="relative z-10 flex flex-col h-full pointer-events-none">
+<!-- Top Navigation & Search -->
+<div class="flex flex-col gap-4 p-4 pointer-events-auto">
+<!-- Search Bar -->
+<div class="glass-panel rounded-full flex items-center h-12 px-4 shadow-xl max-w-md w-full mx-auto">
+<span class="material-symbols-outlined text-gray-400 mr-3">search</span>
+<input class="bg-transparent border-none text-white placeholder-gray-400 focus:ring-0 w-full text-sm font-medium" placeholder="Search ancestors, places, or dates..." type="text"/>
+<button class="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-white text-sm">tune</span>
+</button>
+</div>
+<!-- Mode Toggle Pill -->
+<div class="flex justify-center">
+<div class="glass-panel p-1 rounded-full flex shadow-lg">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold shadow-sm transition-all">
+                        Ancestral Roots
+                    </button>
+<button class="px-4 py-1.5 rounded-full text-gray-400 hover:text-white text-xs font-medium transition-all">
+                        Family Travels
+                    </button>
+</div>
+</div>
+</div>
+<!-- Right Side Controls -->
+<div class="absolute right-4 top-1/3 flex flex-col gap-3 pointer-events-auto">
+<div class="glass-panel rounded-lg flex flex-col shadow-lg">
+<button class="p-3 hover:bg-white/10 text-white transition-colors border-b border-white/5">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+<button class="p-3 hover:bg-white/10 text-white transition-colors">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+</div>
+<button class="glass-panel p-3 rounded-lg hover:bg-white/10 text-white transition-colors shadow-lg">
+<span class="material-symbols-outlined text-xl">my_location</span>
+</button>
+<button class="glass-panel p-3 rounded-lg hover:bg-white/10 text-white transition-colors shadow-lg">
+<span class="material-symbols-outlined text-xl">layers</span>
+</button>
+</div>
+<!-- Bottom Sheet (Bento Grid) -->
+<div class="mt-auto pointer-events-auto w-full">
+<div class="glass-panel rounded-t-3xl border-b-0 shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex flex-col max-h-[45vh]">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing">
+<div class="w-12 h-1.5 bg-white/20 rounded-full"></div>
+</div>
+<!-- Content Container -->
+<div class="flex-1 overflow-y-auto p-5 pb-8 scrollbar-hide">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-5">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-lg">location_on</span>
+<span class="text-primary text-xs font-bold uppercase tracking-wider">Active Region</span>
+</div>
+<h2 class="text-white text-2xl font-bold leading-tight">Tuscany, Italy</h2>
+<p class="text-gray-400 text-sm mt-1 font-medium">1890 - 1920 • The Ricci Era</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-white">share</span>
+</button>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Main Story Tile (Wide) -->
+<div class="col-span-2 relative h-40 rounded-xl overflow-hidden group cursor-pointer">
+<img alt="Italian Countryside Vintage" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Sepia toned photo of an old stone farmhouse in Italy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk0698TlNnmR9J57eq-ABO-w1CfkmZc5Hgftu3p4yLlyuxppJkV5_gwUUtTGxPS7nkSSfBqph5veJkv1BdGQGwWcZdne4n3yti6zY40hCw1PwRbtIHn1HAhxkO7okldjUN4865vBUyVQutaf_N9qNXlrcmJr8WK-5iBEDwNuvg6-Fgs2t3ncCD_bzvzrb0UV4QS9HPv94h9hLb5lglYkgH9x5SPqeQWC3seYkJmNL08EW6s5UDnLvU5AWAZAjkP8IUxDAYTedP_XI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 flex flex-col justify-end">
+<span class="text-white/80 text-xs font-medium mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history_edu</span> Featured Story
+                                </span>
+<h3 class="text-white font-bold text-lg">The Ricci Family Home</h3>
+</div>
+</div>
+<!-- Gallery Tile (Small) -->
+<div class="col-span-1 bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col justify-between hover:bg-white/10 transition-colors cursor-pointer">
+<div class="flex -space-x-2 overflow-hidden mb-2">
+<img alt="Profile" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#171d25] object-cover" data-alt="Portrait of woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyFb_aap00-1Bxx_9bvAK3wLkoRKF7u-vqIgigZSv3n2BaP4nAFMMPvRG5d7e-GikDsfEL8SPnNAXoslikw7Ke7OR9-zTSuNk6QA3uvW-lMO4Wb4WACNKq9uauUDbkR2OrH58MOAOdTKqU1lf0vHl_W-TIojjAIDlyZlW-_toxNya2mhals7ECMyDUY-CrG4wl_NNdBldrH_a5s-g8MY0do5bW0PZTl9n4vngdqI5WbbwqSfYEzrsk6CGagk04BfDQoEKp6RF7tWI"/>
+<img alt="Profile" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#171d25] object-cover grayscale" data-alt="Portrait of man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARbdC-_YtWtO3zX5uZJvatpys5wwbvW8zJM5x2liNna2UeAHA9ksDZfAsf6xf6nzzX6HgJmT50IImVuzUdD_o4KNzaXlhVITntxpEvE-u10Ins4YcdQZXJH3xSCBM4iQqH-T3AOXcSu7QD7p2-GjpFZZtaQuNEWVMghBbFmgz2vHIc-xf8zqjU_A3iDChEPjr_LXXkav8WmwaPm2B1dhCUzDo5mRJQbScRjLVoP4eG7nRH-R50EtqUn42DTEZVAccQXg93U22yP9A"/>
+<img alt="Profile" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#171d25] object-cover grayscale" data-alt="Portrait of woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWKVt9AJuVbXhzZPCAeU9RiXhJive8FBHw0h620dO3we_Xl6teRX-fG7aBCnqG6dNelxuEQAsUP3D4VhW489Hs03HtqoIn65wV4BS0WDfSIcX4g5-jxxhyaTVGk81w_WkzHlESieiLicn7qmCFo3U9CX2fnJwi2tTPYWJGboVbNiN7c20rvIQPxARCgnHtyRRP8DR6jXPRRO9mF8Qc3xh8JToqImCVL7CGHDUjUlnkq1E0qIaLrOFGKuFKd4-R-2VQHRIgWh9FEUs"/>
+<div class="h-8 w-8 rounded-full ring-2 ring-[#171d25] bg-primary flex items-center justify-center text-[10px] text-white font-bold">+4</div>
+</div>
+<div>
+<h4 class="text-white text-sm font-bold">14 Photos</h4>
+<p class="text-gray-400 text-[10px]">From this region</p>
+</div>
+</div>
+<!-- Stats Tile (Small) -->
+<div class="col-span-1 bg-primary/20 rounded-xl p-3 border border-primary/30 flex flex-col justify-between relative overflow-hidden group cursor-pointer">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/40 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-primary mb-2">diversity_3</span>
+<div>
+<h4 class="text-white text-2xl font-bold">4</h4>
+<p class="text-gray-300 text-[10px] uppercase font-bold tracking-wide">Generations</p>
+</div>
+</div>
+<!-- Scrubber / Timeline (Wide) -->
+<div class="col-span-2 bg-white/5 rounded-xl p-4 border border-white/5 flex items-center gap-3">
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<div class="flex-1 relative h-8 flex items-center">
+<div class="absolute w-full h-1 bg-white/10 rounded-full"></div>
+<div class="absolute w-1/3 h-1 bg-primary rounded-full left-1/4"></div>
+<div class="absolute left-1/4 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)] transform -translate-x-1.5 cursor-pointer"></div>
+<!-- Timeline Labels -->
+<span class="absolute left-0 -bottom-1 text-[9px] text-gray-500">1880</span>
+<span class="absolute left-1/4 -bottom-1 text-[9px] text-white font-bold">1895</span>
+<span class="absolute right-0 -bottom-1 text-[9px] text-gray-500">2024</span>
+</div>
+</div>
+<!-- Related Surnames (Wide) -->
+<div class="col-span-2 mt-2">
+<h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 px-1">Top Surnames in Region</h4>
+<div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white whitespace-nowrap">Ricci</span>
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white whitespace-nowrap">Moretti</span>
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white whitespace-nowrap">Romano</span>
+<span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white whitespace-nowrap">Esposito</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Tab Bar (App Navigation) -->
+<div class="border-t border-white/5 px-6 py-3 flex justify-between items-center bg-[#101922]/50">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl fill-current">map</span>
+<span class="text-[10px] font-medium">Map</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">family_history</span>
+<span class="text-[10px] font-medium">Tree</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

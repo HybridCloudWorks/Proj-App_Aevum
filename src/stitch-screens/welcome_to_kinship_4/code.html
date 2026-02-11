@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum - Simplified Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#8b5cf6",
+                        "glass-border": "rgba(255, 255, 255, 0.15)",
+                        "glass-surface": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "display": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "3xl": "2.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: 100vh;
+            overscroll-behavior-y: none;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .glass-card-darker {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-900 font-sans text-white antialiased selection:bg-primary selection:text-white">
+<div class="relative flex h-full w-full min-h-screen flex-col overflow-x-hidden">
+<div class="fixed inset-0 z-0">
+<div class="absolute top-[-15%] left-[-15%] w-[70%] h-[70%] rounded-full bg-blue-600/25 blur-[120px]"></div>
+<div class="absolute bottom-[-15%] right-[-15%] w-[70%] h-[70%] rounded-full bg-indigo-500/25 blur-[120px]"></div>
+<div class="absolute top-[35%] left-[20%] w-[60%] h-[60%] rounded-full bg-pink-500/15 blur-[140px]"></div>
+<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+</div>
+<header class="relative z-20 px-6 pt-14 pb-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-white/10 p-[2px] shadow-lg backdrop-blur-sm">
+<img alt="User Profile" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVzad7SMhL366Z6ErsTXhjsxwYUIK_sPB9BQSZPSVDM83hcusxUoIvtDgdhqvGdM7st9SEloAN4DfNGWUAnJcxp79-TfJtb139W9pkzZRaSmA_NGVUAQh2xQ_vifX4ipcUOpQQ5nkNjuLAG8daOcouKWRsUV3bs9_uszkSeWWkynA4W_XfhJN3pQBJhbHqRwt88MV_-3uby4R-1psVO81XrbQOq8eC8VxiJiUuecjNx5IgmYu0ICpUwqU8bWXG4E3BY-lUGeOiBx8"/>
+</div>
+<div>
+<h1 class="text-xs text-gray-300 font-medium tracking-wide uppercase mb-0.5">Good Morning</h1>
+<p class="text-2xl font-bold leading-none tracking-tight">Alex</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 px-3 py-1.5 glass-card rounded-full mr-2">
+<span class="material-symbols-outlined text-[16px] text-green-400" title="Secure">verified_user</span>
+<span class="material-symbols-outlined text-[16px] text-purple-400 animate-pulse" title="AI Active">auto_awesome</span>
+</div>
+<button class="w-10 h-10 glass-card rounded-full flex items-center justify-center active:scale-95 transition-transform hover:bg-white/10">
+<span class="material-symbols-outlined text-white/90 text-xl">notifications</span>
+<span class="absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full border border-black/20"></span>
+</button>
+</div>
+</header>
+<main class="relative z-10 flex-1 px-4 pb-32 overflow-y-auto no-scrollbar space-y-4">
+<div class="w-full aspect-[4/3] glass-card rounded-3xl relative overflow-hidden group">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&amp;fit=crop&amp;q=80&amp;w=2000')] bg-cover bg-center"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-4 right-4 z-10">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold text-white border border-white/20 shadow-lg">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                        On this day
+                    </span>
+</div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<p class="text-sm font-medium text-purple-200 mb-1 tracking-wide">Daily Memory • 1998</p>
+<h2 class="text-3xl font-bold tracking-tight text-white mb-2 leading-tight">Grandma's Garden</h2>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4"/>
+<div class="w-6 h-6 rounded-full border-2 border-white/10 bg-gray-600 flex items-center justify-center text-[8px] text-white font-bold">+2</div>
+</div>
+<span class="text-xs text-gray-300">tagged in this photo</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-1 glass-card p-5 rounded-3xl flex flex-col justify-between h-48 relative overflow-hidden group cursor-pointer hover:bg-white/10 transition-colors">
+<div class="absolute -right-6 -top-6 w-32 h-32 bg-green-500/10 rounded-full blur-3xl group-hover:bg-green-500/20 transition-all"></div>
+<div class="flex flex-col gap-1 z-10">
+<div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center mb-2 text-green-400">
+<span class="material-symbols-outlined text-2xl">forest</span>
+</div>
+<h3 class="font-semibold text-sm text-white/90">Tree Growth</h3>
+</div>
+<div class="z-10">
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-bold text-white tracking-tight">3</span>
+<span class="text-sm text-green-300 font-medium">new</span>
+</div>
+<p class="text-xs text-gray-400 mt-1 leading-relaxed">relatives found this week</p>
+<div class="flex -space-x-2 mt-3">
+<div class="w-7 h-7 rounded-full border-2 border-gray-800 bg-gray-700"></div>
+<div class="w-7 h-7 rounded-full border-2 border-gray-800 bg-gray-600"></div>
+<div class="w-7 h-7 rounded-full border-2 border-gray-800 bg-gray-500 flex items-center justify-center text-[9px] text-white">JM</div>
+</div>
+</div>
+</div>
+<div class="col-span-1 glass-card p-5 rounded-3xl flex flex-col justify-between h-48 relative overflow-hidden group cursor-pointer hover:bg-white/10 transition-colors">
+<div class="absolute -left-6 -bottom-6 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
+<div class="flex justify-between items-start w-full z-10">
+<div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center mb-2 text-blue-400">
+<span class="material-symbols-outlined text-2xl">forum</span>
+</div>
+<span class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">2</span>
+</div>
+<div class="z-10 mt-auto">
+<h3 class="font-semibold text-sm text-white/90 mb-2">Messages</h3>
+<div class="bg-white/5 rounded-xl p-2.5 backdrop-blur-sm border border-white/5">
+<div class="flex items-center gap-2 mb-1">
+<img class="w-4 h-4 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVzad7SMhL366Z6ErsTXhjsxwYUIK_sPB9BQSZPSVDM83hcusxUoIvtDgdhqvGdM7st9SEloAN4DfNGWUAnJcxp79-TfJtb139W9pkzZRaSmA_NGVUAQh2xQ_vifX4ipcUOpQQ5nkNjuLAG8daOcouKWRsUV3bs9_uszkSeWWkynA4W_XfhJN3pQBJhbHqRwt88MV_-3uby4R-1psVO81XrbQOq8eC8VxiJiUuecjNx5IgmYu0ICpUwqU8bWXG4E3BY-lUGeOiBx8"/>
+<span class="text-[10px] font-bold text-white">Sarah</span>
+</div>
+<p class="text-[10px] text-gray-300 line-clamp-2 leading-relaxed">"Did you see the photo I uploaded of..."</p>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-card p-5 rounded-3xl">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-bold text-lg text-white">Quick Actions</h3>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 text-left group">
+<div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">add_a_photo</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Add Photo</span>
+<span class="text-[10px] text-gray-400">Scan or upload</span>
+</div>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 text-left group">
+<div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Favorites</span>
+<span class="text-[10px] text-gray-400">View saved</span>
+</div>
+</button>
+</div>
+</div>
+<div class="glass-card p-5 rounded-3xl">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-bold text-lg text-white">From the Archives</h3>
+<button class="text-xs font-semibold text-blue-300 hover:text-blue-200 transition-colors">See All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+<div class="flex-shrink-0 w-36 group cursor-pointer">
+<div class="w-36 h-48 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10">
+<img alt="Wedding" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL0ASC5yYi1mDVBhtxP-NWj91-XxfHOUjRJ6xAx69QDglsj3aDqdKWm7cW75kCSWIFX5TjbgNY6SmkePMgb4ZXVHhOMhVUwCBSaXlJjvXb2UeomYB4IxzxWwGaeUkiTvNvFIFyDsPGQW_ca_rn0JU14iyPn5p83rabQcLsLow3LwHlTNOf3nXbFppOC1vE3XQIjJnYnpl-hjGoG3uZxRmH93UmPcLqEgcWK3v1oyX-tcrPXi3c8Ag2nJMC-SvVEuK0FzmGQ_X9yGo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/20 backdrop-blur-sm px-2 py-1 rounded-lg">1985</span>
+</div>
+</div>
+<div class="flex-shrink-0 w-36 group cursor-pointer">
+<div class="w-36 h-48 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10">
+<img alt="School" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtpb0MC0tKaL9Q-459mrQe_yyMmwEgudC0PTs-yip4CCbJIli4jqQY_Fy23VplbWrUM0oF4zM2hvlX9z2yVZQaGTw4MZih0VO3XeRARLIEnWC-N1O145KuwhOFKZEA8A9vO-tPhktc-XaDZtks0OzL_rYm1GMuRxMoWGUg_nahXJpfgZi_Ru9Y89u-JnYZcBsyui2D1YCV2h5uYug2xIGbKlVgNtn0CEIWS1K0axWMAQyFaIKfK6kSi8Cexc0tGgU-VYdNrCsn884"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<span class="absolute bottom-3 left-3 text-xs font-bold text-white bg-black/20 backdrop-blur-sm px-2 py-1 rounded-lg">1992</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-8"></div>
+</main>
+<div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md z-50">
+<div class="glass-card-darker rounded-2xl p-2 flex justify-around items-center shadow-2xl backdrop-blur-xl">
+<button class="flex flex-col items-center justify-center p-2 text-white/90">
+<span class="material-symbols-outlined text-[28px] filled">home</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">diversity_2</span>
+</button>
+<div class="relative -top-8">
+<button class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/40 border-[6px] border-gray-900 text-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">search</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">person</span>
+</button>
+</div>
+</div>
+</div>
+
+</body></html>

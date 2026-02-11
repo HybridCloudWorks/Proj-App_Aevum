@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Identify &amp; Grow Tree - AI Recognition</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex justify-center">
+<div class="relative flex h-full w-full max-w-md flex-col bg-background-light dark:bg-background-dark overflow-x-hidden shadow-2xl">
+<!-- Header -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-20">
+<div class="text-gray-900 dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full active:bg-gray-200 dark:active:bg-gray-800 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Tag Faces</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="text-gray-500 dark:text-[#9dabb9] hover:text-primary dark:hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="px-6 py-2">
+<div class="flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+<span>Identifying 3 of 15</span>
+<span>20%</span>
+</div>
+<div class="h-1.5 w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[20%] rounded-full"></div>
+</div>
+</div>
+<!-- Main Title Area -->
+<div class="px-6 pt-4 pb-2">
+<h2 class="text-gray-900 dark:text-white tracking-tight text-[28px] font-extrabold leading-tight text-left">
+                Who is this?
+            </h2>
+<p class="text-gray-600 dark:text-gray-400 text-sm font-medium leading-normal mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-green-500 text-[18px]">verified_user</span>
+                High confidence match found.
+            </p>
+</div>
+<!-- Carousel: Needs Identification -->
+<div class="flex w-full overflow-x-auto no-scrollbar px-6 py-4 pb-6 gap-4 snap-x snap-mandatory">
+<!-- Active Item (Center) -->
+<div class="snap-center shrink-0 flex flex-col items-center gap-2">
+<div class="relative group cursor-pointer">
+<div class="w-24 h-24 bg-center bg-no-repeat bg-cover rounded-full ring-4 ring-primary shadow-lg shadow-primary/20 transition-transform" data-alt="Close up of a smiling woman's face" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1AUTQfohpATpAZT5xMlpYxvpKWMTBsO9uO6gCp5Hl3b4LYzf1C5WeNKH5WeqJE9SqeJ5xRdKUf9mGEFfSNOtm89zlwFpxB5iU3Mh5Aa9YU9wZ13c4obwMVM3H1wes7MkxPdTIL9DXuVO6a1KruKbomtx1uVYw_AxxVV4SFVxZZUX4-u8Ne4zCq3O9-pbdiODdnFUCHkKFxoYnSB2ywOucXI0ApuuMqxAX9vBM0qwXI_KgzJzeRS5lfwXJmsPRxkPZc3QUfdobBrE");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-background-light dark:border-background-dark">
+                        12
+                    </div>
+</div>
+<p class="text-primary font-bold text-sm">Active</p>
+</div>
+<!-- Next Items -->
+<div class="snap-center shrink-0 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+<div class="relative cursor-pointer">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full ring-2 ring-gray-200 dark:ring-gray-700 grayscale hover:grayscale-0 transition-all" data-alt="Portrait of a young man looking to the side" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAJVIyA0Lztk5kUR6V7pgT_JvZPVk4TzwqxwS1AOGogPtHF6pY1AhG2Ey7i3wISgu8cNL3tkXX1WN9dkOjSDv9LigYi0E5dfY4snmWpBcdVp0Q22m6u0lUdtpF8Q5V8nrQnrIQ0vZzTJHpk9kYEPxLthFBqyXsi75Cturl5n0x-1XfJPbfDmyzPiPSTVouIHBolS7iqHa-Jpb1RhT5OjnOPML9bS3-Os1M-wzkIKmM3RMITIQfyqVxZbzluKDInm2eIuD0ra_wTMFk");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-gray-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-background-light dark:border-background-dark">
+                        8
+                    </div>
+</div>
+<p class="text-gray-500 dark:text-gray-400 font-medium text-xs">Unknown</p>
+</div>
+<div class="snap-center shrink-0 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+<div class="relative cursor-pointer">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full ring-2 ring-gray-200 dark:ring-gray-700 grayscale hover:grayscale-0 transition-all" data-alt="Portrait of a woman with curly hair" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2vqRsXQ7b-79adyFGPz1Qjsq8IvjvniwLDEHaUWj62MWdBOThIN55QaUm2XWtKeDZvJTGKtMYZ4jDUu5dpmFB5uAzjYuZUoi8N25SfCbmYBZitz_PuWWM5LPICUNoc3p6SBGrLomgvNftS_YQ4anW-4pyDGE6mJKcg67HJaDSf8WpIlzybGNjEHJKTKBVr5lYiXeyzIKnjF52WYdVSxUM07kJUAtXQC3fzi62SzoAKiO0DiM23oPf5jlQBsc-vWnk6WhuQpJRFs0");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-gray-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-background-light dark:border-background-dark">
+                        5
+                    </div>
+</div>
+<p class="text-gray-500 dark:text-gray-400 font-medium text-xs">Unknown</p>
+</div>
+<div class="snap-center shrink-0 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+<div class="relative cursor-pointer">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-full ring-2 ring-gray-200 dark:ring-gray-700 grayscale hover:grayscale-0 transition-all" data-alt="Smiling man with glasses" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgd9lbSIDtwmL3NnTiAQ5E8LYKo_ReAaSTdhHYBPX3GHhQp9duEnZVT7ymoShbDc_EmnRv5BINEA0ovAqYpNqFPXZtpKNDVYPwOv_YHpeutaABg9WJKLHJOAGZbLQF7y4g19RRW57bZBrcmf5WhkFpwSbDXf2cZHWlGqbZd7Qb2z3F6krLitpDjbKAz5tOEJPsNCFFoE9ASw2F-0mZrOHljt_nGkAhjk6P-DJNR3pUp-Lgnct048Xjkg2Fmd8Hxgc7IddfjvcnuhA");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-gray-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-background-light dark:border-background-dark">
+                        3
+                    </div>
+</div>
+<p class="text-gray-500 dark:text-gray-400 font-medium text-xs">Unknown</p>
+</div>
+</div>
+<!-- Action Card Area -->
+<div class="px-4 mb-6">
+<div class="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-800">
+<!-- Hero Image & Suggestion Overlay -->
+<div class="relative h-64 w-full bg-gray-200 dark:bg-gray-800">
+<div class="absolute inset-0 bg-center bg-cover bg-no-repeat" data-alt="Close up portrait of the active person to identify" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEw5vwtm1z37BmHHNm7tBKmQmVlFhmBg6PQp3ySVgaDC0o8z3vkmv8g6k77_pWCLcNpBm8V_8Je3otAtQw9CJqYJedzYkRf-qyxxO7-sWi_lr3vndKPefA_UFGmPboU1Qfdv9bUiQeQXNgrmTRQOVvR78KbP1T0fHRC3WBRoLrxp16puA1HK-dE0l_2DCn5DEY3ZBXakcNlGdhxCe49l9sKJHxRa6Ee18ASznsukktw9jhz3qw7MokkS6QN6FYQO0ztjw5uS8Aqa8");'>
+</div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-5">
+<div class="flex items-start gap-3 mb-2">
+<div class="bg-primary/20 backdrop-blur-md p-2 rounded-lg text-primary-light">
+<span class="material-symbols-outlined text-blue-300">smart_toy</span>
+</div>
+<div>
+<h3 class="text-white text-xl font-bold leading-tight">Is this Aunt Marie?</h3>
+<p class="text-gray-300 text-sm font-medium mt-0.5">90% match based on previous tags.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="p-4 flex flex-col gap-3">
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-12 px-4 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold tracking-wide shadow-lg shadow-primary/25 gap-2">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                        Yes, Confirm Match
+                    </button>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-10 px-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm font-semibold transition-colors gap-2">
+<span class="material-symbols-outlined text-[18px]">person_search</span>
+                            Search Tree
+                        </button>
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-10 px-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-sm font-semibold transition-colors gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                            Invite New
+                        </button>
+</div>
+<button class="mt-1 text-center text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        Ignore or not a relative
+                    </button>
+</div>
+</div>
+</div>
+<!-- Context Photos Grid -->
+<div class="px-4 pb-20">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-gray-900 dark:text-white font-bold text-base">Appears in these photos</h3>
+<span class="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-md">12 Photos</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Group of friends sitting in a classroom" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBLJPZoya-57UF9LHyeY02i2XCDXGJOKD0jOTRaSxSzqTNC8QG1tDDAGVfLgLC_53jwPV9rvqY6Mm6Lvc_RnZ9yfAY6t4UNWbKEzFP7MF1qYX9WSG_WFduv-VfybsgdRR7jGRbic8k28RmlTzFaVoqqgDPId-gwB94cEeOMhrxDzUUmBVkGwAoEgb3d0C3LyezcQB_vFH9oloho6j-PZjY0t6OClGUxiD4g8ytqIOpJKMBFPckpXtMEY17bmXXpLBbOXO1Z3zNjAs");'></div>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors"></div>
+<div class="absolute bottom-1 right-1">
+<span class="material-symbols-outlined text-white drop-shadow-md text-[16px]">face</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Family gathering outdoors" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBtkdYPQYNk7-fzN6fC_XMHe_-itwb97SPm1Myy_gaj8G40HdjtTO5iA8ndf1B5dGnc-wyRPqTlFJUkXsyBLl21KVcYddSf7fRPYRrtyCxt963togRu4cUddLrIENZveUmKxzm1LcJRl_gHPiuHBqhFS3OIS975fRBE8JhVK2qAppuvvxnkBOV6L1CyPA8Gh_rUBzlLvBtVM9NI0ta138eW669h1zz4_WhYBojrD5hfP9kaKlJ0Z4IQy1-H8f-tYwxeVCS3e0xNfSk");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Man standing near a lake" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDz9YC_p9V1LKjhr4RUFau2dvhUc4ynu2l4Y-UCgEhcR0jZf-zCZiW7H_pbaG1gDPi3I0G3I0mLnXmj66csm0MGpavzSL9X_hvJIeD3XO8P_4iyI3anAEaWcfj0dntT0PSCqt0rIfri80DTM4hbJJeW4A0R951UlN31qEuUnjYJ3CxppaSftMFg_tw7rlaaZBPvtdtMiNhmrV3WgUkf8Kt5dL1tMQHKDYX679-8CdzU7OgXydCEHDv-iHRm0b-1kflKHGXm2MUtnuY");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Two people looking at a map" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzr2Jxj6bejbvHjt3_Y2wowBXJdIIa1Njk641HdCPoABdgL0E_uzo_OWgZTGw_k0BkHlUyB4ltVvfbbmvjoHJIzIqucDFq-BqjlBIbptOIjRIXKyZKSlMeHWKDYuWuW3sfGbuiGW1ru4GfpcTqtJROl3VmaReRYhuxzc7mhL0Kbw8k27nws83sdPpGcEtbXvJFt-uVuOYNubztczb8fv0NJXsnoxiR7BrjL2jcAU57IAZozFrP7AeHOScfuvy-UAlIsIqCsnVpdAY");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Graduation ceremony crowd" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSUK2cxKT9JNqifqRXe0ZpXywU91xXnXV4se52gmq3IMBGZLYfQMgF7bl8SIe_J8Yz19aZaWEqxcHj6WESm_P42V8_ojvo8aKeZ1y2zi-gmhXs52PMd4v4bvakC4OJrlhfjwXMepARSdtnQuc16NGKJzKzao0ZZmS-jHeVPO9AWByOfLjwRVt_TcsaJeaR-64QnyWP_iqBex344SIn2GDPQGsBgAFYnX30PRvNkT0OZnxlTCSnRuodR8lwDQvX5v7uv0rEC1vJlKk");'></div>
+</div>
+<!-- View All Button -->
+<div class="aspect-square rounded-lg bg-gray-100 dark:bg-gray-800 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">grid_view</span>
+<span class="text-[10px] font-bold mt-1">View All</span>
+</div>
+</div>
+<p class="mt-3 text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1.5 justify-center opacity-80">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                 Biometric data is private to this tree.
+            </p>
+</div>
+<!-- Bottom Tab Bar (iOS style) -->
+<div class="fixed bottom-0 w-full max-w-md bg-white dark:bg-[#101922] border-t border-gray-200 dark:border-gray-800 flex justify-around items-center h-16 px-2 z-50">
+<button class="flex flex-col items-center justify-center w-full h-full text-primary">
+<span class="material-symbols-outlined text-[24px]">face_retouching_natural</span>
+<span class="text-[10px] font-bold mt-1">Identify</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">account_tree</span>
+<span class="text-[10px] font-medium mt-1">Tree</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">photo_library</span>
+<span class="text-[10px] font-medium mt-1">Memories</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-[10px] font-medium mt-1">Settings</span>
+</button>
+</div>
+</div>
+</body></html>

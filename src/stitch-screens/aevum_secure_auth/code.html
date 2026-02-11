@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Secure Auth</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5a5cf2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101122",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom mesh gradient background */
+        .mesh-bg {
+            background-color: #101122;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(239, 84%, 65%, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(260, 90%, 65%, 0.3) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(240, 80%, 40%, 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, hsla(260, 90%, 65%, 0.25) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, hsla(239, 84%, 65%, 0.15) 0px, transparent 50%);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(16, 17, 34, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Bento grid item hover effect */
+        .bento-item {
+            transition: all 0.2s ease-in-out;
+        }
+        .bento-item:active {
+            transform: scale(0.98);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white">
+<!-- Main Container -->
+<div class="relative min-h-screen w-full flex flex-col items-center justify-center p-6 mesh-bg overflow-hidden">
+<!-- Decorative abstract shapes behind -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 blur-[100px] rounded-full pointer-events-none"></div>
+<!-- Glassmorphic Card -->
+<div class="glass-panel w-full max-w-[420px] rounded-2xl p-6 md:p-8 flex flex-col gap-6 relative z-10 shadow-2xl">
+<!-- Header Section -->
+<div class="flex flex-col items-center text-center gap-2 pt-2">
+<div class="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center mb-2 border border-primary/30">
+<span class="material-symbols-outlined text-primary" style="font-size: 32px;">family_history</span>
+</div>
+<h1 class="text-3xl font-bold tracking-tight text-white">Aevum</h1>
+<p class="text-slate-400 text-sm font-medium">Preserving Generations</p>
+</div>
+<!-- Bento Grid Layout for Auth Options -->
+<div class="flex flex-col gap-4 mt-2">
+<!-- Primary Action: FaceID -->
+<button class="bento-item group relative flex flex-col items-center justify-center w-full h-32 bg-primary/10 hover:bg-primary/20 border border-primary/20 hover:border-primary/40 rounded-xl cursor-pointer overflow-hidden transition-all duration-300">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex flex-col items-center gap-3 z-10">
+<span class="material-symbols-outlined text-primary text-[40px] animate-pulse">face</span>
+<span class="text-white font-semibold text-lg tracking-wide">Unlock with FaceID</span>
+</div>
+</button>
+<!-- Divider -->
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-white/10"></div>
+<span class="flex-shrink-0 mx-4 text-xs font-medium text-slate-500 uppercase tracking-widest">Or continue with</span>
+<div class="flex-grow border-t border-white/10"></div>
+</div>
+<!-- Secondary Actions: Grid -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Apple -->
+<button class="bento-item flex flex-col items-center justify-center h-24 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl gap-2 transition-colors">
+<!-- Apple SVG -->
+<svg class="w-8 h-8 fill-white" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.54 5.81.34 7.23-.56 1.43-1.32 2.82-2.39 3.98zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"></path></svg>
+<span class="text-sm font-medium text-slate-200">Apple</span>
+</button>
+<!-- Google -->
+<button class="bento-item flex flex-col items-center justify-center h-24 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl gap-2 transition-colors">
+<!-- Google SVG -->
+<svg class="w-7 h-7" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.225 -9.429 56.472 -10.689 57.325 L -10.689 60.255 L -6.824 60.255 C -4.564 58.181 -3.264 55.124 -3.264 51.509 Z" fill="#4285F4"></path><path d="M -14.754 63.239 C -11.519 63.239 -8.804 62.156 -6.824 60.263 L -10.689 57.333 C -11.761 58.051 -13.133 58.467 -14.754 58.467 C -17.873 58.467 -20.511 56.366 -21.455 53.529 L -25.426 53.529 L -25.426 56.613 C -23.465 60.493 -19.406 63.239 -14.754 63.239 Z" fill="#34A853"></path><path d="M -21.455 53.529 C -21.696 52.81 -21.822 52.044 -21.822 51.249 C -21.822 50.453 -21.696 49.688 -21.455 48.968 L -21.455 45.884 L -25.426 45.884 C -26.236 47.498 -26.696 49.314 -26.696 51.249 C -26.696 53.183 -26.236 55.001 -25.426 56.613 L -21.455 53.529 Z" fill="#FBBC05"></path><path d="M -14.754 44.03 C -12.984 44.03 -11.403 44.643 -10.157 45.829 L -6.744 42.414 C -8.804 40.496 -11.516 39.239 -14.754 39.239 C -19.406 39.239 -23.465 41.984 -25.426 45.884 L -21.455 48.968 C -20.511 46.134 -17.873 44.03 -14.754 44.03 Z" fill="#EA4335"></path></g></svg>
+<span class="text-sm font-medium text-slate-200">Google</span>
+</button>
+</div>
+<!-- Use Email Fallback -->
+<button class="bento-item flex items-center justify-center w-full h-14 bg-transparent hover:bg-white/5 border border-white/10 rounded-xl gap-2 mt-1 group">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-white transition-colors" style="font-size: 20px;">mail</span>
+<span class="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">Continue with Email</span>
+</button>
+</div>
+<!-- Footer -->
+<div class="mt-4 flex flex-col items-center gap-4">
+<a class="text-xs text-primary/80 hover:text-primary font-medium transition-colors" href="#">Trouble signing in?</a>
+<div class="flex items-center gap-1.5 opacity-60">
+<span class="material-symbols-outlined text-slate-500" style="font-size: 16px;">lock</span>
+<span class="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Secured by Firebase</span>
+</div>
+</div>
+</div>
+<!-- Background Image for context (Hidden visually but included per requirement for image tag) -->
+<!-- In a real app this would be a subtle texture overlay -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvz8hmhkYRsJcR0Sy_K7rhikIsdp51X5n2NcRjPTaRptyHwPhqZacXl73fR7JwIpNtc2bQY4XuK-aprK4xNTNYF71IVpZvSgYv4s65IFRu14WeLzWBH3rmyhxmjMUd-BbkeXH0m7mFVwdJUfMf8l5npurA18vr9yOHtHR0RvDZVhlFDB8boqWoTNW_85zFG0ygyx6Z2c67mF4wFCjSLC9FSZxAR-soRKjVx1TUn_n0DRaTBnBVFMaC4_-in1Lm3YgacycnZhxn7Mw'); background-size: cover;"></div>
+<!-- Note: This div uses a placeholder background image to satisfy the ImageGrid component structure requirement abstractly, though the main visual is CSS gradient -->
+</div>
+</body></html>

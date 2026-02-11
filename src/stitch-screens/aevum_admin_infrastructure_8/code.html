@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Spatial Memory Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#a855f7",
+                        "glass-border": "rgba(255, 255, 255, 0.2)",
+                        "glass-bg": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                        lg: '16px',
+                        xl: '24px',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'photo-depth': '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 100px rgba(255, 255, 255, 0.1)',
+                    },
+                    perspective: {
+                        '2000': '2000px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAMAQhqMdKqwr9BF9W6q0-sjbW_8a4XY5le4vFKx9ZMeQAC9dONiMya5kEBT5KX1JwO4kq4EFqvFIWDOHBNP6pAEmKBPEIoEnIG0jRr_DQNDJ_dovshvrMAx4UGyVrHGSWBw-nYEBY95u16jHe2M6dMkzLTFC-y2S8WnF_dotVL9X2pwT3xwylTVOhKJy2HQhybn8_PdqOdxAP4I-in0Q_SSC6GtLcSYetRUi7LCMPS4T8av1QzhqW_5U9GJhblLrOhnklaIMbPCnQ);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100dvh;
+            overflow: hidden;
+        }
+        .spatial-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .photo-frame {
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+        .photo-frame::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+            z-index: -1;
+            border-radius: 12px;
+            filter: blur(1px);
+        }
+        .ai-face-ring {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), inset 0 0 10px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse-ring 3s infinite;
+        }
+        .ai-face-ring:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8), inset 0 0 15px rgba(59, 130, 246, 0.5);
+            transform: scale(1.05);
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .info-card {
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .ai-face-ring:hover + .info-card,
+        .info-card:hover {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }.particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display text-white antialiased h-screen w-screen overflow-hidden flex flex-col items-center justify-center relative bg-black/40">
+<div class="absolute inset-0 backdrop-blur-[40px] z-0 bg-black/20"></div>
+<div class="particle w-32 h-32 top-1/4 left-1/4 animate-pulse duration-[4000ms]"></div>
+<div class="particle w-20 h-20 bottom-1/3 right-1/4 animate-pulse duration-[6000ms]"></div>
+<header class="absolute top-8 w-full px-6 z-50 flex justify-between items-center max-w-6xl">
+<div class="spatial-glass px-5 py-2.5 rounded-full flex items-center gap-4">
+<button class="flex items-center justify-center size-8 rounded-full bg-white/10 hover:bg-white/20 transition">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<div class="h-6 w-px bg-white/20"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">photo_library</span>
+<span class="font-bold tracking-wide text-sm">Spatial Gallery</span>
+</div>
+</div>
+<div class="spatial-glass px-4 py-2 rounded-full flex items-center gap-3">
+<span class="material-symbols-outlined text-yellow-400 text-sm">auto_fix_high</span>
+<span class="text-xs font-medium tracking-wide">AI Restoration Active</span>
+<div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+</div>
+<div class="spatial-glass p-2 rounded-full flex gap-2">
+<button class="p-2 hover:bg-white/10 rounded-full transition">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-full transition">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</header>
+<main class="relative w-full max-w-5xl h-full flex items-center justify-center z-10 perspective-[2000px]">
+<div class="photo-frame relative w-[800px] aspect-[4/3] bg-black/80 rounded-xl shadow-photo-depth group transform rotate-x-6 hover:rotate-x-0 transition-transform duration-700">
+<img alt="Historical Family Gathering" class="w-full h-full object-cover rounded-xl opacity-90 mix-blend-normal brightness-110 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMAQhqMdKqwr9BF9W6q0-sjbW_8a4XY5le4vFKx9ZMeQAC9dONiMya5kEBT5KX1JwO4kq4EFqvFIWDOHBNP6pAEmKBPEIoEnIG0jRr_DQNDJ_dovshvrMAx4UGyVrHGSWBw-nYEBY95u16jHe2M6dMkzLTFC-y2S8WnF_dotVL9X2pwT3xwylTVOhKJy2HQhybn8_PdqOdxAP4I-in0Q_SSC6GtLcSYetRUi7LCMPS4T8av1QzhqW_5U9GJhblLrOhnklaIMbPCnQ"/>
+<div class="absolute inset-0 rounded-xl bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none"></div>
+<div class="absolute top-[35%] left-[32%] w-16 h-16">
+<div class="ai-face-ring w-full h-full"></div>
+<div class="info-card absolute -top-32 left-1/2 -translate-x-1/2 w-48 spatial-glass p-3 rounded-2xl backdrop-blur-xl z-50">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/30">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0--YOXNDbLbWIddsCjq5vq9U1l6kLpHgVYUGdgffUsPBKcPc_aCMhSeNfy8Txgrb46V-GH-I_uihEXadY6fCjnjj4hoYwYkehbILFq-fHqO0yb9l-7m4tYTP9zUF0ISUJW8a-uwSTZDGQXib33FVotcpxhlWGwkY6JnbeRnjdI31P7sdF_kCguTYg7khsciRRZ0XLEmMAfr9tWmz54_yirPAAz5to9Z74r_RBmpIqKfRjSn8a5J-vgGGDcqqc0RrmahhLm8U7YR8"/>
+</div>
+<div>
+<p class="text-sm font-bold leading-none">Eleanor</p>
+<p class="text-[10px] text-gray-300">Grandmother</p>
+</div>
+</div>
+<div class="h-px bg-white/10 w-full mb-2"></div>
+<p class="text-[10px] text-gray-200">Identified with 98% confidence. Born 1934.</p>
+</div>
+</div>
+<div class="absolute top-[32%] right-[38%] w-14 h-14">
+<div class="ai-face-ring w-full h-full border-accent/50 shadow-[0_0_15px_rgba(168,85,247,0.6)]"></div>
+<div class="info-card absolute -top-32 left-1/2 -translate-x-1/2 w-48 spatial-glass p-3 rounded-2xl backdrop-blur-xl z-50">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/30">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDhLUFv5szvoRAVSbahWGywuRzLAKS4-XIM6otu1mt-r5W18nVWh3on-JbibTabUFGEIazSECismV9zfEyOmhl0n24Q5O7mKRpiqDqlGm6Ra5uo5jaGZjHAPSSuEuAIb8xgsQGpZIMMLRUC4KG7qDawkAs5h1aoi_NreIXlez8ZzJNQp1VMdgqDiRmbR6nVtcd5G9Q6n4WqK6g2ysTdSmIeCPEYqjBMMIByIk6I-igkeg-Ldkn-INnX79EPFGupTI4zCjqsE5yYIA"/>
+</div>
+<div>
+<p class="text-sm font-bold leading-none">Arthur</p>
+<p class="text-[10px] text-gray-300">Grandfather</p>
+</div>
+</div>
+<div class="h-px bg-white/10 w-full mb-2"></div>
+<p class="text-[10px] text-gray-200">1929 - 1998. Wearing his service uniform.</p>
+</div>
+</div>
+<div class="absolute bottom-[25%] left-[45%] w-12 h-12">
+<div class="ai-face-ring w-full h-full border-green-400/50 shadow-[0_0_15px_rgba(74,222,128,0.6)]"></div>
+<div class="info-card absolute -bottom-32 left-1/2 -translate-x-1/2 w-48 spatial-glass p-3 rounded-2xl backdrop-blur-xl z-50">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/30">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMDbX7JieH4uSusSVXrUvvvaCAAPI4aD_oC_4HH3TYYaaG-MWB-lkJC0i5fqeWETP4Fpla1f0aiWNz0Qnnpheta8n14tyv8LTu_zGgEUtSplutOcD--os7vc6G8QwVoCNuCagef6G18FisqHgJhoiPOtcinMJvc9vmGZqdyPJiGMJ7LJMMqzfRpWsDer5q7bNtrqJ4zO_D0ikEjEncu0Cl4u0LdUdL4L7GVthH5d2s2rxrFgNIplVxTR-nKiZhkmaIl9sa1qYHCLE"/>
+</div>
+<div>
+<p class="text-sm font-bold leading-none">Sarah</p>
+<p class="text-[10px] text-gray-300">Mother (Age 4)</p>
+</div>
+</div>
+<div class="h-px bg-white/10 w-full mb-2"></div>
+<button class="w-full py-1 rounded bg-white/10 hover:bg-white/20 text-[10px] flex items-center justify-center gap-1 transition">
+<span class="material-symbols-outlined text-[12px]">arrow_forward</span> View Childhood
+                    </button>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 flex items-end gap-4">
+<div class="text-left">
+<h1 class="text-3xl font-display font-bold text-white drop-shadow-md">Summer Garden Party</h1>
+<p class="text-base text-gray-200 drop-shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                        Sussex, England • July 15, 1962
+                    </p>
+</div>
+</div>
+<div class="absolute top-4 right-4 spatial-glass px-3 py-1 rounded-lg">
+<span class="text-xs font-mono text-gray-300">ISO 400 • f/2.8</span>
+</div>
+</div>
+</main>
+<div class="absolute bottom-12 left-1/2 -translate-x-1/2 w-full max-w-2xl px-8 z-50">
+<div class="spatial-glass p-6 rounded-[2rem] flex flex-col gap-4 backdrop-blur-2xl">
+<div class="flex justify-between items-center text-xs font-medium text-gray-400 px-1">
+<span class="text-white">Original (1962)</span>
+<span>Restoration Progress</span>
+<span class="text-primary">Enhanced (2024 AI)</span>
+</div>
+<div class="relative w-full h-8 flex items-center">
+<div class="absolute w-full h-1 bg-gray-600 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-gray-400 to-primary w-[75%]"></div>
+</div>
+<input aria-label="Restoration Slider" class="relative z-10 w-full" max="100" min="0" type="range" value="75"/>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-white/10 mt-1">
+<button class="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition">
+<span class="material-symbols-outlined text-lg">history</span>
+<span>1950s Era</span>
+</button>
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+<div class="w-6 h-1.5 rounded-full bg-white"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+</div>
+<button class="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition">
+<span>1970s Era</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<aside class="absolute right-8 top-1/2 -translate-y-1/2 hidden lg:block w-72">
+<div class="spatial-glass rounded-3xl p-5 flex flex-col gap-4">
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-400">Related Memories</h3>
+<div class="group relative aspect-video rounded-lg overflow-hidden cursor-pointer border border-transparent hover:border-white/40 transition">
+<img class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE_HpWIEztdgAPmQ24PPpDGgInaG2eGfLCYR0uzMZQHZp7cTtIfM-aTBo6lgG_-cqqedozeRBy7xOkVTdPA0hjGxmb4SQjT8f3QpW1s19VQegUqUG4Jya1EQELZ73cdZkDOzTFcWSWkPpB7nkjFcDHziIpEaWrCpsSUKug2uJPb9IIL14s2UdIDaWVah4FJJqUAVq5ZG3XKJHUXDcxYuGxF0qKZP6HgmrGbyJ0vBl0xJTMaq2ErB34vyWeYrvymT9Xg1EdaYPLJAM"/>
+<div class="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/80 to-transparent">
+<p class="text-xs font-bold">James's Graduation</p>
+<p class="text-[10px] text-gray-300">1965</p>
+</div>
+</div>
+<div class="group relative aspect-video rounded-lg overflow-hidden cursor-pointer border border-transparent hover:border-white/40 transition">
+<img class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhl4SNeg9ZC9UWBbLI1ptM64bI-SW6FQw4tsJoMuZdChIXSIN7ll-oIXag-zciUa7w7KeM6lfGx0qXt85YQUheatD5I9-bFjpSOva_EseJBhW7LiVeGA7EvfFOSY1lL8cO9rNv3lc0HfzuNIqmo4QbsMedN2lYYPM5LFpFE8QaZ97TU5NgJFXSTWLjQGwwm3cG9lyau80rtSf9AH49ZMwUKmv-m48Lr3jcXREDHXmEqYfWgfqCT5nR2Bjz1yfygaixlp9X4Lx9_c4"/>
+<div class="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black/80 to-transparent">
+<p class="text-xs font-bold">First Car</p>
+<p class="text-[10px] text-gray-300">1968</p>
+</div>
+</div>
+<button class="w-full py-3 mt-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 font-bold text-xs transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+                View All from 1960s
+            </button>
+</div>
+</aside>
+
+</body></html>

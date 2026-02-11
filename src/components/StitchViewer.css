@@ -1,0 +1,50 @@
+.stitch-viewer {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-width: 390px; /* Mobile viewport */
+  margin: 0 auto;
+  background: #000;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.stitch-viewer__iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+}
+
+.stitch-viewer__loading,
+.stitch-viewer__error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  gap: var(--space-4);
+  z-index: 10;
+}
+
+.stitch-viewer__error {
+  color: var(--color-error);
+}
+
+.stitch-viewer__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-surface-elevated);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

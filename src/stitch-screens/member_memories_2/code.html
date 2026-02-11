@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invite to Aevum Tree</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "background-light": "#f0f2f5",
+                        "background-dark": "#0f172a",
+                        "surface-glass": "rgba(255, 255, 255, 0.1)",
+                        "surface-glass-dark": "rgba(30, 41, 59, 0.4)",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "brand": ["Cinzel", "serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "3xl": "2.5rem", "full": "9999px" },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        .mesh-gradient-bg {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        }
+        .dark .mesh-gradient-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,25%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%),
+                radial-gradient(at 10% 80%, hsla(250,30%,20%,1) 0, transparent 50%),
+                radial-gradient(at 90% 90%, hsla(200,30%,20%,1) 0, transparent 50%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #1e293b;
+        }
+        .dark .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .glass-input::placeholder {
+            color: rgba(30, 41, 59, 0.5);
+        }
+        .dark .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .glow-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden antialiased mesh-gradient-bg">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl overflow-hidden">
+<div class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4 pt-12">
+<button class="flex size-10 items-center justify-center rounded-full glass-card hover:bg-white/20 transition-colors text-slate-800 dark:text-white">
+<span class="material-symbols-outlined" style="font-size: 20px;">arrow_back_ios_new</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full glass-card hover:bg-white/20 transition-colors text-slate-800 dark:text-white">
+<span class="material-symbols-outlined" style="font-size: 20px;">help</span>
+</button>
+</div>
+<div class="flex-1 px-6 pt-28 pb-32 flex flex-col items-center">
+<div class="mb-8 text-center">
+<h1 class="text-3xl font-brand font-medium text-slate-900 dark:text-white tracking-wide mb-1">Connect Your Roots</h1>
+<p class="text-sm text-slate-600 dark:text-slate-300 font-light">Expand the Aevum Tree together</p>
+</div>
+<div class="w-full glass-panel rounded-3xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl"></div>
+<div class="flex flex-col items-center justify-center relative z-10">
+<div class="relative group">
+<div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white/20 dark:border-white/10 shadow-xl relative z-10">
+<img alt="Profile" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCypW0HCtYaKHH0MjMWX5XSsEKnu7uoyRGpXiybm9VCSMSScwMkgC9ez5DGxTI5aZ9R8qtdmEhpP57FWjs1FEoF71D4bCGguhT8QavCYCK0Hq6QmPi5gBbq-toXZJYB2YAyY3ACa7I9D_xT4aNPKnATilfv4r2mIsfkVXaKiuzT4E6wh8xuMRQ2gs1XjSq71o-iw17bRamMPrWJPA1F8-lYYaF3HAZYx3KtIUk3CtH-NetUq8Av_FjlDt-4jo7Pxw5GiiDB9tT_y0w"/>
+</div>
+<div class="absolute bottom-0 right-0 z-20 bg-white dark:bg-slate-700 p-2 rounded-full shadow-lg border border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-blue-500" style="font-size: 18px;">add_a_photo</span>
+</div>
+<div class="absolute inset-0 bg-blue-500/30 rounded-full blur-xl -z-10 scale-90 group-hover:scale-110 transition-transform duration-500"></div>
+</div>
+<p class="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">New Member</p>
+</div>
+<div class="space-y-4 relative z-10 w-full">
+<div class="space-y-1">
+<label class="text-xs font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined" style="font-size: 20px;">person</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all placeholder:text-sm" placeholder="e.g. Sarah Miller" type="text"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-medium text-slate-700 dark:text-slate-300 ml-1">Email or Phone</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined" style="font-size: 20px;">mail</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-xl glass-input focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all placeholder:text-sm" placeholder="invite@example.com" type="text"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-medium text-slate-700 dark:text-slate-300 ml-1">Relationship to you</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined" style="font-size: 20px;">family_history</span>
+<select class="w-full pl-10 pr-10 py-3 rounded-xl glass-input focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 outline-none transition-all appearance-none text-sm cursor-pointer">
+<option class="dark:bg-slate-800">Choose relationship...</option>
+<option class="dark:bg-slate-800">Mother</option>
+<option class="dark:bg-slate-800">Father</option>
+<option class="dark:bg-slate-800">Sister</option>
+<option class="dark:bg-slate-800">Brother</option>
+<option class="dark:bg-slate-800">Daughter</option>
+<option class="dark:bg-slate-800">Son</option>
+<option class="dark:bg-slate-800">Cousin</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined pointer-events-none" style="font-size: 20px;">expand_more</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-3.5 rounded-xl glow-button text-white font-bold text-sm tracking-wide shadow-lg hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group">
+<span>Send Invite</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" style="font-size: 18px;">send</span>
+</button>
+<p class="text-[10px] text-center text-slate-500 dark:text-slate-400 mt-2">
+                    They will receive an email to join your family tree and contribute photos.
+                </p>
+</div>
+</div>
+<div class="fixed bottom-0 w-full max-w-md pb-safe z-50 pointer-events-none">
+<div class="mx-4 mb-4 rounded-3xl glass-panel shadow-2xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/40 dark:border-white/10 pointer-events-auto">
+<div class="flex justify-around items-center h-16 px-2">
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">photo_library</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">account_tree</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 group">
+<div class="p-1.5 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined filled" style="font-size: 22px; font-variation-settings: 'FILL' 1;">person_add</span>
+</div>
+</button>
+<button class="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 22px;">settings</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

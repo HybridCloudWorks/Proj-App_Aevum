@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Alpha Launch Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5a5cf2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101122",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #ffffff05 1px, transparent 1px), linear-gradient(to bottom, #ffffff05 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .glow-button {
+            box-shadow: 0 0 20px rgba(90, 92, 242, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:active {
+            box-shadow: 0 0 10px rgba(90, 92, 242, 0.2);
+            transform: scale(0.98);
+        }
+
+        .pulse-ring {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 9999px;
+            background-color: rgba(90, 92, 242, 0.2);
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+        }
+
+        .telemetry-line {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: draw 2s linear infinite;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden relative selection:bg-primary selection:text-white">
+<!-- Ambient Background Effects -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+<div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
+<div class="absolute inset-0 bg-grid-pattern bg-[length:40px_40px]"></div>
+</div>
+<!-- Top Bar -->
+<div class="relative z-10 flex items-center justify-between px-6 pt-12 pb-4">
+<div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight uppercase">Aevum Alpha</h2>
+<p class="text-xs text-white/50 tracking-[0.2em] uppercase font-medium mt-1">Launch Control</p>
+</div>
+<div class="glass-panel px-3 py-1.5 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
+<span class="text-xs font-mono text-white/70">v1.0.0-rc1</span>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="relative z-10 flex-1 px-4 pb-8 flex flex-col gap-4 overflow-y-auto">
+<!-- Bento Grid -->
+<div class="grid grid-cols-2 gap-4 h-full">
+<!-- Card 1: Frontend -->
+<div class="col-span-2 glass-panel rounded-xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
+<span class="material-symbols-outlined text-4xl">devices</span>
+</div>
+<div class="flex flex-col h-full justify-between gap-4">
+<div class="space-y-1">
+<p class="text-primary text-xs font-bold tracking-widest uppercase mb-1">Client_Interface</p>
+<h3 class="text-2xl font-bold text-white">Frontend Core</h3>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-[#1C1C26] border border-white/10 flex items-center justify-center" title="iOS">
+<span class="material-symbols-outlined text-[16px] text-white/80">phone_iphone</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-[#1C1C26] border border-white/10 flex items-center justify-center" title="Android">
+<span class="material-symbols-outlined text-[16px] text-white/80">android</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-[#1C1C26] border border-white/10 flex items-center justify-center" title="VisionPro">
+<span class="material-symbols-outlined text-[16px] text-white/80">view_in_ar</span>
+</div>
+</div>
+<div class="h-8 w-[1px] bg-white/10"></div>
+<div>
+<p class="text-[10px] text-white/40 uppercase tracking-wider">Build Status</p>
+<p class="text-sm font-medium text-emerald-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                1.0.0 Ready
+                            </p>
+</div>
+</div>
+</div>
+<!-- Decorative background image -->
+<div class="absolute -bottom-8 -right-8 w-32 h-32 opacity-10 pointer-events-none" data-alt="Abstract digital interface pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuANMbsInvUbJJbOZ_UNEPBQWZPSJYA_NfhpYTXM8az6ijo4-rv76Qf1YKl5c7rRoM3N-NoDlnNqJTWeUMbVMyZQkCtziwV8b8OMZcQAzSEbHRzyZ9FdSrHqyXDyq9RYR4z-mnT89-VhVS6ckCkUBhqCOhT1jnSKBC7nlT1-1_v2u1JIDNO2jpctgTGwZnUMP0GPBoWr4EZD0_pOwbAgWQpsJGq_isYY685MrDwlxsCZ5mk0kqZAGhTDa0Ac9ZMTTUVXHKqnewMuTf4'); background-size: cover;"></div>
+</div>
+<!-- Card 2: Backend -->
+<div class="glass-panel rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
+<div>
+<div class="flex items-center justify-between mb-2">
+<p class="text-primary text-[10px] font-bold tracking-widest uppercase">Cloud_Core</p>
+<span class="material-symbols-outlined text-white/30 text-lg">cloud</span>
+</div>
+<p class="text-sm text-white/90 font-medium">Firebase &amp; Functions</p>
+</div>
+<div class="mt-4">
+<div class="flex items-end gap-1 h-8 w-full justify-between px-1">
+<div class="w-1 bg-primary/40 h-[40%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/60 h-[70%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/30 h-[30%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/80 h-[90%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/50 h-[50%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/40 h-[45%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/70 h-[75%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/90 h-[95%] rounded-t-sm"></div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+<span class="text-[10px] text-white/40 font-mono">UPTIME</span>
+<span class="text-xs text-white font-mono">99.9%</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Intelligence -->
+<div class="glass-panel rounded-xl p-4 flex flex-col justify-between relative overflow-hidden">
+<div>
+<div class="flex items-center justify-between mb-2">
+<p class="text-primary text-[10px] font-bold tracking-widest uppercase">Neural_Net</p>
+<span class="material-symbols-outlined text-white/30 text-lg">psychology</span>
+</div>
+<p class="text-sm text-white/90 font-medium">Qdrant Vectors</p>
+</div>
+<div class="mt-4">
+<div class="relative w-12 h-12 mx-auto my-1">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-white/10" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-dasharray="125" stroke-dashoffset="25" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">bolt</span>
+</div>
+</div>
+<div class="flex items-center justify-center mt-1">
+<span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wide">Warmed Up</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Infrastructure -->
+<div class="col-span-2 glass-panel rounded-xl p-5 flex items-center justify-between relative overflow-hidden">
+<div class="flex flex-col gap-1 z-10">
+<p class="text-primary text-xs font-bold tracking-widest uppercase">Data_Storage</p>
+<h3 class="text-lg font-bold text-white">BYOB Protocol</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<p class="text-xs text-white/60 font-mono">Handshake Verified • <span class="text-white">12ms</span></p>
+</div>
+</div>
+<div class="relative z-10">
+<div class="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl text-white/80">dns</span>
+</div>
+</div>
+<!-- Abstract visualization background -->
+<div class="absolute inset-0 opacity-20 pointer-events-none bg-[url('https://images.unsplash.com/photo-1558494949-efc025793ad0?q=80&amp;w=200&amp;auto=format&amp;fit=crop')] bg-cover bg-center" data-alt="Server rack abstract light pattern"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark via-background-dark/80 to-transparent z-0"></div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="flex-1"></div>
+<!-- Action Button Area -->
+<div class="relative w-full pt-4">
+<button class="relative w-full group overflow-hidden rounded-xl bg-primary h-16 flex items-center justify-center glow-button">
+<!-- Inner glow/pulse effect -->
+<div class="pulse-ring"></div>
+<div class="relative z-10 flex items-center gap-3">
+<span class="material-symbols-outlined text-white text-2xl group-hover:rotate-90 transition-transform duration-500">rocket_launch</span>
+<span class="text-white font-bold text-lg tracking-wide uppercase">Initialize Alpha Env</span>
+</div>
+<!-- Shine effect -->
+<div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine"></div>
+</button>
+<p class="text-center text-[10px] text-white/30 uppercase tracking-[0.2em] mt-4 font-mono">
+                Authorized Personnel Only
+            </p>
+</div>
+</main>
+<script>
+        tailwind.config.theme.extend.keyframes = {
+            ...tailwind.config.theme.extend.keyframes,
+            shine: {
+                "100%": { left: "125%" },
+            },
+        };
+        tailwind.config.theme.extend.animation = {
+            ...tailwind.config.theme.extend.animation,
+            shine: "shine 1s",
+        };
+    </script>
+</body></html>

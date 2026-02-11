@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum: Begin Your Legacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "accent": "#00E0FF",
+                        "success": "#22C55E",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .glass-button-glow {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(17, 115, 212, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        .mesh-gradient {
+            background: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 0% 50%, hsla(339,49%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 50%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 0% 100%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-size: 200% 200%;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        .shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            transform: skewX(-20deg) translateX(-150%);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            100% {
+                transform: skewX(-20deg) translateX(150%);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-white font-display antialiased selection:bg-primary selection:text-white h-full min-h-screen">
+<div class="fixed inset-0 mesh-gradient z-0"></div>
+<div class="fixed top-20 left-10 w-64 h-64 bg-primary/30 rounded-full blur-[100px] opacity-40 mix-blend-screen pointer-events-none"></div>
+<div class="fixed bottom-40 right-10 w-80 h-80 bg-purple-500/20 rounded-full blur-[100px] opacity-40 mix-blend-screen pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full min-h-screen w-full px-6 py-8">
+<header class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-lg">all_inclusive</span>
+</div>
+<span class="text-xl font-bold tracking-tight">Aevum</span>
+</div>
+<button class="text-white/60 hover:text-white text-sm font-medium transition-colors">Skip</button>
+</header>
+<main class="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+<div class="mb-8 text-center">
+<h1 class="text-4xl font-extrabold mb-3 leading-tight text-glow">
+                    Build Your <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-white to-purple-300">Living Legacy</span>
+</h1>
+<p class="text-slate-300 text-lg leading-relaxed">
+                    Uncover your roots with AI and preserve your history for generations to come.
+                </p>
+</div>
+<div class="glass-card rounded-3xl p-1 mb-8 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+<div class="grid grid-cols-2 gap-1 p-1">
+<div class="col-span-2 bg-black/20 rounded-2xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-6xl">account_tree</span>
+</div>
+<div class="relative z-10">
+<div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-3 border border-blue-400/30">
+<span class="material-symbols-outlined text-blue-300">group_add</span>
+</div>
+<h3 class="text-lg font-bold mb-1">Collaborative Branch</h3>
+<p class="text-sm text-slate-400 leading-snug">Invite family to co-edit your tree. Watch your history grow in real-time as memories are shared.</p>
+</div>
+<div class="absolute -bottom-4 -right-4 flex -space-x-3 opacity-50 blur-[1px] scale-90">
+<div class="w-10 h-10 rounded-full bg-slate-600 border-2 border-slate-800"></div>
+<div class="w-10 h-10 rounded-full bg-slate-500 border-2 border-slate-800"></div>
+<div class="w-10 h-10 rounded-full bg-slate-400 border-2 border-slate-800"></div>
+</div>
+</div>
+<div class="col-span-1 bg-black/20 rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -top-10 -left-10 w-24 h-24 bg-accent/20 rounded-full blur-xl"></div>
+<div class="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mb-2 border border-accent/30">
+<span class="material-symbols-outlined text-accent text-sm">smart_toy</span>
+</div>
+<div>
+<h3 class="text-sm font-bold mb-1">AI Architect</h3>
+<p class="text-[11px] text-slate-400 leading-tight">Smart hints from billions of records.</p>
+</div>
+</div>
+<div class="col-span-1 bg-black/20 rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -bottom-10 -right-10 w-24 h-24 bg-purple-500/20 rounded-full blur-xl"></div>
+<div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center mb-2 border border-purple-400/30">
+<span class="material-symbols-outlined text-purple-300 text-sm">lock</span>
+</div>
+<div>
+<h3 class="text-sm font-bold mb-1">Time Vault</h3>
+<p class="text-[11px] text-slate-400 leading-tight">Preserve photos &amp; audio forever.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-center gap-8 mb-8 opacity-80">
+<div class="text-center">
+<p class="text-xl font-bold text-white">10M+</p>
+<p class="text-[10px] uppercase tracking-wider text-slate-400">Records</p>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="text-center">
+<p class="text-xl font-bold text-white">99%</p>
+<p class="text-[10px] uppercase tracking-wider text-slate-400">Accuracy</p>
+</div>
+</div>
+</main>
+<footer class="mt-auto pt-4 pb-8">
+<button class="glass-button-glow relative w-full h-16 rounded-2xl flex items-center justify-center group overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]">
+<div class="shimmer"></div>
+<span class="absolute inset-0 bg-primary/20 blur-xl group-hover:bg-primary/30 transition-colors"></span>
+<span class="relative z-10 text-lg font-bold tracking-wide flex items-center gap-2">
+                    Start My Tree
+                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+</button>
+<p class="text-center text-[11px] text-slate-500 mt-4">
+                By continuing, you agree to our Terms of Service &amp; Privacy Policy.
+            </p>
+</footer>
+</div>
+
+</body></html>

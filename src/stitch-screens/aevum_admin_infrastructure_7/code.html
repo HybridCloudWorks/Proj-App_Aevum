@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Resource Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#a855f7",
+                        "glass-border": "rgba(255, 255, 255, 0.2)",
+                        "glass-bg": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                        lg: '16px',
+                        xl: '24px',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAMAQhqMdKqwr9BF9W6q0-sjbW_8a4XY5le4vFKx9ZMeQAC9dONiMya5kEBT5KX1JwO4kq4EFqvFIWDOHBNP6pAEmKBPEIoEnIG0jRr_DQNDJ_dovshvrMAx4UGyVrHGSWBw-nYEBY95u16jHe2M6dMkzLTFC-y2S8WnF_dotVL9X2pwT3xwylTVOhKJy2HQhybn8_PdqOdxAP4I-in0Q_SSC6GtLcSYetRUi7LCMPS4T8av1QzhqW_5U9GJhblLrOhnklaIMbPCnQ);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100dvh;
+            overflow-y: auto;
+        }
+        .spatial-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .card-glass {
+            background: rgba(20, 20, 30, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar-glow {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display text-white antialiased flex flex-col items-center relative p-6 pt-24 pb-12">
+<div class="vignette"></div>
+<div class="fixed inset-0 backdrop-blur-[12px] z-0 pointer-events-none"></div>
+<header class="fixed top-0 left-0 w-full px-6 py-6 z-50 flex justify-between items-center bg-gradient-to-b from-black/50 to-transparent">
+<button class="flex items-center justify-center size-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 transition backdrop-blur-md">
+<span class="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
+</button>
+<span class="font-bold tracking-wide text-sm opacity-80 uppercase">Aevum AI Engine</span>
+<button class="flex items-center justify-center size-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 transition backdrop-blur-md">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</header>
+<main class="relative w-full max-w-md flex flex-col gap-6 z-10">
+<section class="spatial-glass rounded-[2rem] p-8 text-center relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl animate-pulse"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-accent/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-white/20 flex items-center justify-center mb-4 shadow-glow">
+<span class="material-symbols-outlined text-3xl text-primary animate-pulse">auto_awesome</span>
+</div>
+<h1 class="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">Enhancement in Progress</h1>
+<p class="text-gray-300 text-sm leading-relaxed mb-6">
+                    Our AI is currently restoring high-fidelity details from your archive. To ensure quality, we're processing your queue in batches.
+                </p>
+<div class="w-full bg-white/10 rounded-full h-2 mb-2 overflow-hidden border border-white/5">
+<div class="bg-gradient-to-r from-primary via-blue-400 to-accent h-full rounded-full w-[65%] progress-bar-glow relative">
+<div class="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+<div class="flex justify-between w-full text-xs text-gray-400 font-medium px-1">
+<span>Processing Batch 3/5</span>
+<span>~12 mins remaining</span>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between px-2">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Currently Enhancing</h3>
+<span class="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">Active</span>
+</div>
+<div class="spatial-glass rounded-2xl p-4 flex gap-4 items-center">
+<div class="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-white/20">
+<img alt="Enhancing" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0--YOXNDbLbWIddsCjq5vq9U1l6kLpHgVYUGdgffUsPBKcPc_aCMhSeNfy8Txgrb46V-GH-I_uihEXadY6fCjnjj4hoYwYkehbILFq-fHqO0yb9l-7m4tYTP9zUF0ISUJW8a-uwSTZDGQXib33FVotcpxhlWGwkY6JnbeRnjdI31P7sdF_kCguTYg7khsciRRZ0XLEmMAfr9tWmz54_yirPAAz5to9Z74r_RBmpIqKfRjSn8a5J-vgGGDcqqc0RrmahhLm8U7YR8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full h-0.5 bg-primary animate-pulse"></div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-bold text-base truncate">Wedding of Eleanor &amp; Arthur</h4>
+<p class="text-xs text-gray-400 mb-2">1942 • Colorization &amp; Upscaling</p>
+<div class="flex items-center gap-2 text-[10px] text-gray-300">
+<span class="material-symbols-outlined text-[12px] animate-spin">sync</span>
+                        Processing texture details...
+                    </div>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between px-2">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Next in Queue</h3>
+<button class="text-xs text-blue-300 hover:text-white transition">View All</button>
+</div>
+<div class="space-y-3">
+<div class="card-glass rounded-xl p-3 flex items-center justify-between group hover:bg-white/5 transition border-l-2 border-transparent hover:border-accent">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gray-700 overflow-hidden relative">
+<img alt="Queue Item" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDhLUFv5szvoRAVSbahWGywuRzLAKS4-XIM6otu1mt-r5W18nVWh3on-JbibTabUFGEIazSECismV9zfEyOmhl0n24Q5O7mKRpiqDqlGm6Ra5uo5jaGZjHAPSSuEuAIb8xgsQGpZIMMLRUC4KG7qDawkAs5h1aoi_NreIXlez8ZzJNQp1VMdgqDiRmbR6nVtcd5G9Q6n4WqK6g2ysTdSmIeCPEYqjBMMIByIk6I-igkeg-Ldkn-INnX79EPFGupTI4zCjqsE5yYIA"/>
+</div>
+<div>
+<div class="text-sm font-medium">Arthur's Portrait</div>
+<div class="text-[10px] text-gray-400">Waiting for available slot</div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-accent hover:text-white border border-white/10 text-xs font-medium transition flex items-center gap-1 group/btn">
+<span>Prioritize</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:rotate-45 transition-transform">arrow_upward</span>
+</button>
+</div>
+<div class="card-glass rounded-xl p-3 flex items-center justify-between group hover:bg-white/5 transition border-l-2 border-transparent hover:border-accent">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gray-700 overflow-hidden relative">
+<img alt="Queue Item" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE_HpWIEztdgAPmQ24PPpDGgInaG2eGfLCYR0uzMZQHZp7cTtIfM-aTBo6lgG_-cqqedozeRBy7xOkVTdPA0hjGxmb4SQjT8f3QpW1s19VQegUqUG4Jya1EQELZ73cdZkDOzTFcWSWkPpB7nkjFcDHziIpEaWrCpsSUKug2uJPb9IIL14s2UdIDaWVah4FJJqUAVq5ZG3XKJHUXDcxYuGxF0qKZP6HgmrGbyJ0vBl0xJTMaq2ErB34vyWeYrvymT9Xg1EdaYPLJAM"/>
+</div>
+<div>
+<div class="text-sm font-medium">Summer of '69</div>
+<div class="text-[10px] text-gray-400">Waiting for available slot</div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-accent hover:text-white border border-white/10 text-xs font-medium transition flex items-center gap-1 group/btn">
+<span>Prioritize</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:rotate-45 transition-transform">arrow_upward</span>
+</button>
+</div>
+<div class="card-glass rounded-xl p-3 flex items-center justify-between group hover:bg-white/5 transition border-l-2 border-transparent hover:border-accent">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gray-700 overflow-hidden relative">
+<img alt="Queue Item" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKCc9h28kroPDbi3yood8DU_rRb3ppXuSOqZrG8teW6ch6R_8vfapd7N4QfLJHofpxTdRMHy5tKVxPnOvBKTJD9wb9Ck3TYscqNAGqTQh97zS8OCN56oVTx9HHSNs5eB4_Raud0eo912AHG48lT2xqpe9UkgqZL3rN6EdjfcyUJZQo4zI59IWMDGpaccvlMcPx9V3YD-nr2YKbqln8AAnukHWMmw0FJehG8ytrhsqdtDxsy2gFG3STyjTYUnTTGrXKVVTaGkAnO38"/>
+</div>
+<div>
+<div class="text-sm font-medium">Graduation Day</div>
+<div class="text-[10px] text-gray-400">Waiting for available slot</div>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-accent hover:text-white border border-white/10 text-xs font-medium transition flex items-center gap-1 group/btn">
+<span>Prioritize</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:rotate-45 transition-transform">arrow_upward</span>
+</button>
+</div>
+</div>
+</section>
+<section class="spatial-glass rounded-2xl p-4 mt-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-blue-300 mt-0.5">info</span>
+<div class="text-xs text-gray-300 leading-relaxed">
+<span class="text-white font-bold block mb-1">Why is there a wait?</span>
+                    High-fidelity restoration requires significant processing power. We limit concurrent tasks to ensure the highest quality output for every memory.
+                </div>
+</div>
+</section>
+<button class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-blue-600 hover:from-blue-400 hover:to-primary border border-white/20 font-bold text-sm shadow-glow transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:animate-pulse">bolt</span>
+            Boost Processing Speed
+        </button>
+</main>
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+<div class="spatial-glass px-2 py-2 rounded-full flex items-center gap-1">
+<button class="p-3 hover:bg-white/10 rounded-full transition text-gray-400 hover:text-white">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</button>
+<button class="p-3 bg-white/10 rounded-full transition text-white shadow-glow border border-white/10">
+<span class="material-symbols-outlined text-[24px]">memory</span>
+</button>
+<button class="p-3 hover:bg-white/10 rounded-full transition text-gray-400 hover:text-white">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+</div>
+</div>
+
+</body></html>

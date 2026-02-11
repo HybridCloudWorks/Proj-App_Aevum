@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Legacy Recovery Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#a855f7",
+                        "security": "#10b981",
+                        "danger": "#ef4444",
+                        "glass-border": "rgba(255, 255, 255, 0.2)",
+                        "glass-bg": "rgba(255, 255, 255, 0.08)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                        lg: '16px',
+                        xl: '24px',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAMAQhqMdKqwr9BF9W6q0-sjbW_8a4XY5le4vFKx9ZMeQAC9dONiMya5kEBT5KX1JwO4kq4EFqvFIWDOHBNP6pAEmKBPEIoEnIG0jRr_DQNDJ_dovshvrMAx4UGyVrHGSWBw-nYEBY95u16jHe2M6dMkzLTFC-y2S8WnF_dotVL9X2pwT3xwylTVOhKJy2HQhybn8_PdqOdxAP4I-in0Q_SSC6GtLcSYetRUi7LCMPS4T8av1QzhqW_5U9GJhblLrOhnklaIMbPCnQ);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100dvh;
+            color: white;
+        }
+        .spatial-glass {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .bento-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .bento-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .ios-toggle {
+            appearance: none;
+            width: 3.25rem;
+            height: 2rem;
+            border-radius: 9999px;
+            background-color: rgba(255,255,255,0.2);
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .ios-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(2rem - 4px);
+            height: calc(2rem - 4px);
+            border-radius: 50%;
+            background-color: white;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .ios-toggle:checked {
+            background-color: #3b82f6;
+        }
+        .ios-toggle:checked::after {
+            transform: translateX(1.25rem);
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display antialiased flex flex-col items-center justify-start overflow-y-auto overflow-x-hidden pb-10">
+<div class="fixed inset-0 bg-black/40 z-0"></div>
+<header class="sticky top-0 z-50 w-full px-5 pt-12 pb-4 bg-gradient-to-b from-black/60 to-transparent backdrop-blur-sm">
+<div class="flex items-center justify-between">
+<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10">
+<span class="material-symbols-outlined text-white">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-wide">Legacy Handover</h1>
+<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 text-primary">
+<span class="material-symbols-outlined">save</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 w-full max-w-md px-5 flex flex-col gap-6 mt-2">
+<div class="spatial-glass rounded-3xl p-6 relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/20 blur-3xl rounded-full pointer-events-none"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-green-500/20 border border-green-500/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-green-400">shield_lock</span>
+</div>
+<div>
+<h2 class="font-bold text-lg">Protocol Active</h2>
+<p class="text-xs text-green-300">Vault Encrypted</p>
+</div>
+</div>
+<input checked="" class="ios-toggle" type="checkbox"/>
+</div>
+<p class="text-sm text-gray-300 leading-relaxed">
+                The Legacy Handover protocol monitors your activity. If triggered, your designated trustees will receive access to the vault.
+            </p>
+</div>
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Inactivity Trigger</h3>
+<span class="text-xs text-primary font-medium">Auto-detect</span>
+</div>
+<div class="spatial-glass rounded-3xl p-6">
+<div class="flex justify-between items-center mb-6">
+<span class="text-gray-400 text-sm">Wait period</span>
+<span class="text-2xl font-bold">6 Months</span>
+</div>
+<input class="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer slider-thumb accent-primary mb-6" max="12" min="1" type="range" value="6"/>
+<div class="flex justify-between text-xs text-gray-500 font-medium px-1">
+<span>1 Month</span>
+<span>1 Year</span>
+</div>
+<div class="mt-6 pt-6 border-t border-white/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-gray-400 text-lg mt-0.5">info</span>
+<p class="text-xs text-gray-400 leading-relaxed">
+                        We will attempt to contact you via email, SMS, and push notification 3 times before initiating the handover sequence.
+                    </p>
+</div>
+</div>
+</section>
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Designated Trustees</h3>
+<button class="text-xs text-primary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> Add New
+                </button>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<div class="bento-card rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10">
+<img alt="Trustee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMDbX7JieH4uSusSVXrUvvvaCAAPI4aD_oC_4HH3TYYaaG-MWB-lkJC0i5fqeWETP4Fpla1f0aiWNz0Qnnpheta8n14tyv8LTu_zGgEUtSplutOcD--os7vc6G8QwVoCNuCagef6G18FisqHgJhoiPOtcinMJvc9vmGZqdyPJiGMJ7LJMMqzfRpWsDer5q7bNtrqJ4zO_D0ikEjEncu0Cl4u0LdUdL4L7GVthH5d2s2rxrFgNIplVxTR-nKiZhkmaIl9sa1qYHCLE"/>
+</div>
+<div>
+<h4 class="font-bold text-sm">Sarah Sterling</h4>
+<div class="flex items-center gap-1 text-xs text-green-400 mt-0.5">
+<span class="material-symbols-outlined text-[10px] fill-1">verified_user</span>
+<span>Verified Trustee</span>
+</div>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-sm">more_horiz</span>
+</button>
+</div>
+<div class="bento-card rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10 relative">
+<img alt="Trustee" class="w-full h-full object-cover opacity-60 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE_HpWIEztdgAPmQ24PPpDGgInaG2eGfLCYR0uzMZQHZp7cTtIfM-aTBo6lgG_-cqqedozeRBy7xOkVTdPA0hjGxmb4SQjT8f3QpW1s19VQegUqUG4Jya1EQELZ73cdZkDOzTFcWSWkPpB7nkjFcDHziIpEaWrCpsSUKug2uJPb9IIL14s2UdIDaWVah4FJJqUAVq5ZG3XKJHUXDcxYuGxF0qKZP6HgmrGbyJ0vBl0xJTMaq2ErB34vyWeYrvymT9Xg1EdaYPLJAM"/>
+<div class="absolute inset-0 flex items-center justify-center bg-black/30">
+<span class="material-symbols-outlined text-white text-sm">hourglass_empty</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-sm text-gray-300">James Sterling</h4>
+<div class="flex items-center gap-1 text-xs text-yellow-500 mt-0.5">
+<span>Pending Acceptance</span>
+</div>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-sm">refresh</span>
+</button>
+</div>
+</div>
+</section>
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Final Instructions</h3>
+<span class="text-xs text-gray-400">Last edited: 2 days ago</span>
+</div>
+<div class="spatial-glass rounded-3xl p-1 relative group cursor-pointer hover:bg-white/5 transition-colors">
+<div class="absolute top-4 right-4 z-10">
+<span class="material-symbols-outlined text-gray-400 text-lg">edit_note</span>
+</div>
+<div class="bg-black/20 rounded-[20px] p-5 backdrop-blur-sm">
+<div class="flex items-center gap-3 mb-3 border-b border-white/5 pb-3">
+<span class="material-symbols-outlined text-accent">mail</span>
+<span class="font-display font-medium text-sm text-accent">My Digital Letter</span>
+</div>
+<p class="text-gray-400 text-sm italic font-serif leading-relaxed line-clamp-3 opacity-80">
+                        "To my dearest family, if you are reading this, it means the time has come for you to take stewardship of our history. The vault key contained within represents generations of..."
+                    </p>
+<div class="mt-3 flex items-center gap-2">
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full w-3/4 bg-accent/50 rounded-full"></div>
+</div>
+<span class="text-[10px] text-gray-500 whitespace-nowrap">Voice Note Attached</span>
+</div>
+</div>
+</div>
+</section>
+<div class="mt-4 pt-4 border-t border-white/10 flex flex-col gap-4 items-center text-center">
+<p class="text-xs text-gray-500">Changes to the Legacy Handover protocol require biometric confirmation.</p>
+<button class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-blue-600 font-bold text-white shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined">fingerprint</span>
+<span>Confirm &amp; Save Settings</span>
+</button>
+</div>
+</main>
+
+</body></html>

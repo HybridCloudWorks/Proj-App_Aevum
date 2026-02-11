@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum - Global Heritage Search</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922", // A deep blue-charcoal base
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-bg": "rgba(30, 41, 59, 0.4)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for horizontal scrolling areas */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Glassmorphism Utility */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:active {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(0.98);
+        }
+
+        /* Subtle glowing background orb */
+        .bg-glow {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(17, 115, 212, 0.15) 0%, rgba(17, 115, 212, 0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased min-h-screen selection:bg-primary selection:text-white">
+<!-- Background Ambient Glow -->
+<div class="bg-glow"></div>
+<div class="relative flex flex-col min-h-screen w-full max-w-md mx-auto overflow-hidden pb-24">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 pt-6 pb-2 sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center p-2 -ml-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[28px]">menu</span>
+</button>
+</div>
+<h1 class="text-xl font-bold tracking-tight uppercase">Aevum</h1>
+<button class="relative flex items-center justify-center size-10 overflow-hidden rounded-full border border-slate-200 dark:border-slate-700">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Smiling man portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmmoe1TEBEd6C8-6c9Wm3GvWnHn5QsrQDFFbiPZ5_v0FFA0E3Yuh9tCZZfrW89Yzx-ARjsOMkT_jRhlEmQsN6P4MnK_Oz62hl3nhOJ-9eTJKrP5HrkvTH3OW-PQgrkM1ElKRpMpDHEblHn3UUqlmMTBXTgcCSbk9M_Peg-17XxZ2xEny6_9MfMj4QsCiFfUsh9KAD0sqJu_iD640nLkRGNaRdS9Hb93W7CIuNFdMiiqg7jLJ-ih-X3VDUkpMCaOzNrMpxEf0bti8E"/>
+</button>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 px-4 pt-4 flex flex-col gap-6">
+<!-- Search Bar -->
+<div class="relative z-10">
+<div class="glass-panel h-14 rounded-2xl flex items-center px-4 shadow-lg shadow-black/5">
+<span class="material-symbols-outlined text-slate-400 text-[24px]">search</span>
+<input class="flex-1 bg-transparent border-none text-base font-medium placeholder-slate-400 focus:ring-0 text-slate-900 dark:text-white h-full px-3" placeholder="Search ancestors, locations..." type="text" value=""/>
+<button class="p-2 rounded-full hover:bg-white/10 text-primary">
+<span class="material-symbols-outlined text-[24px]">mic</span>
+</button>
+</div>
+</div>
+<!-- Bento Filter Grid -->
+<section class="grid grid-cols-2 gap-3">
+<!-- Era Module (Spans full width) -->
+<div class="col-span-2 glass-panel p-4 rounded-2xl flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Era</h3>
+<button class="text-primary text-xs font-semibold">RESET</button>
+</div>
+<div class="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
+<button class="flex-shrink-0 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm font-medium hover:bg-primary hover:text-white transition-colors">1700s</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium shadow-md shadow-primary/20">1800s</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm font-medium hover:bg-primary hover:text-white transition-colors">1900s</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-sm font-medium hover:bg-primary hover:text-white transition-colors">2000s</button>
+</div>
+</div>
+<!-- Family Branch Module -->
+<div class="col-span-1 glass-panel p-4 rounded-2xl flex flex-col justify-between h-32 relative group cursor-pointer hover:border-primary/50 transition-colors">
+<div class="absolute top-4 right-4 text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">arrow_drop_down_circle</span>
+</div>
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Branch</h3>
+<div>
+<p class="text-lg font-bold leading-tight line-clamp-2">Rutherford Line</p>
+<p class="text-xs text-slate-400 mt-1">Paternal Side</p>
+</div>
+</div>
+<!-- Media Type Module -->
+<div class="col-span-1 glass-panel p-4 rounded-2xl flex flex-col justify-between h-32">
+<h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Media Type</h3>
+<div class="flex justify-between items-end">
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">image</span>
+</div>
+<span class="text-[10px] font-medium opacity-60">Photos</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-[16px]">description</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Docs</span>
+</button>
+<button class="flex flex-col items-center gap-1 group">
+<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+</div>
+<span class="text-[10px] font-medium opacity-60">AI</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Results Section Header -->
+<div class="flex items-center justify-between mt-2">
+<h2 class="text-lg font-bold">Results <span class="text-slate-400 text-sm font-normal ml-1">(24 found)</span></h2>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+<button class="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-[18px]">list</span>
+</button>
+</div>
+</div>
+<!-- Dynamic Results Grid (Masonry-ish) -->
+<section class="grid grid-cols-2 gap-4 auto-rows-min">
+<!-- Result Card 1: Photo -->
+<div class="glass-card rounded-xl overflow-hidden relative aspect-[3/4] group cursor-pointer">
+<img alt="Old vintage family portrait" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Sepia toned vintage portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWE_IqL41lrLpnj8LNuCfPOh51R3MmX4w-DRGkaiap0qzBhYlyKYmYAcYAPcz05S0HG24B0-H0FaFYzZJvocIY0uJGVlPkiQ29uz9Hxcjyod93h_kAAOw_83qOyoUYTPSlJhxvFxmaEmhmGzdPSniL18MUX66RsVqW9urCKgk0OnZUJqShabZAxwmL47DUuOUwfqeTQr2b-OD70rgQKcW4uIYwLqaAUfF_7M6bwt3a66b5ul5hFegapH8vdn6siIWxhfNRGDvv_Js"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end">
+<div class="mb-1 inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full w-fit">
+<span class="material-symbols-outlined text-[10px] text-white">calendar_today</span>
+<span class="text-[10px] font-bold text-white">1892</span>
+</div>
+<h4 class="text-white font-bold text-sm leading-tight">Arthur J. Rutherford</h4>
+<p class="text-slate-300 text-xs mt-0.5">Portrait • London</p>
+</div>
+</div>
+<!-- Result Card 2: Document -->
+<div class="glass-card rounded-xl overflow-hidden relative aspect-square group cursor-pointer">
+<div class="absolute inset-0 bg-slate-800 flex items-center justify-center">
+<img alt="Old handwritten document" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" data-alt="Yellowed paper with handwriting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA80M32QfNAG2r0yeDhlL_o_TmHFahTen2pKpaPVUdPmppf7-F0hiOndSx9Pf1qWEsO4vEUzbth3rxbzlAZrNEcg4ieuXxZLJmrIFSbjHb5Op-jRfVCO0h_vDlnv0bc62_Bx-YmT0RvEvahxbBRQJqUn4OMavmEvty4vOqW-WRpyp3a9oxZxphjdnP8bW41NuizEjIjpDixLeYCgG6hgeQ0vShJANSacKe-3fc4hNUzmT_Itp6uqlWa-Ecx6Y23xLH5TGO7fiDnMCs"/>
+</div>
+<div class="absolute top-2 right-2 bg-primary/90 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-sm">
+                        RECORD
+                    </div>
+<div class="absolute inset-0 flex flex-col justify-end p-3 bg-gradient-to-t from-black/90 to-transparent">
+<h4 class="text-white font-bold text-sm">Census Record</h4>
+<p class="text-slate-300 text-xs mt-0.5">1880 • New York</p>
+</div>
+</div>
+<!-- Result Card 3: AI Story -->
+<div class="glass-card rounded-xl overflow-hidden relative aspect-square p-4 bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border-purple-500/20 group cursor-pointer col-span-1">
+<div class="absolute top-2 left-2 w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/40">
+<span class="material-symbols-outlined text-[14px] text-purple-300">auto_awesome</span>
+</div>
+<div class="h-full flex flex-col justify-end">
+<h4 class="text-white font-bold text-sm leading-tight mb-1">The Journey West</h4>
+<p class="text-purple-200 text-xs line-clamp-2">AI reconstruction of the 1845 migration path based on diary entries.</p>
+</div>
+</div>
+<!-- Result Card 4: Photo -->
+<div class="glass-card rounded-xl overflow-hidden relative aspect-[3/4] group cursor-pointer">
+<img alt="Vintage woman portrait" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 filter sepia-[.3] contrast-125" data-alt="Woman in 1920s attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjd2FPPHYYjMcY2PShy7_Fg6lrwXNXHWRdZFyhO2HN0p8JphCf6R-iursB9egVm0L6v0lvGhlVHy9eXdoBGIXlYJVBcME3tQZst9q9A6aUZdq75hSa8_0anG6fIwG-PUZoJwcTsk0gn8RyPy-fkAGwpM3DdGXYCLW_PBYGfmbLUqkorNEFWSoAjUJHukmFiccPgijs3tKHLLqh8e0VslnBpWiP5fYoIpzfaZdeQjFVsHeLR08AinPqw4K-edOCaCJUd6yOqPlImWA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-3 flex flex-col justify-end">
+<h4 class="text-white font-bold text-sm leading-tight">Sarah E. Miller</h4>
+<p class="text-slate-300 text-xs mt-0.5">1921 • Chicago</p>
+</div>
+</div>
+<!-- Result Card 5: Map Location -->
+<div class="glass-card rounded-xl overflow-hidden relative aspect-square group cursor-pointer col-span-2">
+<img alt="Map" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" data-alt="Top down view of historic map" data-location="Edinburgh, Scotland" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhFNHDbom14qDQ3NxKqdCrFI0YGs9iJvbLImrJySDZOjZykmvvt7x1UK7U7zrl291plaqLA0mSPiTvbnf6Pu3K61IRspubxt0pmNnS-XjriYBDi66knyQERYA5-2rQ30zY5LxElpb32KTBR7_9pTPkk6USHHkXmsW1p7Y98Yk7XUz58OMXjo2lggV0wONLmlMDyQiaa3GhFjRrGiOnloHBeuEvIGkNZzeiG5i7ZKy21ctJCIb0JjhLGCW08YXTN2QHsaM5v0Mskt0"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+<div class="absolute bottom-3 left-3 right-3">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-white text-[16px]">location_on</span>
+<span class="text-white text-xs font-bold uppercase tracking-wider">Heritage Site</span>
+</div>
+<h4 class="text-white font-bold text-lg">Edinburgh Homestead</h4>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Tab Bar -->
+<nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm glass-panel rounded-full h-16 flex items-center justify-between px-6 shadow-2xl z-50">
+<button class="flex flex-col items-center justify-center gap-1 w-10 text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 text-primary relative">
+<span class="material-symbols-outlined text-[28px] drop-shadow-[0_0_8px_rgba(17,115,212,0.6)]">search</span>
+<div class="absolute -bottom-2 w-1 h-1 rounded-full bg-primary"></div>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[24px]">family_history</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-1 w-10 text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</button>
+</nav>
+</div>
+</body></html>

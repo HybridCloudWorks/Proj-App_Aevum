@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memory Upload Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "accent": "#0ea5e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "glass-surface": "rgba(23, 29, 37, 0.7)",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "success": "#22c55e",
+                        "danger": "#ef4444",
+                        "gold": "#d4af37",
+                        "tier-full": "#10b981",
+                        "tier-limited": "#f59e0b",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.glass-panel {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.4)
+    }
+.glass-panel-active {
+    background: linear-gradient(145deg, rgba(17, 115, 212, 0.25) 0%, rgba(14, 165, 233, 0.15) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(17, 115, 212, 0.4);
+    box-shadow: 0 0 15px rgba(17, 115, 212, 0.2)
+    }
+.glass-panel-light {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08)
+    }
+.mesh-gradient {
+    background-color: #0f172a;
+    background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%)
+    }
+.scrollbar-hide::-webkit-scrollbar {
+    display: none
+    }
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none
+    }
+.upload-area {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDefNGMx_L3_FnLpCbvzPX5nNPOjBgiuGAm5za8a161AfwUxWVtGTzDIKPVV6qDMZ3RHRkFeOTfpeEEou7F2obAeB7DrKxELhL4bvzzTjs71TsLM3j6U-uMRgVZLJEdkR7yjLdOeftsDBZekO_RwFODQ85H3AKLqgmsEg-Ag6PEah6HoM1hIahMoVw_dod0xxhZhtl24jmk-n1ArfyLvI-LPedTctTlx6tUQi8D1-ot28UiRGICH0PluJTWuC1c6U3gXDSaewtAB5g);
+    transition: all 0.3s ease
+    }
+.upload-area:active {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuD-nKQbiFsnM91oCP-REC1jlVD8Vn5aEW6X_cxkm_Cd7eL5qb-npLJ5617eXXHSQJFy9Oj9NZj1BFilr2Ep8qlqtl0lWDP8F9-ONGrbJU0HIMEVQmnjpksG59WGzl9fC4kJCHFexd0wuj24i8DVhhTfkmLBUu0w5YK2rZvQJLhUwpquEa_JkviFbJnH6j8VRBUec5SoXr6Q-h0A6B-JPNupsiIIKFHe5uC2xHOYlN-hGygP3Z0f_KbxUK_jxhPA1Z97lLdhL-HB6Vo);
+    background-color: rgba(14, 165, 233, 0.05)
+    }
+.scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #0ea5e9;
+    box-shadow: 0 0 10px #0ea5e9;
+    animation: scan 2s linear infinite;
+    z-index: 10
+    }
+@keyframes scan {
+    0% {
+        top: 0%;
+        opacity: 0;
+        } 10% {
+        opacity: 1;
+        } 90% {
+        opacity: 1;
+        } 100% {
+        top: 100%;
+        opacity: 0;
+        }
+    }
+.scanning-image-container {
+    position: relative;
+    overflow: hidden
+    }
+.scanning-image-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, transparent 100%);
+    z-index: 5
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative mesh-gradient">
+<header class="pt-12 px-6 pb-4 flex justify-between items-center z-20 relative">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-white">Upload Center</h1>
+<p class="text-sm text-gray-300 font-medium">Digitize your legacy</p>
+</div>
+<div class="glass-panel p-2 rounded-full relative cursor-pointer hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-200">history</span>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-6 pb-24 scrollbar-hide z-10 relative h-[calc(100vh-160px)]">
+<section class="mb-8">
+<div class="upload-area h-48 rounded-2xl flex flex-col items-center justify-center cursor-pointer group hover:bg-white/5">
+<div class="w-14 h-14 rounded-full bg-glass-panel flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 border border-white/10 shadow-lg">
+<span class="material-symbols-outlined text-accent text-3xl">cloud_upload</span>
+</div>
+<h3 class="text-base font-bold text-white mb-1">Upload Photos</h3>
+<p class="text-xs text-gray-400 text-center max-w-[200px]">Drag &amp; drop or tap to select from your gallery</p>
+</div>
+</section>
+<section class="mb-8">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    AI Processing
+                </h3>
+<span class="text-xs text-accent font-semibold">2 items remaining</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="col-span-2 glass-panel-active rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden">
+<div class="w-16 h-16 rounded-xl scanning-image-container shrink-0 border border-accent/30">
+<div class="scanner-line"></div>
+<img alt="Scanning" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvrfWGXR_NSzBzI-JasKOidA7kNnec1xEo-F4tEKONh3BnnTTr9SujMk86VlGSW4a0huOIl6C2-R1sS-MsjiTawJGTP61ugi0m18NTYSVhw1RJ9WNIJ5KkZ9reDqFDL3lPIx5tKg3TLO33-8ZkodDYfpah3gEaa5hVhIdnFEgox0Tsbk7Ueci3-w1ulBfXeGCvrzfXdA3U2ehwlnXybAw7RQA8mrOAQPZeMGma_1gywJx1ghseyqQpyiletZuSh3Q4hQ5LA5j3Gjk"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<h4 class="font-bold text-white text-sm">Scanning in Progress</h4>
+<span class="text-xs text-accent font-mono">67%</span>
+</div>
+<div class="w-full bg-gray-700/50 rounded-full h-1.5 mb-2 overflow-hidden">
+<div class="bg-accent h-1.5 rounded-full w-2/3 shadow-[0_0_10px_rgba(14,165,233,0.5)]"></div>
+</div>
+<p class="text-[10px] text-gray-300">Analyzing pixel density &amp; color grading...</p>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 flex flex-col justify-between h-32 relative group hover:bg-white/5 transition-colors">
+<div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30">
+<span class="material-symbols-outlined text-lg">data_object</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-success text-sm">check_circle</span>
+<h4 class="font-bold text-gray-200 text-xs">Metadata</h4>
+</div>
+<p class="text-[10px] text-gray-400 leading-tight">Date: 1984-05-12<br/>Loc: Tuscany, IT</p>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 flex flex-col justify-between h-32 relative group hover:bg-white/5 transition-colors">
+<div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-400 border border-pink-500/30">
+<span class="material-symbols-outlined text-lg">face_retouching_natural</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<div class="w-3 h-3 border-2 border-t-pink-500 border-r-pink-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+<h4 class="font-bold text-gray-200 text-xs">Face ID</h4>
+</div>
+<div class="flex -space-x-2 mt-1">
+<img alt="Face 1" class="w-5 h-5 rounded-full border border-gray-800" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcPMHZe7pihuDC5a1Ab23u52UektHv1tziZdoknIH6xx0WN3z71zNmLVdb1d_tRYkuxnnGDZpOwQp2juuCCakBuRSWjSGuLqPoF7Prb-Hm3AbibIn1J39HzeYV9NOJ8bMG4oShj8sgbjU3m5xCUe_RURkKEkxgqLG7NSqmtBEql701G8VrT9PjHRA8cTOxE4mqWflN0bOs3SsQwt0-hc6AyYTnFsHdUGEjO1HDl6fK613ZVMwJCUAb8sF6jzfwHqFp_cTPg_zr90w"/>
+<div class="w-5 h-5 rounded-full bg-gray-700 border border-gray-800 flex items-center justify-center text-[8px] text-gray-300">+2</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-24">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider mb-3">Target Branch</h3>
+<div class="glass-panel rounded-2xl p-1 flex items-center relative">
+<div class="w-full grid grid-cols-1 gap-1">
+<div class="flex items-center justify-between p-3 rounded-xl bg-white/10 border border-white/5 cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-primary flex items-center justify-center text-white font-bold shadow-lg">
+                                R
+                            </div>
+<div>
+<h4 class="font-bold text-white text-sm">Ricci Branch</h4>
+<p class="text-[10px] text-gray-400">Primary Lineage</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary">radio_button_checked</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold shadow-lg opacity-70">
+                                S
+                            </div>
+<div>
+<h4 class="font-bold text-gray-300 text-sm">Smith Branch</h4>
+<p class="text-[10px] text-gray-500">Maternal Side</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-600">radio_button_unchecked</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed bottom-24 right-6 z-30">
+<button class="bg-gradient-to-r from-primary to-accent hover:from-blue-600 hover:to-blue-500 text-white rounded-full p-4 floating-button flex items-center gap-2 transition-all hover:scale-105 active:scale-95 border border-white/20 shadow-[0_0_20px_rgba(14,165,233,0.3)]">
+<span class="material-symbols-outlined">auto_fix_high</span>
+<span class="text-sm font-bold pr-1">Start Processing</span>
+</button>
+</div>
+<nav class="fixed bottom-0 w-full border-t border-white/10 px-6 py-4 flex justify-between items-center bg-[#101922]/90 backdrop-blur-xl z-50">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">chat_bubble</span>
+<span class="text-[10px] font-medium">Messages</span>
+</button>
+<button class="relative flex flex-col items-center gap-1 text-white transition-colors">
+<div class="absolute -top-3 w-8 h-1 bg-primary rounded-full shadow-[0_0_10px_rgba(17,115,212,0.8)]"></div>
+<span class="material-symbols-outlined text-2xl fill-current text-primary">add_circle</span>
+<span class="text-[10px] font-medium text-primary">Upload</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">folder_open</span>
+<span class="text-[10px] font-medium">Vault</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">settings</span>
+<span class="text-[10px] font-medium">Config</span>
+</button>
+</nav>
+
+</body></html>

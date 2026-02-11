@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Legacy Recovery Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#a855f7",
+                        "security": "#10b981",
+                        "danger": "#ef4444",
+                        "warning": "#f59e0b",
+                        "glass-border": "rgba(255, 255, 255, 0.2)",
+                        "glass-bg": "rgba(255, 255, 255, 0.08)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                        lg: '16px',
+                        xl: '24px',
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAMAQhqMdKqwr9BF9W6q0-sjbW_8a4XY5le4vFKx9ZMeQAC9dONiMya5kEBT5KX1JwO4kq4EFqvFIWDOHBNP6pAEmKBPEIoEnIG0jRr_DQNDJ_dovshvrMAx4UGyVrHGSWBw-nYEBY95u16jHe2M6dMkzLTFC-y2S8WnF_dotVL9X2pwT3xwylTVOhKJy2HQhybn8_PdqOdxAP4I-in0Q_SSC6GtLcSYetRUi7LCMPS4T8av1QzhqW_5U9GJhblLrOhnklaIMbPCnQ);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100dvh;
+            color: white;
+        }
+        .spatial-glass {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .bento-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .bento-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .ios-toggle {
+            appearance: none;
+            width: 3.25rem;
+            height: 2rem;
+            border-radius: 9999px;
+            background-color: rgba(255,255,255,0.2);
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .ios-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(2rem - 4px);
+            height: calc(2rem - 4px);
+            border-radius: 50%;
+            background-color: white;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .ios-toggle:checked {
+            background-color: #3b82f6;
+        }
+        .ios-toggle:checked::after {
+            transform: translateX(1.25rem);
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            border: 2px solid #3b82f6;
+        }
+        .step-connector {
+            position: absolute;
+            left: 15px;
+            top: 34px;
+            bottom: -20px;
+            width: 2px;
+            background: rgba(255,255,255,0.1);
+            z-index: 0;
+        }
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            position: relative;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display antialiased flex flex-col items-center justify-start overflow-y-auto overflow-x-hidden pb-10">
+<div class="fixed inset-0 bg-black/60 z-0"></div>
+<header class="sticky top-0 z-50 w-full px-5 pt-12 pb-4 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm">
+<div class="flex items-center justify-between">
+<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-white">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-wide uppercase">Dead Man's Switch</h1>
+<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 text-primary hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined">save</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 w-full max-w-md px-5 flex flex-col gap-6 mt-2">
+<div class="spatial-glass rounded-3xl p-6 relative overflow-hidden group border-l-4 border-l-green-500">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-green-500/10 blur-3xl rounded-full pointer-events-none"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-green-500/20 border border-green-500/50 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+<span class="material-symbols-outlined text-green-400">shield_lock</span>
+</div>
+<div>
+<h2 class="font-bold text-lg leading-tight">System Armed</h2>
+<p class="text-xs text-green-400 font-medium uppercase tracking-wider">Monitoring Active</p>
+</div>
+</div>
+<input checked="" class="ios-toggle" type="checkbox"/>
+</div>
+<p class="text-sm text-gray-300 leading-relaxed font-light">
+            Legacy Handover is live. If inactivity is detected, the <span class="text-white font-medium">Verification Grace Period</span> will begin before keys are released.
+        </p>
+</div>
+<section class="space-y-4">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Trigger Logic</h3>
+<span class="text-xs text-primary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+                Advanced
+            </span>
+</div>
+<div class="spatial-glass rounded-3xl p-6 relative">
+<div class="relative flex gap-4 pb-8">
+<div class="step-connector"></div>
+<div class="timeline-dot bg-white/10 border border-white/20 text-gray-400">
+<span class="material-symbols-outlined text-sm">hourglass_top</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-bold text-gray-200">Inactivity Trigger</span>
+<span class="text-xl font-bold text-white">6 Months</span>
+</div>
+<input class="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer slider-thumb accent-primary mb-2" max="12" min="1" type="range" value="6"/>
+<p class="text-[11px] text-gray-500">Time without logging in to trigger the sequence.</p>
+</div>
+</div>
+<div class="relative flex gap-4 pb-2">
+<div class="timeline-dot bg-warning/20 border border-warning/50 text-warning shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+<span class="material-symbols-outlined text-sm">notifications_active</span>
+</div>
+<div class="flex-1 p-3 bg-warning/10 rounded-xl border border-warning/20 backdrop-blur-sm">
+<div class="flex justify-between items-center mb-2">
+<span class="text-sm font-bold text-warning">Verification Grace Period</span>
+<span class="text-lg font-bold text-white">7 Days</span>
+</div>
+<input class="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer slider-thumb accent-warning mb-2" max="30" min="1" type="range" value="7"/>
+<div class="flex items-start gap-2 mt-2">
+<span class="material-symbols-outlined text-warning text-xs mt-0.5">info</span>
+<p class="text-[11px] text-gray-400 leading-tight">
+                            During this window, we will attempt to verify your status daily via Email, SMS &amp; Push. If verified, the countdown resets.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Proof of Life</h3>
+</div>
+<div class="bento-card rounded-2xl p-5 flex items-center justify-between group cursor-pointer hover:bg-white/10">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center relative">
+<span class="material-symbols-outlined text-red-400 animate-pulse">ecg_heart</span>
+<div class="absolute inset-0 rounded-full border border-red-500/20 animate-ping opacity-20"></div>
+</div>
+<div>
+<h4 class="font-bold text-base text-white">Biometric Heartbeat</h4>
+<p class="text-xs text-gray-400 mt-0.5">Require FaceID every 30 days</p>
+</div>
+</div>
+<div class="relative">
+<input class="ios-toggle scale-75 origin-right" type="checkbox"/>
+</div>
+</div>
+</section>
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Designated Trustees</h3>
+<button class="text-xs text-primary font-medium flex items-center gap-1 hover:text-primary/80 transition-colors">
+<span class="material-symbols-outlined text-sm">add_circle</span> Add New
+            </button>
+</div>
+<div class="grid grid-cols-1 gap-3">
+<div class="bento-card rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-white/10">
+<img alt="Trustee" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMDbX7JieH4uSusSVXrUvvvaCAAPI4aD_oC_4HH3TYYaaG-MWB-lkJC0i5fqeWETP4Fpla1f0aiWNz0Qnnpheta8n14tyv8LTu_zGgEUtSplutOcD--os7vc6G8QwVoCNuCagef6G18FisqHgJhoiPOtcinMJvc9vmGZqdyPJiGMJ7LJMMqzfRpWsDer5q7bNtrqJ4zO_D0ikEjEncu0Cl4u0LdUdL4L7GVthH5d2s2rxrFgNIplVxTR-nKiZhkmaIl9sa1qYHCLE"/>
+</div>
+<div>
+<h4 class="font-bold text-sm text-white">Sarah Sterling</h4>
+<div class="flex items-center gap-1 text-xs text-green-400 mt-0.5 font-medium bg-green-500/10 px-2 py-0.5 rounded-full w-fit">
+<span class="material-symbols-outlined text-[10px] fill-1">verified_user</span>
+<span>Verified</span>
+</div>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-gray-400 text-sm">more_horiz</span>
+</button>
+</div>
+<div class="bento-card rounded-2xl p-4 flex items-center justify-between opacity-80">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-dashed border-white/30 relative bg-black/20">
+<span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-gray-500">JP</span>
+</div>
+<div>
+<h4 class="font-bold text-sm text-gray-300">James Sterling</h4>
+<div class="flex items-center gap-1 text-xs text-yellow-500 mt-0.5 bg-yellow-500/10 px-2 py-0.5 rounded-full w-fit">
+<span class="material-symbols-outlined text-[10px]">hourglass_empty</span>
+<span>Pending</span>
+</div>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-gray-400 text-sm">refresh</span>
+</button>
+</div>
+</div>
+</section>
+<section class="space-y-3 pb-8">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-sm font-bold text-gray-300 uppercase tracking-wider">Handover Package</h3>
+<span class="text-xs text-gray-400">Last edited: 2 days ago</span>
+</div>
+<div class="spatial-glass rounded-3xl p-1 relative group cursor-pointer hover:bg-white/5 transition-colors">
+<div class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-black/40 rounded-full backdrop-blur-md border border-white/10">
+<span class="material-symbols-outlined text-gray-400 text-sm">edit</span>
+</div>
+<div class="bg-gradient-to-br from-gray-900/90 to-black/80 rounded-[20px] p-5 backdrop-blur-sm border border-white/5">
+<div class="flex items-center gap-3 mb-4 pb-3 border-b border-white/5">
+<div class="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-sm">lock_open</span>
+</div>
+<div>
+<p class="font-display font-bold text-sm text-white">Digital Will &amp; Vault Access</p>
+<p class="text-[10px] text-gray-500 uppercase tracking-wide">Encrypted AES-256</p>
+</div>
+</div>
+<p class="text-gray-400 text-sm italic font-serif leading-relaxed line-clamp-3 opacity-80 pl-3 border-l-2 border-white/10">
+                    "To my dearest family, if you are reading this, it means the time has come for you to take stewardship of our history..."
+                </p>
+<div class="mt-4 flex items-center gap-3">
+<div class="h-8 px-3 bg-white/5 rounded-full flex items-center gap-2 border border-white/5">
+<span class="material-symbols-outlined text-xs text-accent">graphic_eq</span>
+<span class="text-[10px] text-gray-300 font-medium">Voice_Memo.m4a</span>
+</div>
+<div class="h-8 px-3 bg-white/5 rounded-full flex items-center gap-2 border border-white/5">
+<span class="material-symbols-outlined text-xs text-blue-400">folder_zip</span>
+<span class="text-[10px] text-gray-300 font-medium">Assets.zip</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="mt-2 pt-4 border-t border-white/10 flex flex-col gap-4 items-center text-center w-full sticky bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent pb-8 px-5 -mx-5 backdrop-blur-xs">
+<p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Secure Enclave Active</p>
+<button class="w-full py-4 rounded-2xl bg-white text-black font-bold shadow-[0_0_30px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-xl">fingerprint</span>
+<span>Update Configuration</span>
+</button>
+</div>
+</main>
+</body></html>

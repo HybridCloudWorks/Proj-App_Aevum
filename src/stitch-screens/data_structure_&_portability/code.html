@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum - Data Structure &amp; Portability</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0B1015", // Deep dark navy/charcoal
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "glass-surface": "rgba(255, 255, 255, 0.03)",
+                        "glass-highlight": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px"},
+                    backdropBlur: {
+                        'xs': '2px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+        }
+        .glass-panel-active {
+            background: linear-gradient(145deg, rgba(17, 115, 212, 0.15) 0%, rgba(17, 115, 212, 0.05) 100%);
+            border: 1px solid rgba(17, 115, 212, 0.3);
+            box-shadow: 0 0 15px rgba(17, 115, 212, 0.15);
+        }
+        /* Abstract background blobs */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background-color: #0B1015;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: #1173d4;
+        }
+        .blob-2 {
+            bottom: 10%;
+            right: -20%;
+            width: 350px;
+            height: 350px;
+            background: #7c3aed;
+        }
+        .blob-3 {
+            top: 40%;
+            left: 30%;
+            width: 200px;
+            height: 200px;
+            background: #06b6d4;
+            opacity: 0.2;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-white pb-20">
+<!-- Background Effects -->
+<div class="bg-blobs">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+</div>
+<!-- Header -->
+<header class="sticky top-0 z-50 glass-panel border-b border-glass-border/50">
+<div class="flex items-center justify-between px-4 py-4">
+<button class="flex items-center justify-center text-slate-400 hover:text-white transition-colors size-10 rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="text-center">
+<h1 class="text-base font-bold tracking-tight text-white">Storage Architecture</h1>
+<p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Your data, your bucket</p>
+</div>
+<button class="flex items-center justify-center text-slate-400 hover:text-white transition-colors size-10 rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</header>
+<main class="px-4 py-6 space-y-6 max-w-md mx-auto">
+<!-- Toggle Switch -->
+<div class="relative p-1 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 flex shadow-inner">
+<div class="absolute inset-y-1 left-1 w-[calc(50%-4px)] bg-primary/20 border border-primary/40 rounded-lg shadow-[0_0_10px_rgba(17,115,212,0.3)] transition-all duration-300 translate-x-full"></div>
+<button class="relative flex-1 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors z-10">
+                Logical View
+            </button>
+<button class="relative flex-1 py-2.5 text-sm font-bold text-white z-10 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">terminal</span>
+                Physical View
+            </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Block A: Storage Status (Full Width) -->
+<div class="col-span-2 glass-panel rounded-2xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-3 opacity-20">
+<span class="material-symbols-outlined text-6xl">cloud_sync</span>
+</div>
+<div class="relative z-10 flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<div class="size-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+<span class="text-xs font-bold text-green-400 tracking-wide uppercase">Connected</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-1">AWS S3 Bucket</h3>
+<p class="text-xs text-slate-400 font-mono">us-east-1 • aevum-user-8823</p>
+</div>
+<div class="size-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10" data-alt="AWS Logo Placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpXwkOkHDx6B9f3C0VlEeMkfXkw9qCOGBoURhk9_iqwk4zwdOgOBRQ6ZHc91RnZaavEu2-v1Af_IKOXBp64urLiklomn3EUJ5B0YmK8z4E9FobSvbhTj34qIbbUEj8DpZqhSvaBGh4wD1YsX7mrVqiCSP7Ko0eHXDj23d3F8-ClQRBBMcqyrAgwxZa7-gKAWzVyO8qcqyMkoj6cpSaHsyhXu2seJDeXu2TmVFrQOddcRVCuBA0PB8-cMVXyzy1RiHkgjIXHiBvp7s"); background-size: cover;'>
+<!-- Fallback icon if image fails or for decoration -->
+<span class="material-symbols-outlined text-white">cloud</span>
+</div>
+</div>
+<!-- Usage Bar -->
+<div class="mt-6">
+<div class="flex justify-between text-[10px] font-medium text-slate-400 mb-1.5">
+<span>Storage Used</span>
+<span>45.2 GB / ∞</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-cyan-400 w-[12%] rounded-full relative">
+<div class="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Block B: Folder Hierarchy (Full Width) -->
+<div class="col-span-2 space-y-3">
+<div class="flex items-center justify-between px-1">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Directory Hierarchy</h4>
+<span class="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Write Access</span>
+</div>
+<div class="glass-panel rounded-2xl p-0 overflow-hidden">
+<!-- Path Steps -->
+<div class="relative">
+<!-- Connecting Line -->
+<div class="absolute left-[26px] top-6 bottom-6 w-px bg-gradient-to-b from-white/20 to-transparent dashed border-l border-dashed border-white/20"></div>
+<!-- Level 1 -->
+<div class="flex items-center p-3 px-4 hover:bg-white/5 transition-colors border-b border-glass-border">
+<div class="relative z-10 flex items-center justify-center size-8 rounded-lg bg-blue-500/20 text-blue-400 border border-blue-500/30 mr-3 shrink-0">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<p class="text-sm font-semibold text-white truncate">2024</p>
+<span class="text-[10px] text-slate-500 font-mono">drwxr-xr-x</span>
+</div>
+<p class="text-[11px] text-slate-400">Root Year Folder</p>
+</div>
+</div>
+<!-- Level 2 -->
+<div class="flex items-center p-3 px-4 hover:bg-white/5 transition-colors border-b border-glass-border">
+<div class="flex items-center justify-center w-8 mr-3 shrink-0">
+<!-- Indent Spacer handled by flex alignment, visual line is absolute -->
+<div class="relative z-10 flex items-center justify-center size-8 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 ml-4">
+<span class="material-symbols-outlined text-lg">folder_shared</span>
+</div>
+</div>
+<div class="flex-1 min-w-0 ml-4">
+<div class="flex justify-between items-baseline">
+<p class="text-sm font-semibold text-white truncate">Wedding_Anniversary</p>
+<span class="text-[10px] text-slate-500 font-mono">drwxr-xr-x</span>
+</div>
+<p class="text-[11px] text-slate-400">Event</p>
+</div>
+</div>
+<!-- Level 3 -->
+<div class="flex items-center p-3 px-4 hover:bg-white/5 transition-colors border-b border-glass-border">
+<div class="flex items-center justify-center w-8 mr-3 shrink-0">
+<div class="relative z-10 flex items-center justify-center size-8 rounded-lg bg-pink-500/20 text-pink-400 border border-pink-500/30 ml-8">
+<span class="material-symbols-outlined text-lg">person</span>
+</div>
+</div>
+<div class="flex-1 min-w-0 ml-8">
+<div class="flex justify-between items-baseline">
+<p class="text-sm font-semibold text-white truncate">Person_John_Doe</p>
+<span class="text-[10px] text-slate-500 font-mono">drwxr-xr-x</span>
+</div>
+<p class="text-[11px] text-slate-400">Unique Entity ID</p>
+</div>
+</div>
+<!-- Level 4: Active File -->
+<div class="flex items-center p-3 px-4 bg-primary/10 border-l-2 border-l-primary">
+<div class="flex items-center justify-center w-8 mr-3 shrink-0">
+<div class="relative z-10 flex items-center justify-center size-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 ml-12">
+<span class="material-symbols-outlined text-lg">image</span>
+</div>
+</div>
+<div class="flex-1 min-w-0 ml-12">
+<div class="flex justify-between items-baseline">
+<p class="text-sm font-bold text-white truncate">IMG_4420.heic</p>
+<span class="text-[10px] text-slate-400 font-mono">4.2MB</span>
+</div>
+<p class="text-[11px] text-primary">Target Object</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Block C: File + Sidecar Preview (Side by Side in Grid) -->
+<div class="col-span-2 grid grid-cols-2 gap-4 mt-2">
+<!-- Image Preview Card -->
+<div class="glass-panel p-3 rounded-2xl flex flex-col gap-3">
+<div class="flex items-center gap-2 text-slate-400 mb-1">
+<span class="material-symbols-outlined text-sm">visibility</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Object Preview</span>
+</div>
+<div class="w-full aspect-square rounded-lg bg-cover bg-center border border-white/10 shadow-lg relative group overflow-hidden" data-alt="Group of students or colleagues looking at a laptop screen together" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBo-K8C0XejjWreSQSGhVRJ7plSl7S0oxhM_sWAjoQ2iGRFB5r2fOvLhMfHytlqxGb8hSoYLn4BMNu1CCnGuXCLaTKFhtxk3ptDeQ9O9cu_cIOz7DKYpYKWnPfF0p3RX8V-HQ9JZ0D2CF2YtMBAr0MtXeD1WEpLz73N8gqqaFE6nlrV15vZYJyEhw1WHRManKJBbM21DApZ1uyFC6DF-6LvtDm1IrAD4ttMFAClImEViFUHSkyawKCeE-Fdf76DrZzQveYYs5ka3i4');">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">open_in_full</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-slate-400">
+<span>HEIC</span>
+<span>4032 x 3024</span>
+</div>
+</div>
+<!-- JSON Sidecar Card -->
+<div class="glass-panel-active p-3 rounded-2xl flex flex-col gap-3 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 blur-2xl rounded-full"></div>
+<div class="flex items-center justify-between mb-1 relative z-10">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">data_object</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Sidecar.json</span>
+</div>
+<span class="size-2 rounded-full bg-primary shadow-[0_0_8px_rgba(17,115,212,0.8)]"></span>
+</div>
+<div class="flex-1 bg-black/40 rounded-lg p-2.5 overflow-hidden border border-white/5 font-mono text-[10px] leading-relaxed text-slate-300 relative">
+<!-- Line Numbers -->
+<div class="absolute left-2 top-2.5 bottom-2 w-4 text-slate-600 text-right pr-1 border-r border-white/10 select-none">
+                            1<br/>2<br/>3<br/>4<br/>5<br/>6
+                        </div>
+<div class="pl-6 overflow-x-auto">
+<span class="text-slate-500">{</span>
+<span class="text-purple-400">"event"</span>: <span class="text-green-400">"Wedding"</span>,
+  <span class="text-purple-400">"people"</span>: [
+    <span class="text-green-400">"John"</span>, 
+    <span class="text-green-400">"Sarah"</span>
+  ],
+  <span class="text-purple-400">"date"</span>: <span class="text-orange-400">"2024-06-15"</span>
+<span class="text-slate-500">}</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono text-slate-400">
+<span>JSON</span>
+<span>Portable</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<div class="fixed bottom-6 left-0 right-0 px-4 max-w-md mx-auto z-40">
+<button class="w-full glass-panel bg-gradient-to-r from-primary/80 to-blue-600/80 hover:from-primary hover:to-blue-600 text-white font-semibold py-3.5 rounded-xl shadow-[0_8px_32px_rgba(17,115,212,0.4)] border border-primary/50 flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">verified</span>
+                Verify Integrity &amp; Export
+            </button>
+</div>
+</main>
+</body></html>

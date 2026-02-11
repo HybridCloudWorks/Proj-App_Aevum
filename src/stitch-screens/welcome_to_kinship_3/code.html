@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinship - Login</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden selection:bg-primary selection:text-white">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center object-cover" data-alt="Happy multi-generational family laughing together outdoors in warm sunlight" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4");'>
+</div>
+<!-- Gradient Overlay for readability -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/90"></div>
+</div>
+<!-- Content Container -->
+<div class="relative z-10 flex flex-col justify-end h-full w-full max-w-md mx-auto px-6 pb-8 pt-12">
+<!-- Header Section -->
+<div class="flex-1 flex flex-col justify-center items-center text-center mb-8">
+<div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl ring-1 ring-white/20">
+<span class="material-symbols-outlined text-white text-4xl">diversity_3</span>
+</div>
+<h1 class="font-serif text-5xl font-bold text-white tracking-tight mb-2 drop-shadow-lg">Kinship</h1>
+<p class="text-slate-200 text-lg font-medium opacity-90 drop-shadow-md">Connect with your roots.</p>
+</div>
+<!-- Form Section -->
+<div class="bg-black/20 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl">
+<form class="flex flex-col gap-4">
+<!-- Email Input -->
+<div class="group relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">mail</span>
+</div>
+<input class="block w-full rounded-xl border-0 bg-white/10 dark:bg-gray-800/50 py-4 pl-12 pr-4 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:bg-gray-800/80 sm:text-sm sm:leading-6 transition-all duration-200" placeholder="Email address" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="group relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">lock</span>
+</div>
+<input class="block w-full rounded-xl border-0 bg-white/10 dark:bg-gray-800/50 py-4 pl-12 pr-12 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:bg-gray-800/80 sm:text-sm sm:leading-6 transition-all duration-200" placeholder="Password" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
+<span class="material-symbols-outlined text-slate-400 hover:text-white transition-colors text-xl">visibility_off</span>
+</div>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end">
+<a class="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="#">Forgot Password?</a>
+</div>
+<!-- Login Button -->
+<button class="w-full rounded-xl bg-primary py-4 px-3 text-base font-bold text-white shadow-lg hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 active:scale-[0.98]" type="button">
+                        Log In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="relative my-6">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-white/20"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-transparent px-2 text-xs font-medium text-slate-400 uppercase tracking-wider backdrop-blur-xl rounded">Or continue with</span>
+</div>
+</div>
+<!-- Social Login Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-white text-black py-3.5 px-3 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all active:scale-[0.98]" type="button">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"></path>
+</svg>
+<span class="text-sm">Apple</span>
+</button>
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-white text-black py-3.5 px-3 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all active:scale-[0.98]" type="button">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z"></path>
+</svg>
+<span class="text-sm">Google</span>
+</button>
+</div>
+</div>
+<!-- Footer Signup Link -->
+<div class="mt-8 text-center pb-4">
+<p class="text-slate-300 text-sm">
+                    Don't have an account? 
+                    <a class="font-bold text-white hover:text-primary transition-colors underline decoration-2 decoration-transparent hover:decoration-primary underline-offset-4" href="#">Sign Up</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

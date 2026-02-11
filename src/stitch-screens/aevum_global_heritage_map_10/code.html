@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum Messenger Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "accent": "#0ea5e9",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "glass-surface": "rgba(23, 29, 37, 0.7)",
+                        "glass-border": "rgba(255, 255, 255, 0.08)",
+                        "success": "#22c55e",
+                        "danger": "#ef4444",
+                        "gold": "#d4af37",
+                        "tier-full": "#10b981",
+                        "tier-limited": "#f59e0b",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);backdrop-filter: blur(24px);-webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.12);box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.4);
+        }
+        .glass-panel-active {
+            background: linear-gradient(145deg, rgba(17, 115, 212, 0.25) 0%, rgba(14, 165, 233, 0.15) 100%);backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(17, 115, 212, 0.4);
+            box-shadow: 0 0 15px rgba(17, 115, 212, 0.2);
+        }
+        .glass-panel-light {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .mesh-gradient {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glow-new-message {
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4) inset;
+            border: 1px solid rgba(14, 165, 233, 0.6);
+            animation: inner-pulse 2s infinite;
+        }
+        @keyframes inner-pulse {
+            0% { box-shadow: 0 0 10px rgba(14, 165, 233, 0.3) inset; }
+            50% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.6) inset; }
+            100% { box-shadow: 0 0 10px rgba(14, 165, 233, 0.3) inset; }
+        }
+        .floating-button {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }.badge-direct {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .badge-extended {
+            background: rgba(14, 165, 233, 0.15);
+            color: #7dd3fc;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+        .fab-memories {
+            background: rgba(17, 115, 212, 0.3);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(17, 115, 212, 0.4);
+        }
+        .fab-memories:active {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 10px rgba(17, 115, 212, 0.3);
+        }
+        .glow-icon {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .action-icon-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative mesh-gradient">
+<header class="pt-12 px-6 pb-4 flex justify-between items-center z-20 relative">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-white">Family Messenger</h1>
+<p class="text-sm text-gray-300 font-medium">Connect with your lineage</p>
+</div>
+<div class="glass-panel p-2 rounded-full relative">
+<span class="absolute top-1 right-2 w-2 h-2 bg-danger rounded-full z-10 border border-[#101922]"></span>
+<span class="material-symbols-outlined text-gray-200">notifications</span>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-0 pb-24 scrollbar-hide z-10 relative h-[calc(100vh-160px)]">
+<section class="mb-6 px-6">
+<div class="flex justify-between items-center mb-3">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Family Branches</h3>
+<button class="text-xs text-primary font-semibold hover:text-white transition-colors">View All</button>
+</div>
+<div class="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x snap-mandatory">
+<div class="snap-start shrink-0 w-36 h-44 glass-panel-active rounded-2xl p-4 flex flex-col justify-between relative cursor-pointer group">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-primary flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                        R
+                    </div>
+<div class="flex flex-col items-end gap-1">
+<span class="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_#22c55e]"></span>
+<span class="material-symbols-outlined text-[16px] text-tier-full" title="Full Access">verified_user</span>
+</div>
+</div>
+<div class="mt-2">
+<div class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-1">
+                        Full Access
+                    </div>
+<h4 class="font-bold text-base leading-tight text-white">Ricci<br/>Branch</h4>
+<p class="text-[10px] text-gray-300 mt-1 font-medium">12 Active Members</p>
+</div>
+</div>
+<div class="snap-start shrink-0 w-36 h-44 glass-panel rounded-2xl p-4 flex flex-col justify-between relative cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                        S
+                    </div>
+<div class="flex flex-col items-end gap-1">
+<span class="material-symbols-outlined text-[16px] text-tier-limited" title="Limited Access">gpp_maybe</span>
+</div>
+</div>
+<div class="mt-2">
+<div class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-1">
+                        Limited
+                    </div>
+<h4 class="font-bold text-base leading-tight text-gray-100">Smith<br/>Branch</h4>
+<p class="text-[10px] text-gray-400 mt-1 font-medium">5 Active Members</p>
+</div>
+</div>
+<div class="snap-start shrink-0 w-36 h-44 glass-panel rounded-2xl p-4 flex flex-col justify-between relative cursor-pointer hover:bg-white/5 transition-colors">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                        C
+                    </div>
+<div class="flex flex-col items-end gap-1">
+<span class="material-symbols-outlined text-[16px] text-tier-limited" title="Limited Access">gpp_maybe</span>
+</div>
+</div>
+<div class="mt-2">
+<div class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-amber-500/20 text-amber-300 border border-amber-500/30 mb-1">
+                        Limited
+                    </div>
+<h4 class="font-bold text-base leading-tight text-gray-100">Chen<br/>Branch</h4>
+<p class="text-[10px] text-gray-400 mt-1 font-medium">8 Active Members</p>
+</div>
+</div>
+<div class="snap-start shrink-0 w-36 h-44 glass-panel-light rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 relative border-dashed border-gray-500">
+<div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-300">add</span>
+</div>
+<p class="text-xs text-gray-300 font-medium">Join New<br/>Branch</p>
+</div>
+</div>
+</section>
+<section class="mb-20 px-6">
+<h3 class="text-sm font-bold text-gray-200 uppercase tracking-wider mb-3">Recent Chats</h3>
+<div class="flex flex-col gap-3">
+<div class="glass-panel glow-new-message rounded-2xl p-4 cursor-pointer relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 z-20">
+<span class="text-[10px] font-bold text-white bg-accent px-2 py-0.5 rounded-full shadow-lg shadow-accent/20">NEW</span>
+</div>
+<div class="flex items-center gap-4 relative z-10">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 p-[2px]">
+<img alt="Elena Ricci" class="w-full h-full rounded-full object-cover border-2 border-[#101922]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvrfWGXR_NSzBzI-JasKOidA7kNnec1xEo-F4tEKONh3BnnTTr9SujMk86VlGSW4a0huOIl6C2-R1sS-MsjiTawJGTP61ugi0m18NTYSVhw1RJ9WNIJ5KkZ9reDqFDL3lPIx5tKg3TLO33-8ZkodDYfpah3gEaa5hVhIdnFEgox0Tsbk7Ueci3-w1ulBfXeGCvrzfXdA3U2ehwlnXybAw7RQA8mrOAQPZeMGma_1gywJx1ghseyqQpyiletZuSh3Q4hQ5LA5j3Gjk"/>
+</div>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-[#101922] rounded-full"></span>
+</div>
+<div class="flex-1 min-w-0 pr-8">
+<div class="flex justify-between items-baseline mb-1">
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-base text-white truncate">Elena Ricci</h4>
+<span class="badge-direct text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Direct Family</span>
+</div>
+<span class="text-[10px] text-accent font-semibold">2m ago</span>
+</div>
+<p class="text-sm text-gray-100 font-medium truncate">Found the old photo albums in the attic!</p>
+</div>
+<button class="w-8 h-8 rounded-full action-icon-glass flex items-center justify-center hover:bg-white/10 transition-colors shrink-0 mr-2" title="Send Photo">
+<span class="material-symbols-outlined text-[18px] text-accent">add_a_photo</span>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 cursor-pointer relative hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-white">diversity_3</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-base text-white truncate">Ricci Family Global</h4>
+<span class="badge-direct text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Direct Family</span>
+</div>
+<span class="text-[10px] text-gray-400">1h ago</span>
+</div>
+<p class="text-sm text-gray-300 truncate"><span class="text-gray-400 font-medium">Marco:</span> Who's bringing the wine for the reunion?</p>
+</div>
+<button class="w-8 h-8 rounded-full action-icon-glass flex items-center justify-center hover:bg-white/10 transition-colors shrink-0 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" title="Send Photo">
+<span class="material-symbols-outlined text-[18px] text-gray-300">add_a_photo</span>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 cursor-pointer relative hover:bg-white/5 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-red-500 p-[2px]">
+<div class="w-full h-full rounded-full bg-gray-800 flex items-center justify-center border border-white/10">
+<span class="text-sm font-bold text-white">MR</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-base text-white truncate">Marco Ricci</h4>
+<span class="badge-direct text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Direct Family</span>
+</div>
+<span class="text-[10px] text-gray-400">3h ago</span>
+</div>
+<p class="text-sm text-gray-300 truncate">Did you see the update to the family tree?</p>
+</div>
+<button class="w-8 h-8 rounded-full action-icon-glass flex items-center justify-center hover:bg-white/10 transition-colors shrink-0 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" title="Send Photo">
+<span class="material-symbols-outlined text-[18px] text-gray-300">add_a_photo</span>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 cursor-pointer relative hover:bg-white/5 transition-colors opacity-90 group">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 p-[2px]">
+<img alt="Sarah Smith" class="w-full h-full rounded-full object-cover border-2 border-[#101922] grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcPMHZe7pihuDC5a1Ab23u52UektHv1tziZdoknIH6xx0WN3z71zNmLVdb1d_tRYkuxnnGDZpOwQp2juuCCakBuRSWjSGuLqPoF7Prb-Hm3AbibIn1J39HzeYV9NOJ8bMG4oShj8sgbjU3m5xCUe_RURkKEkxgqLG7NSqmtBEql701G8VrT9PjHRA8cTOxE4mqWflN0bOs3SsQwt0-hc6AyYTnFsHdUGEjO1HDl6fK613ZVMwJCUAb8sF6jzfwHqFp_cTPg_zr90w"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-base text-gray-200 truncate">Sarah Smith</h4>
+<span class="badge-extended text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Extended</span>
+</div>
+<span class="text-[10px] text-gray-400">Yesterday</span>
+</div>
+<p class="text-sm text-gray-400 truncate">Sent a request to view the archives.</p>
+</div>
+<button class="w-8 h-8 rounded-full action-icon-glass flex items-center justify-center hover:bg-white/10 transition-colors shrink-0 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" title="Send Photo">
+<span class="material-symbols-outlined text-[18px] text-gray-300">add_a_photo</span>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-2xl p-4 cursor-pointer relative hover:bg-white/5 transition-colors opacity-90 group">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-white">groups</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-base text-gray-200 truncate">Smith Cousins</h4>
+<span class="badge-extended text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Extended</span>
+</div>
+<span class="text-[10px] text-gray-400">2d ago</span>
+</div>
+<p class="text-sm text-gray-400 truncate"><span class="text-gray-500 font-medium">John:</span> Does anyone have grandma's recipe?</p>
+</div>
+<button class="w-8 h-8 rounded-full action-icon-glass flex items-center justify-center hover:bg-white/10 transition-colors shrink-0 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" title="Send Photo">
+<span class="material-symbols-outlined text-[18px] text-gray-300">add_a_photo</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed bottom-24 right-6 z-30 flex flex-col items-end gap-3">
+<button class="fab-memories hover:scale-105 active:scale-95 text-white rounded-2xl p-4 flex items-center gap-3 transition-all">
+<span class="material-symbols-outlined text-2xl glow-icon">add</span>
+<span class="text-sm font-bold pr-2 tracking-wide">Upload Memories</span>
+</button>
+</div>
+<nav class="fixed bottom-0 w-full border-t border-white/10 px-6 py-4 flex justify-between items-center bg-[#101922]/90 backdrop-blur-xl z-50">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="relative flex flex-col items-center gap-1 text-white transition-colors">
+<div class="absolute -top-3 w-12 h-1 bg-primary rounded-full shadow-[0_0_10px_rgba(17,115,212,0.8)]"></div>
+<span class="material-symbols-outlined text-2xl fill-current text-primary">chat_bubble</span>
+<span class="text-[10px] font-medium text-primary">Messages</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">folder_open</span>
+<span class="text-[10px] font-medium">Vault</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-y-0.5 transition-transform">settings</span>
+<span class="text-[10px] font-medium">Config</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aevum - Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6",
+                        "accent": "#8b5cf6",
+                        "glass-border": "rgba(255, 255, 255, 0.15)",
+                        "glass-surface": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "sans": ["Montserrat", "sans-serif"],
+                        "display": ["Montserrat", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "3xl": "2.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: 100vh;
+            overscroll-behavior-y: none;}.glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .glass-card-darker {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-900 font-sans text-white antialiased selection:bg-primary selection:text-white">
+<div class="relative flex h-full w-full min-h-screen flex-col overflow-x-hidden">
+<div class="fixed inset-0 z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-600/30 blur-[100px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-600/30 blur-[100px]"></div>
+<div class="absolute top-[40%] left-[30%] w-[50%] h-[50%] rounded-full bg-pink-500/20 blur-[120px]"></div>
+<div class="absolute inset-0 bg-black/10 backdrop-blur-[1px]"></div>
+</div>
+<header class="relative z-20 px-6 pt-14 pb-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-400 to-purple-500 p-[2px] shadow-lg">
+<img alt="User Profile" class="w-full h-full rounded-full object-cover border-2 border-black/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVzad7SMhL366Z6ErsTXhjsxwYUIK_sPB9BQSZPSVDM83hcusxUoIvtDgdhqvGdM7st9SEloAN4DfNGWUAnJcxp79-TfJtb139W9pkzZRaSmA_NGVUAQh2xQ_vifX4ipcUOpQQ5nkNjuLAG8daOcouKWRsUV3bs9_uszkSeWWkynA4W_XfhJN3pQBJhbHqRwt88MV_-3uby4R-1psVO81XrbQOq8eC8VxiJiUuecjNx5IgmYu0ICpUwqU8bWXG4E3BY-lUGeOiBx8"/>
+</div>
+<div>
+<h1 class="text-xs text-gray-300 font-medium tracking-wide uppercase">Welcome back</h1>
+<p class="text-xl font-bold leading-none tracking-tight">Alex</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xl font-black tracking-[0.2em] uppercase text-white/90">Aevum</span>
+<button class="w-10 h-10 glass-card rounded-full flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white/80">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-black"></span>
+</button>
+</div>
+</header>
+<main class="relative z-10 flex-1 px-4 pb-24 overflow-y-auto no-scrollbar">
+<div class="w-full h-56 glass-card rounded-3xl mb-4 relative overflow-hidden group">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534330207526-9e4823cde21d?auto=format&amp;fit=crop&amp;q=80&amp;w=2000')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 opacity-30 pointer-events-none">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50%" cy="80%" fill="white" r="4"></circle>
+<line stroke="white" stroke-width="1" x1="50%" x2="30%" y1="80%" y2="50%"></line>
+<line stroke="white" stroke-width="1" x1="50%" x2="70%" y1="80%" y2="50%"></line>
+<circle cx="30%" cy="50%" fill="white" r="3"></circle>
+<circle cx="70%" cy="50%" fill="white" r="3"></circle>
+<line stroke="white" stroke-width="1" x1="30%" x2="20%" y1="50%" y2="30%"></line>
+<line stroke="white" stroke-width="1" x1="30%" x2="40%" y1="50%" y2="30%"></line>
+<circle cx="20%" cy="30%" fill="white" r="2"></circle>
+<circle cx="40%" cy="30%" fill="white" r="2"></circle>
+</svg>
+</div>
+<div class="absolute bottom-0 left-0 p-5 w-full">
+<div class="flex justify-between items-end">
+<div>
+<span class="inline-block px-2 py-1 bg-blue-500/30 backdrop-blur-md rounded-md text-[10px] font-bold uppercase tracking-widest mb-2 border border-blue-400/30 text-blue-100">Quick Pan</span>
+<h2 class="text-2xl font-bold tracking-tight text-white">Family Tree</h2>
+<p class="text-sm font-medium text-gray-300 mt-1">Last edited 2h ago by Sarah</p>
+</div>
+<button class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">open_in_full</span>
+</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-1 glass-card p-4 rounded-3xl flex flex-col justify-between h-44 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/20 rounded-full blur-2xl"></div>
+<div class="flex items-center gap-2 mb-2 z-10">
+<span class="material-symbols-outlined text-green-400 text-xl">spa</span>
+<h3 class="font-bold text-sm tracking-wide text-gray-200 uppercase">Growth</h3>
+</div>
+<div class="z-10">
+<div class="text-4xl font-extrabold text-white mb-1 tracking-tighter">142</div>
+<p class="text-xs font-medium text-gray-400">Members added</p>
+</div>
+<div class="mt-3 z-10">
+<div class="w-full bg-white/10 rounded-full h-1.5 mb-1">
+<div class="bg-green-400 h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[10px] text-green-300 font-bold tracking-wide uppercase">+12 this month</p>
+</div>
+</div>
+<div class="col-span-1 glass-card p-4 rounded-3xl flex flex-col justify-between h-44 relative overflow-hidden">
+<div class="absolute -left-4 -bottom-4 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl"></div>
+<div class="flex items-center justify-between mb-2 z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-purple-400 text-xl">auto_fix_high</span>
+<h3 class="font-bold text-sm tracking-wide text-gray-200 uppercase">AI Tasks</h3>
+</div>
+<span class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+</div>
+<div class="space-y-2 z-10">
+<div class="flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/5">
+<div class="w-8 h-8 rounded-lg bg-gray-600 overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover opacity-80 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-semibold truncate text-white">Grandpa '54</p>
+<p class="text-[10px] font-medium text-purple-300">Enhance color</p>
+</div>
+</div>
+</div>
+<button class="mt-2 w-full py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 rounded-xl text-xs font-bold tracking-wide uppercase text-purple-100 transition-colors">
+                        Start Restore
+                    </button>
+</div>
+<div class="col-span-2 glass-card p-5 rounded-3xl">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-400 text-xl">history_edu</span>
+<h3 class="font-bold text-sm tracking-wide text-gray-200 uppercase">Recent Memories</h3>
+</div>
+<button class="text-xs font-semibold text-gray-400 hover:text-white transition-colors uppercase tracking-wide">View All</button>
+</div>
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+<div class="flex-shrink-0 w-32 group cursor-pointer">
+<div class="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10">
+<img alt="Wedding" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL0ASC5yYi1mDVBhtxP-NWj91-XxfHOUjRJ6xAx69QDglsj3aDqdKWm7cW75kCSWIFX5TjbgNY6SmkePMgb4ZXVHhOMhVUwCBSaXlJjvXb2UeomYB4IxzxWwGaeUkiTvNvFIFyDsPGQW_ca_rn0JU14iyPn5p83rabQcLsLow3LwHlTNOf3nXbFppOC1vE3XQIjJnYnpl-hjGoG3uZxRmH93UmPcLqEgcWK3v1oyX-tcrPXi3c8Ag2nJMC-SvVEuK0FzmGQ_X9yGo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2">
+<p class="text-xs font-bold text-white tracking-wide">1985</p>
+</div>
+</div>
+<p class="text-xs font-semibold text-gray-300 truncate pl-1">Summer Wedding</p>
+</div>
+<div class="flex-shrink-0 w-32 group cursor-pointer">
+<div class="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10">
+<img alt="School" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtpb0MC0tKaL9Q-459mrQe_yyMmwEgudC0PTs-yip4CCbJIli4jqQY_Fy23VplbWrUM0oF4zM2hvlX9z2yVZQaGTw4MZih0VO3XeRARLIEnWC-N1O145KuwhOFKZEA8A9vO-tPhktc-XaDZtks0OzL_rYm1GMuRxMoWGUg_nahXJpfgZi_Ru9Y89u-JnYZcBsyui2D1YCV2h5uYug2xIGbKlVgNtn0CEIWS1K0axWMAQyFaIKfK6kSi8Cexc0tGgU-VYdNrCsn884"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2">
+<p class="text-xs font-bold text-white tracking-wide">1992</p>
+</div>
+</div>
+<p class="text-xs font-semibold text-gray-300 truncate pl-1">First Grade</p>
+</div>
+<div class="flex-shrink-0 w-32 group cursor-pointer">
+<div class="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10 flex items-center justify-center bg-white/5">
+<span class="material-symbols-outlined text-white/50 text-3xl">add_a_photo</span>
+</div>
+<p class="text-xs font-semibold text-gray-300 truncate pl-1">Add New</p>
+</div>
+</div>
+</div>
+<div class="col-span-1 h-24 glass-card p-4 rounded-3xl flex items-center gap-3 cursor-pointer hover:bg-white/15 transition-colors">
+<div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div>
+<p class="font-bold text-sm text-white tracking-wide uppercase">Invite</p>
+<p class="text-[10px] font-medium text-gray-400">to Kinship</p>
+</div>
+</div>
+<div class="col-span-1 h-24 glass-card p-4 rounded-3xl flex items-center gap-3 cursor-pointer hover:bg-white/15 transition-colors">
+<div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400">
+<span class="material-symbols-outlined">mic</span>
+</div>
+<div>
+<p class="font-bold text-sm text-white tracking-wide uppercase">Record</p>
+<p class="text-[10px] font-medium text-gray-400">a Story</p>
+</div>
+</div>
+</div>
+<div class="h-8"></div>
+</main>
+<div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md z-50">
+<div class="glass-card-darker rounded-2xl p-1.5 flex justify-between items-center shadow-2xl">
+<button class="flex-1 flex flex-col items-center justify-center py-2 text-primary">
+<span class="material-symbols-outlined text-[26px] filled">grid_view</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">family_history</span>
+</button>
+<div class="relative -top-6">
+<button class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 border-4 border-gray-900 text-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<button class="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">search</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[26px]">settings</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>
