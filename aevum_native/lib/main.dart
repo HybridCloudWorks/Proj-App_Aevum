@@ -3,8 +3,8 @@ import 'package:aevum_native/screens/invite_member_screen.dart';
 import 'package:aevum_native/screens/heritage_map_screen.dart';
 import 'package:aevum_native/screens/heritage_upload_screen.dart';
 import 'package:aevum_native/screens/heritage_messenger_screen.dart';
-import 'screens/restoration_screen.dart'; // Added for routes
-import 'screens/member_memories_screen.dart'; // Added for routes
+import 'package:aevum_native/screens/restoration_screen.dart';
+import 'package:aevum_native/screens/member_memories_screen.dart';
 
 void main() {
   runApp(const AevumApp());
