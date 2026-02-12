@@ -32,6 +32,11 @@ import 'package:aevum_native/screens/intro_page_screen.dart';
 import 'package:aevum_native/screens/auth_screen.dart';
 import 'package:aevum_native/screens/profile_screen.dart';
 import 'package:aevum_native/screens/dashboard_screen.dart';
+import 'package:aevum_native/screens/plant_branch_screen.dart';
+import 'package:aevum_native/screens/family_branch_navigator_screen.dart';
+import 'package:aevum_native/screens/semantic_discovery_screen.dart';
+import 'package:aevum_native/screens/vault_sync_health_screen.dart';
+import 'package:aevum_native/screens/cloud_redundancy_screen.dart';
 
 void main() {
   runApp(const AevumApp());
@@ -93,6 +98,11 @@ class AevumApp extends StatelessWidget {
           year: "1968",
           location: "New York, USA",
         ),
+        '/plant-branch': (context) => const PlantBranchScreen(),
+        '/family-branches': (context) => const FamilyBranchNavigatorScreen(),
+        '/discovery': (context) => const SemanticDiscoveryScreen(),
+        '/vault-health': (context) => const VaultSyncHealthScreen(),
+        '/cloud-redundancy': (context) => const CloudRedundancyScreen(),
       },
     );
   }

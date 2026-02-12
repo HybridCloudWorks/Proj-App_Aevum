@@ -14,7 +14,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFF1173d4).withOpacity(0.1),
+            color: const Color(0xFF1173d4).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(
@@ -105,9 +105,11 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF10B981).withOpacity(0.1),
+        color: const Color(0xFF10B981).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF10B981).withOpacity(0.2)),
+        border: Border.all(
+          color: const Color(0xFF10B981).withValues(alpha: 0.2),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -139,9 +141,9 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +195,10 @@ class AdminCatalogEngineScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
                   ),
                 ),
               ),
@@ -244,7 +249,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.03),
+              color: Colors.white.withValues(alpha: 0.03),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -294,7 +299,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -355,7 +360,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -432,7 +437,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -461,7 +466,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1173d4).withOpacity(0.1),
+                  color: const Color(0xFF1173d4).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -526,7 +531,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
                     width: 2,
                   ),
                   color: isDone
-                      ? const Color(0xFF1173d4).withOpacity(0.2)
+                      ? const Color(0xFF1173d4).withValues(alpha: 0.2)
                       : Colors.transparent,
                 ),
               ),
@@ -534,7 +539,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                   ),
                 ),
             ],
@@ -589,19 +594,19 @@ class AdminCatalogEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
-          SizedBox(
+          const SizedBox(
             width: 50,
             height: 50,
             child: CircularProgressIndicator(
               value: 0.95,
               strokeWidth: 8,
               backgroundColor: Colors.white10,
-              valueColor: const AlwaysStoppedAnimation(Color(0xFF1173d4)),
+              valueColor: AlwaysStoppedAnimation(Color(0xFF1173d4)),
               strokeCap: StrokeCap.round,
             ),
           ),
@@ -745,7 +750,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
       height: 80,
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1173d4).withOpacity(0.05),
+        color: const Color(0xFF1173d4).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(40),
         border: Border.all(color: Colors.white10),
       ),

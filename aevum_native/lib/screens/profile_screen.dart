@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 32),
                 _buildSectionHeader("Archives & Memories"),
                 const SizedBox(height: 16),
-                _buildArchiveList(),
+                _buildArchiveList(context),
               ],
             ),
           ),
@@ -67,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Icon(Icons.settings, color: Colors.white),
@@ -80,9 +80,9 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -94,7 +94,10 @@ class ProfileScreen extends StatelessWidget {
               gradient: const LinearGradient(
                 colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
               ),
-              border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 2,
+              ),
             ),
             child: const Center(
               child: Icon(Icons.person, size: 40, color: Colors.white),
@@ -147,9 +150,9 @@ class ProfileScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
+          color: Colors.white.withValues(alpha: 0.03),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
         child: Column(
           children: [
@@ -185,53 +188,91 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildArchiveList() {
+  Widget _buildArchiveList(BuildContext context) {
     return Column(
       children: [
-        _buildArchiveItem(Icons.auto_stories, "Chronicles", "4 active stories"),
+        _buildArchiveItem(
+          Icons.auto_stories,
+          "Chronicles",
+          "4 active stories",
+          onTap: () => Navigator.pushNamed(context, '/ai-chronicles'),
+        ),
         const SizedBox(height: 12),
-        _buildArchiveItem(Icons.photo_library, "Media Vault", "1.2GB stored"),
+        _buildArchiveItem(
+          Icons.photo_library,
+          "Media Vault",
+          "1.2GB stored",
+          onTap: () => Navigator.pushNamed(context, '/memories'),
+        ),
         const SizedBox(height: 12),
-        _buildArchiveItem(Icons.location_on, "Origin Map", "24 geo-tags"),
+        _buildArchiveItem(
+          Icons.location_on,
+          "Origin Map",
+          "24 geo-tags",
+          onTap: () => Navigator.pushNamed(context, '/map'),
+        ),
+        const SizedBox(height: 12),
+        _buildArchiveItem(
+          Icons.auto_fix_high,
+          "AI Restoration",
+          "Enhance family photos",
+          onTap: () => Navigator.pushNamed(context, '/restoration'),
+        ),
       ],
     );
   }
 
-  Widget _buildArchiveItem(IconData icon, String title, String subtitle) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: const Color(0xFF6366F1), size: 24),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.publicSans(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.publicSans(
-                    color: Colors.white54,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
+  Widget _buildArchiveItem(
+    IconData icon,
+    String title,
+    String subtitle, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.03),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFF6366F1).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: const Color(0xFF6366F1), size: 20),
             ),
-          ),
-          const Icon(Icons.chevron_right, color: Colors.white24),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white54,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
+          ],
+        ),
       ),
     );
   }

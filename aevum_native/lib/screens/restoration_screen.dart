@@ -1,51 +1,61 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
+import 'package:aevum_native/widgets/heritage_bottom_nav.dart';
+import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
+
+import 'package:aevum_native/services/storage_service.dart';
 
 class RestorationScreen extends StatefulWidget {
-  const RestorationScreen({super.key});
+  final String? mediaId;
+  const RestorationScreen({super.key, this.mediaId});
 
   @override
   State<RestorationScreen> createState() => _RestorationScreenState();
 }
 
 class _RestorationScreenState extends State<RestorationScreen> {
+  final StorageService _storageService = StorageService();
+  static const Color _accentColor = Color(0xFF6366F1);
+  static const Color _emeraldColor = Color(0xFF10B981);
+  bool _isProcessing = false;
   double _sliderValue = 0.5;
+  bool _colorize = true;
+  bool _sharpen = true;
+  bool _repair = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F151B),
+      backgroundColor: const Color(0xFF0B1121),
       appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildComparisonSection(),
-                const SizedBox(height: 32),
-                _buildSectionTitle(Icons.tune, "Restoration Controls"),
-                const SizedBox(height: 20),
-                _buildControlsGrid(),
-                const SizedBox(height: 20),
-                _buildRepairItem(),
-                const SizedBox(height: 40),
-                _buildSaveButton(),
-                const SizedBox(height: 120),
-              ],
-            ),
+      body: SmartNavigationWrapper(
+        bottomNav: const HeritageBottomNav(activeIndex: 3), // Profile-related
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildComparisonSection(),
+              const SizedBox(height: 32),
+              _buildSectionHeader(Icons.tune, "Restoration Controls"),
+              const SizedBox(height: 20),
+              _buildControlsGrid(),
+              const SizedBox(height: 16),
+              _buildRepairTile(),
+              const SizedBox(height: 32),
+              _buildSaveButton(),
+              const SizedBox(height: 120),
+            ],
           ),
-          _buildBottomNav(),
-        ],
+        ),
       ),
     );
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: const Color(0xFF0B1121).withOpacity(0.7),
+      backgroundColor: const Color(0xFF0B1121).withValues(alpha: 0.7),
       elevation: 0,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
@@ -53,9 +63,23 @@ class _RestorationScreenState extends State<RestorationScreen> {
           child: Container(color: Colors.transparent),
         ),
       ),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-        onPressed: () => Navigator.pop(context),
+      leading: Center(
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.05),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new,
+              size: 18,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
       centerTitle: true,
       title: Column(
@@ -65,6 +89,7 @@ class _RestorationScreenState extends State<RestorationScreen> {
             style: GoogleFonts.manrope(
               fontWeight: FontWeight.bold,
               fontSize: 18,
+              color: Colors.white,
             ),
           ),
           Text(
@@ -80,14 +105,18 @@ class _RestorationScreenState extends State<RestorationScreen> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.ios_share, size: 20),
+          icon: const Icon(Icons.ios_share, size: 20, color: Colors.white),
           onPressed: () {},
         ),
+        const SizedBox(width: 8),
       ],
     );
   }
 
   Widget _buildComparisonSection() {
+    const String imageUrl =
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuD6rLWYNqR4sQgKqUxA8itpYbWXVX2-AazxpOq2ruKAUHeE88QzbLzddOdrSSPueXXolY0mRc53w7JH1MHgnxowqUH38duGKayQBL3QGkFmy67PfrafwkAncBVgXFshhCrlV5O9l5XYFtSWDjvsZgOmDibOqOf9VfohVZPB8t3L1XsH0o7Gc8wHDiTMDJLR3Mkv8u1JKpekBv7hqaZN-XbkutgK1HMXkryD667osEYGmVBJUXNSmRkMazqU6vZYrXp21beGfnhnR_Q';
+
     return Column(
       children: [
         Container(
@@ -96,9 +125,9 @@ class _RestorationScreenState extends State<RestorationScreen> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF6366F1).withOpacity(0.2),
+                color: _accentColor.withValues(alpha: 0.2),
                 blurRadius: 30,
-                offset: const Offset(0, 10),
+                spreadRadius: 5,
               ),
             ],
           ),
@@ -131,44 +160,58 @@ class _RestorationScreenState extends State<RestorationScreen> {
                       1,
                       0,
                     ]),
-                    child: Image.network(
-                      "https://images.unsplash.com/photo-1516239327699-2a91219cd4f0?w=600&auto=format&fit=crop",
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.network(imageUrl, fit: BoxFit.cover),
                   ),
                 ),
-                // "After" (Clipped overlay)
+                // "After" (Color overlay clipped)
                 Positioned.fill(
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: _sliderValue,
-                    child: ClipRect(
-                      child: Image.network(
-                        "https://images.unsplash.com/photo-1516239327699-2a91219cd4f0?w=600&auto=format&fit=crop",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  child: ClipRect(
+                    clipper: _ComparisonClipper(_sliderValue),
+                    child: Image.network(imageUrl, fit: BoxFit.cover),
                   ),
                 ),
                 // Labels
                 Positioned(
                   top: 16,
                   left: 16,
-                  child: _toolTag("Before", Colors.black.withOpacity(0.6)),
+                  child: _labelTag(
+                    "Before",
+                    Colors.black.withValues(alpha: 0.6),
+                  ),
                 ),
                 Positioned(
                   top: 16,
                   right: 16,
-                  child: _toolTag(
+                  child: _labelTag(
                     "After",
-                    const Color(0xFF4F46E5).withOpacity(0.9),
+                    _accentColor.withValues(alpha: 0.9),
                   ),
                 ),
-                // Draggable Handle
+                // Slider Interaction
+                Positioned.fill(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return GestureDetector(
+                        onHorizontalDragUpdate: (details) {
+                          setState(() {
+                            _sliderValue =
+                                (details.localPosition.dx /
+                                        constraints.maxWidth)
+                                    .clamp(0.0, 1.0);
+                          });
+                        },
+                        child: Container(color: Colors.transparent),
+                      );
+                    },
+                  ),
+                ),
+                // Slider Handle
                 Positioned(
                   left:
-                      (MediaQuery.of(context).size.width - 40) * _sliderValue -
-                      1,
+                      400 *
+                      _sliderValue *
+                      (MediaQuery.of(context).size.width - 40) /
+                      400,
                   top: 0,
                   bottom: 0,
                   child: Container(
@@ -181,27 +224,15 @@ class _RestorationScreenState extends State<RestorationScreen> {
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(color: Colors.black26, blurRadius: 10),
+                          ],
                         ),
                         child: const Icon(
                           Icons.compare_arrows,
                           color: Color(0xFF6366F1),
-                          size: 24,
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                // Hidden Slider for interaction
-                Positioned.fill(
-                  child: SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      thumbShape: SliderComponentShape.noThumb,
-                      overlayShape: SliderComponentShape.noOverlay,
-                      trackHeight: 0,
-                    ),
-                    child: Slider(
-                      value: _sliderValue,
-                      onChanged: (v) => setState(() => _sliderValue = v),
                     ),
                   ),
                 ),
@@ -215,13 +246,13 @@ class _RestorationScreenState extends State<RestorationScreen> {
           children: [
             Text(
               "Original",
-              style: GoogleFonts.manrope(fontSize: 12, color: Colors.white38),
+              style: GoogleFonts.manrope(fontSize: 12, color: Colors.white54),
             ),
             Text(
               "Enhanced Result",
               style: GoogleFonts.manrope(
                 fontSize: 12,
-                color: const Color(0xFF6366F1),
+                color: _accentColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -231,29 +262,29 @@ class _RestorationScreenState extends State<RestorationScreen> {
     );
   }
 
-  Widget _toolTag(String text, Color color) {
+  Widget _labelTag(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(color: Colors.white12),
       ),
       child: Text(
         text,
-        style: GoogleFonts.manrope(
+        style: const TextStyle(
+          color: Colors.white,
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
         ),
       ),
     );
   }
 
-  Widget _buildSectionTitle(IconData icon, String title) {
+  Widget _buildSectionHeader(IconData icon, String title) {
     return Row(
       children: [
-        Icon(icon, color: const Color(0xFF6366F1), size: 20),
+        Icon(icon, color: _accentColor, size: 20),
         const SizedBox(width: 8),
         Text(
           title,
@@ -271,39 +302,42 @@ class _RestorationScreenState extends State<RestorationScreen> {
     return Row(
       children: [
         Expanded(
-          child: _restorationCard(
+          child: _controlCard(
             Icons.palette,
             "Colorize",
-            "Add natural colors to B&W",
-            const Color(0xFF6366F1),
+            "Add natural colors to B&W photos",
+            _colorize,
+            (v) => setState(() => _colorize = v),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: _restorationCard(
+          child: _controlCard(
             Icons.shutter_speed,
             "Sharpen",
-            "Enhance detail and focus",
-            const Color(0xFF3B82F6),
+            "Enhance details and remove blur",
+            _sharpen,
+            (v) => setState(() => _sharpen = v),
           ),
         ),
       ],
     );
   }
 
-  Widget _restorationCard(
+  Widget _controlCard(
     IconData icon,
     String title,
     String sub,
-    Color color,
+    bool active,
+    Function(bool) onChanged,
   ) {
     return Container(
       height: 160,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,14 +347,18 @@ class _RestorationScreenState extends State<RestorationScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: _accentColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color, size: 24),
+                child: Icon(icon, color: _accentColor, size: 20),
               ),
-              Switch(value: true, onChanged: (v) {}, activeThumbColor: color),
+              Switch(
+                value: active,
+                onChanged: onChanged,
+                activeThumbColor: _accentColor,
+              ),
             ],
           ),
           Column(
@@ -328,20 +366,15 @@ class _RestorationScreenState extends State<RestorationScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.manrope(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                style: const TextStyle(
                   color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 sub,
-                style: GoogleFonts.manrope(
-                  fontSize: 11,
-                  color: Colors.white38,
-                  height: 1.2,
-                ),
+                style: const TextStyle(color: Colors.white54, fontSize: 10),
               ),
             ],
           ),
@@ -350,51 +383,50 @@ class _RestorationScreenState extends State<RestorationScreen> {
     );
   }
 
-  Widget _buildRepairItem() {
+  Widget _buildRepairTile() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withOpacity(0.15),
+              color: _emeraldColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.healing, color: Color(0xFF10B981)),
+            child: const Icon(Icons.healing, color: _emeraldColor, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "Repair Scratches",
-                  style: GoogleFonts.manrope(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
                     color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "Fix tears and dust damage",
-                  style: GoogleFonts.manrope(
-                    fontSize: 12,
-                    color: Colors.white38,
+                  "Fix tears, dust and damage",
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.4),
+                    fontSize: 10,
                   ),
                 ),
               ],
             ),
           ),
           Switch(
-            value: false,
-            onChanged: (v) {},
-            activeThumbColor: const Color(0xFF10B981),
+            value: _repair,
+            onChanged: (v) => setState(() => _repair = v),
+            activeThumbColor: _emeraldColor,
           ),
         ],
       ),
@@ -402,41 +434,92 @@ class _RestorationScreenState extends State<RestorationScreen> {
   }
 
   Widget _buildSaveButton() {
-    return Container(
-      width: double.infinity,
-      height: 64,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF6366F1).withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.download, color: Color(0xFF0F172A), size: 20),
-            const SizedBox(width: 8),
-            Text(
-              "Save Enhanced Photo",
-              style: GoogleFonts.manrope(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF0F172A),
-              ),
+    return GestureDetector(
+      onTap: _isProcessing
+          ? null
+          : () async {
+              if (widget.mediaId == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("No media selected for restoration"),
+                  ),
+                );
+                return;
+              }
+
+              setState(() => _isProcessing = true);
+
+              try {
+                await _storageService.requestRestoration(
+                  mediaId: widget.mediaId!,
+                  colorize: _colorize,
+                  sharpen: _sharpen,
+                  repair: _repair,
+                );
+
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Restoration request sent to AI engine"),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                }
+              } finally {
+                if (mounted) setState(() => _isProcessing = false);
+              }
+            },
+      child: Container(
+        width: double.infinity,
+        height: 56,
+        decoration: BoxDecoration(
+          color: _isProcessing ? Colors.grey : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: _accentColor.withValues(alpha: 0.2),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
             ),
           ],
+        ),
+        child: Center(
+          child: _isProcessing
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Color(0xFF0B1121),
+                  ),
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.auto_awesome, color: Color(0xFF0B1121)),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Start AI Restoration",
+                      style: GoogleFonts.manrope(
+                        color: const Color(0xFF0B1121),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  Widget _buildBottomNav() {
+  // ignore: unused_element
+  Widget _buildFloatingBottomNav() {
     return Positioned(
       bottom: 24,
       left: 20,
@@ -446,34 +529,19 @@ class _RestorationScreenState extends State<RestorationScreen> {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            height: 72,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: const Color(0xFF101922).withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Icon(
-                  Icons.photo_library,
-                  color: Colors.white54,
-                  size: 22,
-                ),
-                const Icon(Icons.account_tree, color: Colors.white54, size: 22),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.auto_fix_high,
-                    color: Color(0xFF6366F1),
-                    size: 24,
-                  ),
-                ),
-                const Icon(Icons.person, color: Colors.white54, size: 22),
+                _navIcon(Icons.photo_library, false),
+                _navIcon(Icons.account_tree, false),
+                _navIcon(Icons.auto_fix_high, true),
+                _navIcon(Icons.person, false),
               ],
             ),
           ),
@@ -481,4 +549,31 @@ class _RestorationScreenState extends State<RestorationScreen> {
       ),
     );
   }
+
+  Widget _navIcon(IconData icon, bool active) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: active
+          ? BoxDecoration(
+              color: _accentColor.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(16),
+            )
+          : null,
+      child: Icon(icon, color: active ? _accentColor : Colors.white24),
+    );
+  }
+}
+
+class _ComparisonClipper extends CustomClipper<Rect> {
+  final double progress;
+  _ComparisonClipper(this.progress);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(0, 0, size.width * progress, size.height);
+  }
+
+  @override
+  bool shouldReclip(_ComparisonClipper oldClipper) =>
+      oldClipper.progress != progress;
 }

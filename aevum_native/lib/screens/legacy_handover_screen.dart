@@ -91,7 +91,7 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF151C2E),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -100,7 +100,7 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent.withOpacity(0.1),
+                  color: Colors.greenAccent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -136,7 +136,7 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
               Switch(
                 value: _protocolActive,
                 onChanged: (v) => setState(() => _protocolActive = v),
-                activeColor: const Color(0xFF1173d4),
+                activeThumbColor: const Color(0xFF1173d4),
               ),
             ],
           ),
@@ -187,7 +187,7 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(32),
       ),
       child: Column(
@@ -213,9 +213,9 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: const Color(0xFF1173d4),
-              inactiveTrackColor: Colors.white.withOpacity(0.05),
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.05),
               thumbColor: Colors.white,
-              overlayColor: const Color(0xFF1173d4).withOpacity(0.2),
+              overlayColor: const Color(0xFF1173d4).withValues(alpha: 0.2),
               trackHeight: 4,
             ),
             child: Slider(
@@ -271,7 +271,7 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -336,9 +336,11 @@ class _LegacyHandoverScreenState extends State<LegacyHandoverScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFA855F7).withOpacity(0.1)),
+        border: Border.all(
+          color: const Color(0xFFA855F7).withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

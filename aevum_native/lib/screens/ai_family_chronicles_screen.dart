@@ -15,7 +15,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
         leading: Container(
           margin: const EdgeInsets.only(left: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -41,7 +41,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -108,7 +108,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  const Color(0xFF0B1121).withOpacity(0.9),
+                  const Color(0xFF0B1121).withValues(alpha: 0.9),
                 ],
               ),
             ),
@@ -212,15 +212,15 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Text(
         text,
         style: GoogleFonts.manrope(
           fontSize: 15,
-          color: Colors.white.withOpacity(0.85),
+          color: Colors.white.withValues(alpha: 0.85),
           height: 1.6,
         ),
       ),
@@ -261,7 +261,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [Colors.transparent, Colors.black87],
@@ -304,7 +304,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF151C2E),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +312,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: const Color(0xFF1173d4).withOpacity(0.2),
+              color: const Color(0xFF1173d4).withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: const Color(0xFF1173d4), size: 14),
@@ -345,7 +345,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -390,7 +390,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
     return Container(
       height: 30,
       width: 1,
-      color: Colors.white.withOpacity(0.1),
+      color: Colors.white.withValues(alpha: 0.1),
     );
   }
 
@@ -415,7 +415,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(color: Colors.white24),
               ),
@@ -453,7 +453,7 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              const Color(0xFF0B1121).withOpacity(0),
+              const Color(0xFF0B1121).withValues(alpha: 0),
               const Color(0xFF0B1121),
             ],
           ),
@@ -486,9 +486,9 @@ class AIFamilyChroniclesScreen extends StatelessWidget {
               height: 64,
               width: 64,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
               child: IconButton(
                 icon: const Icon(Icons.ios_share, color: Colors.white),

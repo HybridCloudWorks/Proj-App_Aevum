@@ -18,7 +18,7 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
                   center: Alignment.topCenter,
                   radius: 1.2,
                   colors: [
-                    const Color(0xFF1173d4).withOpacity(0.15),
+                    const Color(0xFF1173d4).withValues(alpha: 0.15),
                     const Color(0xFF070B14),
                   ],
                 ),
@@ -121,12 +121,12 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: const Color(0xFF1173d4).withOpacity(0.2),
+            color: const Color(0xFF1173d4).withValues(alpha: 0.2),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF1173d4).withOpacity(0.2),
+              color: const Color(0xFF1173d4).withValues(alpha: 0.2),
               blurRadius: 100,
               spreadRadius: 10,
             ),
@@ -138,7 +138,7 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
             shape: BoxShape.circle,
             color: const Color(0xFF070B14),
             border: Border.all(
-              color: const Color(0xFF1173d4).withOpacity(0.4),
+              color: const Color(0xFF1173d4).withValues(alpha: 0.4),
               width: 2,
             ),
           ),
@@ -197,9 +197,9 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +210,7 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
               Icon(icon, color: const Color(0xFF1173d4), size: 20),
               Icon(
                 Icons.check_circle,
-                color: const Color(0xFF10B981).withOpacity(0.6),
+                color: const Color(0xFF10B981).withValues(alpha: 0.6),
                 size: 16,
               ),
             ],
@@ -254,7 +254,7 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
               elevation: 40,
-              shadowColor: const Color(0xFF1173d4).withOpacity(0.5),
+              shadowColor: const Color(0xFF1173d4).withValues(alpha: 0.5),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -288,19 +288,15 @@ class AdminAlphaLaunchScreen extends StatelessWidget {
   }
 
   Widget _buildBottomNav() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(
-            Icons.grid_view_rounded,
-            color: Color(0xFF1173d4),
-            size: 28,
-          ),
-          const Icon(Icons.terminal_rounded, color: Colors.white12, size: 28),
-          const Icon(Icons.settings_rounded, color: Colors.white12, size: 28),
-          const Icon(Icons.person_rounded, color: Colors.white12, size: 28),
+          Icon(Icons.grid_view_rounded, color: Color(0xFF1173d4), size: 28),
+          Icon(Icons.terminal_rounded, color: Colors.white12, size: 28),
+          Icon(Icons.settings_rounded, color: Colors.white12, size: 28),
+          Icon(Icons.person_rounded, color: Colors.white12, size: 28),
         ],
       ),
     );

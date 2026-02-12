@@ -59,7 +59,7 @@ class HeritageMessengerScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF1173D4).withOpacity(0.1),
+                    const Color(0xFF1173D4).withValues(alpha: 0.1),
                     Colors.transparent,
                   ],
                 ),
@@ -76,7 +76,7 @@ class HeritageMessengerScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF0EA5E9).withOpacity(0.05),
+                    const Color(0xFF0EA5E9).withValues(alpha: 0.05),
                     Colors.transparent,
                   ],
                 ),
@@ -248,7 +248,7 @@ class HeritageMessengerScreen extends StatelessWidget {
         border: Border.all(
           color: isActive
               ? const Color(0x661173D4)
-              : Colors.white.withOpacity(0.08),
+              : Colors.white.withValues(alpha: 0.08),
           width: 1,
         ),
       ),
@@ -267,7 +267,7 @@ class HeritageMessengerScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: gradientColors[0].withOpacity(0.3),
+                      color: gradientColors[0].withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -308,14 +308,14 @@ class HeritageMessengerScreen extends StatelessWidget {
                       (accessLevel == 'Full Access'
                               ? const Color(0xFF10B981)
                               : const Color(0xFFF59E0B))
-                          .withOpacity(0.15),
+                          .withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
                     color:
                         (accessLevel == 'Full Access'
                                 ? const Color(0xFF10B981)
                                 : const Color(0xFFF59E0B))
-                            .withOpacity(0.3),
+                            .withValues(alpha: 0.3),
                   ),
                 ),
                 child: Text(
@@ -359,7 +359,7 @@ class HeritageMessengerScreen extends StatelessWidget {
       width: 144,
       height: 176,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
+        color: Colors.white.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Colors.white10,
@@ -373,7 +373,7 @@ class HeritageMessengerScreen extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.add, color: Colors.white38),
@@ -451,12 +451,12 @@ class HeritageMessengerScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: isNew
               ? const Color(0x1A0EA5E9)
-              : Colors.white.withOpacity(0.05),
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: isNew
                 ? const Color(0x660EA5E9)
-                : Colors.white.withOpacity(0.08),
+                : Colors.white.withValues(alpha: 0.08),
           ),
         ),
         child: Row(
@@ -562,9 +562,11 @@ class HeritageMessengerScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFF10B981).withOpacity(0.1),
+        color: const Color(0xFF10B981).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: const Color(0xFF10B981).withOpacity(0.2)),
+        border: Border.all(
+          color: const Color(0xFF10B981).withValues(alpha: 0.2),
+        ),
       ),
       child: Text(
         label.toUpperCase(),
@@ -588,12 +590,12 @@ class HeritageMessengerScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFF1173D4).withOpacity(0.3),
+              color: const Color(0xFF1173D4).withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.white24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF1173D4).withOpacity(0.4),
+                  color: const Color(0xFF1173D4).withValues(alpha: 0.4),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -632,7 +634,7 @@ class HeritageMessengerScreen extends StatelessWidget {
             height: 90,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF101922).withOpacity(0.9),
+              color: const Color(0xFF101922).withValues(alpha: 0.9),
               border: const Border(top: BorderSide(color: Colors.white10)),
             ),
             child: Row(

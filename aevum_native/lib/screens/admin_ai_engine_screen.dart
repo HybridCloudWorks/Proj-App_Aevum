@@ -3,7 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AdminAIEngineScreen extends StatelessWidget {
   const AdminAIEngineScreen({super.key});
+  static const Color _accent = Color(0xFF1173d4);
+  static const Color _warning = Color(0xFFFBBF24);
+  static const Color _infoAccent = Color(0xFF7C3AED);
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +18,7 @@ class AdminAIEngineScreen extends StatelessWidget {
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -69,23 +73,19 @@ class AdminAIEngineScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1173d4).withOpacity(0.1),
+              color: _accent.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.auto_awesome,
-              color: Color(0xFF1173d4),
-              size: 40,
-            ),
+            child: const Icon(Icons.auto_awesome, color: _accent, size: 40),
           ),
           const SizedBox(height: 24),
           Text(
@@ -113,10 +113,8 @@ class AdminAIEngineScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: 0.4,
-              backgroundColor: Colors.white.withOpacity(0.05),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF1173d4),
-              ),
+              backgroundColor: Colors.white.withValues(alpha: 0.05),
+              valueColor: const AlwaysStoppedAnimation<Color>(_accent),
               minHeight: 10,
             ),
           ),
@@ -166,7 +164,7 @@ class AdminAIEngineScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF1173d4).withOpacity(0.1),
+                color: _accent.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -174,7 +172,7 @@ class AdminAIEngineScreen extends StatelessWidget {
                 style: GoogleFonts.manrope(
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
-                  color: const Color(0xFF1173d4),
+                  color: _accent,
                 ),
               ),
             ),
@@ -184,9 +182,9 @@ class AdminAIEngineScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: const Color(0xFFFBBF24).withOpacity(0.1),
+            color: _warning.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: const Color(0xFFFBBF24).withOpacity(0.2)),
+            border: Border.all(color: _warning.withValues(alpha: 0.2)),
           ),
           child: Row(
             children: [
@@ -273,7 +271,7 @@ class AdminAIEngineScreen extends StatelessWidget {
               style: GoogleFonts.manrope(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1173d4),
+                color: _accent,
               ),
             ),
           ],
@@ -304,7 +302,7 @@ class AdminAIEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -339,7 +337,7 @@ class AdminAIEngineScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -366,19 +364,15 @@ class AdminAIEngineScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF6366F1).withOpacity(0.1),
+        color: _accent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF7C3AED).withOpacity(0.1)),
+        border: Border.all(color: _infoAccent.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.info_outline,
-                color: Color(0xFF7C3AED),
-                size: 20,
-              ),
+              const Icon(Icons.info_outline, color: _infoAccent, size: 20),
               const SizedBox(width: 12),
               Text(
                 "Why is there a wait?",
@@ -409,11 +403,11 @@ class AdminAIEngineScreen extends StatelessWidget {
       height: 80,
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1173d4),
+        color: _accent,
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1173d4).withOpacity(0.3),
+            color: _accent.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -429,7 +423,7 @@ class AdminAIEngineScreen extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.bolt, color: Color(0xFF1173d4), size: 28),
+            child: const Icon(Icons.bolt, color: _accent, size: 28),
           ),
           const Icon(Icons.person_outline, color: Colors.white38, size: 28),
         ],

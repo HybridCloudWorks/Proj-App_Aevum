@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
+import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
+import 'package:aevum_native/widgets/heritage_top_nav.dart';
 
 class HeritageUploadScreen extends StatefulWidget {
   const HeritageUploadScreen({super.key});
@@ -32,36 +34,37 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // 1. Mesh Gradient Background
-          _buildMeshGradient(),
-
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 32),
-                  _buildUploadZone(),
-                  const SizedBox(height: 24),
-                  _buildScanningPanel(),
-                  const SizedBox(height: 24),
-                  _buildMetadataPanel(),
-                  const SizedBox(height: 24),
-                  _buildBranchSelector(),
-                  const SizedBox(height: 40),
-                  _buildSubmitButton(),
-                ],
+      body: SmartNavigationWrapper(
+        topNav: const HeritageTopNav(
+          title: "HERITAGE VAULT",
+          subtitle: "Preserve your family legacy",
+        ),
+        bottomNav: _buildBottomNav(),
+        child: Stack(
+          children: [
+            _buildMeshGradient(),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 100),
+                    _buildUploadZone(),
+                    const SizedBox(height: 24),
+                    _buildScanningPanel(),
+                    const SizedBox(height: 24),
+                    _buildMetadataPanel(),
+                    const SizedBox(height: 24),
+                    _buildBranchSelector(),
+                    const SizedBox(height: 40),
+                    _buildSubmitButton(),
+                  ],
+                ),
               ),
             ),
-          ),
-
-          // Bottom Navigation (Simplified for this screen)
-          _buildBottomNav(),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -83,7 +86,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF13111A).withOpacity(1.0),
+                    const Color(0xFF13111A).withValues(alpha: 1.0),
                     Colors.transparent,
                   ],
                 ),
@@ -100,7 +103,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFF1E293B).withOpacity(0.4),
+                    const Color(0xFF1E293B).withValues(alpha: 0.4),
                     Colors.transparent,
                   ],
                 ),
@@ -112,59 +115,15 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
     );
   }
 
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Upload Center',
-              style: GoogleFonts.plusJakartaSans(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Digitize your legacy',
-              style: GoogleFonts.plusJakartaSans(
-                color: Colors.white60,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: Colors.white10,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white10),
-          ),
-          child: const Icon(
-            Icons.cloud_upload,
-            color: Color(0xFF1173D4),
-            size: 20,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildUploadZone() {
     return Container(
       width: double.infinity,
       height: 180,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: const Color(0xFF1173D4).withOpacity(0.3),
+          color: const Color(0xFF1173D4).withValues(alpha: 0.3),
           width: 2,
           style:
               BorderStyle.none, // Custom dashed border needed, simplified here
@@ -180,7 +139,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
               children: [
                 Icon(
                   Icons.add_photo_alternate_rounded,
-                  color: const Color(0xFF1173D4).withOpacity(0.8),
+                  color: const Color(0xFF1173D4).withValues(alpha: 0.8),
                   size: 48,
                 ),
                 const SizedBox(height: 16),
@@ -214,7 +173,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: const Color(0xFF1173D4).withOpacity(0.2),
+          color: const Color(0xFF1173D4).withValues(alpha: 0.2),
           width: 2,
         ),
       ),
@@ -230,7 +189,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.white10),
           ),
@@ -299,7 +258,9 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
                             color: const Color(0xFF0EA5E9),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF0EA5E9).withOpacity(0.8),
+                                color: const Color(
+                                  0xFF0EA5E9,
+                                ).withValues(alpha: 0.8),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),
@@ -352,7 +313,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white12),
       ),
@@ -402,9 +363,11 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1173D4).withOpacity(0.1),
+            color: const Color(0xFF1173D4).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF1173D4).withOpacity(0.2)),
+            border: Border.all(
+              color: const Color(0xFF1173D4).withValues(alpha: 0.2),
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -454,7 +417,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1173D4).withOpacity(0.3),
+            color: const Color(0xFF1173D4).withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -500,7 +463,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Starting Upload Pipeline...'),
+            const Text('Starting Upload Pipeline...'),
             Text(
               'ID: $uuid',
               style: const TextStyle(fontSize: 10, color: Colors.white70),
@@ -529,7 +492,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
             height: 90,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF101922).withOpacity(0.8),
+              color: const Color(0xFF101922).withValues(alpha: 0.8),
               border: const Border(top: BorderSide(color: Colors.white10)),
             ),
             child: Row(

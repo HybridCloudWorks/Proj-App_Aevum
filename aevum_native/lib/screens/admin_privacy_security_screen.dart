@@ -121,7 +121,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -133,7 +133,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1173d4).withOpacity(0.1),
+                  color: const Color(0xFF1173d4).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: const Color(0xFF1173d4), size: 18),
@@ -141,7 +141,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
               Switch(
                 value: val,
                 onChanged: (v) {},
-                activeColor: const Color(0xFF1173d4),
+                activeThumbColor: const Color(0xFF1173d4),
                 /* scale removed */
               ),
             ],
@@ -177,7 +177,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -189,7 +189,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
+                  color: const Color(0xFF10B981).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: const Color(0xFF10B981), size: 18),
@@ -197,7 +197,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
+                  color: const Color(0xFF10B981).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -237,7 +237,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white10),
       ),
@@ -246,7 +246,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.folder_zip_outlined, color: Colors.white38),
@@ -302,7 +302,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -350,7 +350,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: iconColor(title).withOpacity(0.1),
+              color: iconColor(title).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: iconColor(title), size: 20),
@@ -414,7 +414,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Row(
@@ -444,7 +444,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
           Switch(
             value: true,
             onChanged: (v) {},
-            activeColor: const Color(0xFF1173d4),
+            activeThumbColor: const Color(0xFF1173d4),
           ),
         ],
       ),

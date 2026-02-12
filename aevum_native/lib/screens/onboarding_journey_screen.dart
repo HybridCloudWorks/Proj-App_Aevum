@@ -114,7 +114,7 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
           top: 100,
           left: -50,
           child: _buildBlurCircle(
-            _steps[_currentPage]['color'].withOpacity(0.2),
+            _steps[_currentPage]['color'].withValues(alpha: 0.2),
             300,
           ),
         ),
@@ -173,9 +173,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -237,9 +237,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
             height: 240,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               image: const DecorationImage(
                 image: NetworkImage(
                   "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=800&auto=format&fit=crop",
@@ -282,10 +282,10 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF10B981).withOpacity(0.1),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: const Color(0xFF10B981).withOpacity(0.3),
+                          color: const Color(0xFF10B981).withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -419,9 +419,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         children: [
@@ -466,9 +466,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
       ),
       child: Center(
         child: Text(
@@ -486,9 +486,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         children: [
@@ -533,7 +533,7 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: Colors.white, size: 16),
@@ -555,9 +555,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         children: [
@@ -573,7 +573,7 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -647,9 +647,9 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         children: [
@@ -731,7 +731,7 @@ class _OnboardingJourneyScreenState extends State<OnboardingJourneyScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: _steps[_currentPage]['color'].withOpacity(0.3),
+                color: _steps[_currentPage]['color'].withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),

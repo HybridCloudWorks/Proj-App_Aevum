@@ -23,7 +23,7 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
             end: Alignment.bottomCenter,
             colors: [
               const Color(0xFF0B1121),
-              const Color(0xFF2D1B1B).withOpacity(0.5),
+              const Color(0xFF2D1B1B).withValues(alpha: 0.5),
             ],
           ),
         ),
@@ -79,9 +79,9 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -120,7 +120,7 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 40,
             offset: const Offset(0, 20),
           ),
@@ -145,9 +145,11 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.1),
+                  ),
                 ),
                 child: Text(
                   "ISO 400 • f/2.8",
@@ -166,14 +168,14 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
                 height: 200,
                 child: Stack(
                   children: [
-                    _circle(60, 60, Colors.white.withOpacity(0.4)),
+                    _circle(60, 60, Colors.white.withValues(alpha: 0.4)),
                     Positioned(
                       top: 10,
                       left: 100,
                       child: _circle(
                         80,
                         80,
-                        const Color(0xFFA855F7).withOpacity(0.4),
+                        const Color(0xFFA855F7).withValues(alpha: 0.4),
                       ),
                     ),
                     Positioned(
@@ -182,7 +184,7 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
                       child: _circle(
                         70,
                         70,
-                        const Color(0xFF10B981).withOpacity(0.4),
+                        const Color(0xFF10B981).withValues(alpha: 0.4),
                       ),
                     ),
                   ],
@@ -200,7 +202,10 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
                   ),
                 ),
                 child: Column(
@@ -259,9 +264,9 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -325,7 +330,7 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: const Color(0xFF1173d4),
-              inactiveTrackColor: Colors.white.withOpacity(0.05),
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.05),
               thumbColor: Colors.white,
               trackHeight: 2,
             ),

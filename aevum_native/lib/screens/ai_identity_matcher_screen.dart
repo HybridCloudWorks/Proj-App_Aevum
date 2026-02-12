@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
 
 class AIIdentityMatcherScreen extends StatelessWidget {
   const AIIdentityMatcherScreen({super.key});
@@ -110,7 +109,7 @@ class AIIdentityMatcherScreen extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -213,13 +212,13 @@ class AIIdentityMatcherScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isSelected
-            ? const Color(0xFF1173d4).withOpacity(0.1)
-            : Colors.white.withOpacity(0.05),
+            ? const Color(0xFF1173d4).withValues(alpha: 0.1)
+            : Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isSelected
               ? const Color(0xFF1173d4)
-              : Colors.white.withOpacity(0.1),
+              : Colors.white.withValues(alpha: 0.1),
           width: 1.5,
         ),
       ),
@@ -273,9 +272,9 @@ class AIIdentityMatcherScreen extends StatelessWidget {
       width: 140,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.02),
+        color: Colors.white.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -283,7 +282,7 @@ class AIIdentityMatcherScreen extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.add, color: Colors.white38),
@@ -339,9 +338,9 @@ class AIIdentityMatcherScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       height: 160,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +387,7 @@ class AIIdentityMatcherScreen extends StatelessWidget {
                   height: 24,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Text(

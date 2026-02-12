@@ -86,7 +86,7 @@ class _IntroPageScreenState extends State<IntroPageScreen>
                 radius: 0.8,
                 colors: [
                   Colors.transparent,
-                  const Color(0xFF0F151B).withOpacity(0.8),
+                  const Color(0xFF0F151B).withValues(alpha: 0.8),
                   const Color(0xFF0F151B),
                 ],
                 stops: const [0.2, 0.6, 1.0],
@@ -106,14 +106,14 @@ class _IntroPageScreenState extends State<IntroPageScreen>
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF5A5CF2).withOpacity(0.1),
+                      color: const Color(0xFF5A5CF2).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: const Color(0xFF5A5CF2).withOpacity(0.3),
+                        color: const Color(0xFF5A5CF2).withValues(alpha: 0.3),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF5A5CF2).withOpacity(0.2),
+                          color: const Color(0xFF5A5CF2).withValues(alpha: 0.2),
                           blurRadius: 40,
                           spreadRadius: 10,
                         ),
@@ -188,7 +188,7 @@ class _IntroPageScreenState extends State<IntroPageScreen>
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
+                      color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.white24),
                     ),

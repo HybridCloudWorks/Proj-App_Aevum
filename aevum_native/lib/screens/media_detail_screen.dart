@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
+import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
+import 'package:aevum_native/widgets/heritage_top_nav.dart';
 
 class MediaDetailScreen extends StatefulWidget {
   final String imageUrl;
@@ -50,9 +52,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
             top: 32,
           ),
           decoration: BoxDecoration(
-            color: const Color(0xFF111827).withOpacity(0.9),
+            color: const Color(0xFF111827).withValues(alpha: 0.9),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -81,11 +83,11 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                 style: GoogleFonts.plusJakartaSans(color: Colors.white),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
+                  fillColor: Colors.white.withValues(alpha: 0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -137,9 +139,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A).withOpacity(0.9),
+            color: const Color(0xFF0F172A).withValues(alpha: 0.9),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -154,7 +156,6 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Simulated Relative List
               _relativeItem(
                 "Joseph Miller",
                 "Grandfather",
@@ -192,7 +193,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white10),
       ),
@@ -230,168 +231,141 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0F151B),
-      body: Stack(
-        children: [
-          // Full screen image with gradient overlay
-          Positioned.fill(
-            child: Hero(
-              tag: widget.imageUrl,
-              child: Image.network(widget.imageUrl, fit: BoxFit.cover),
-            ),
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.4),
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.9),
+      body: SmartNavigationWrapper(
+        topNav: HeritageTopNav(
+          title: widget.title,
+          subtitle: "${widget.year} • ${widget.location}",
+        ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Hero(
+                tag: widget.imageUrl,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.network(widget.imageUrl, fit: BoxFit.cover),
+                    ),
+                    _buildFaceBoundingBoxes(),
                   ],
                 ),
               ),
             ),
-          ),
-          // App Bar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Row(
-                    children: [
-                      _circleIcon(Icons.share),
-                      const SizedBox(width: 12),
-                      _circleIcon(Icons.more_horiz),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.4),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.9),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          // Bottom Content
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF0EA5E9),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            widget.year,
-                            style: GoogleFonts.plusJakartaSans(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.people,
-                                color: Colors.white70,
-                                size: 14,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                "3 Tagged",
-                                style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      widget.title,
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Colors.white54,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          widget.location,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white54,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    _buildFamilyStory(),
-                    const SizedBox(height: 24),
-                    _buildActionRow(),
-                  ],
                 ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0EA5E9),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              widget.year,
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.people,
+                                  color: Colors.white70,
+                                  size: 14,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "3 Tagged",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.white70,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.title,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            color: Colors.white54,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            widget.location,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white54,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _buildFamilyStory(),
+                      const SizedBox(height: 24),
+                      _buildActionRow(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
-
-  Widget _circleIcon(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Icon(icon, color: Colors.white, size: 20),
     );
   }
 
@@ -399,9 +373,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -436,10 +410,10 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    color: const Color(0xFF6366F1).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: const Color(0xFF6366F1).withOpacity(0.2),
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.2),
                     ),
                   ),
                   child: Text(
@@ -458,7 +432,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
           Text(
             _currentStory,
             style: GoogleFonts.plusJakartaSans(
-              color: Colors.white.withOpacity(0.85),
+              color: Colors.white.withValues(alpha: 0.85),
               fontSize: 14,
               height: 1.5,
               fontStyle: FontStyle.italic,
@@ -478,9 +452,9 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
             child: Container(
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -525,6 +499,100 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFaceBoundingBoxes() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            _faceBox(
+              constraints.maxWidth * 0.45,
+              constraints.maxHeight * 0.35,
+              80,
+              80,
+              "Grandpa John",
+            ),
+            _faceBox(
+              constraints.maxWidth * 0.65,
+              constraints.maxHeight * 0.40,
+              70,
+              70,
+              "Identify?",
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _faceBox(
+    double left,
+    double top,
+    double width,
+    double height,
+    String label,
+  ) {
+    bool isIdentified = label != "Identify?";
+    return Positioned(
+      left: left,
+      top: top,
+      child: GestureDetector(
+        onTap: () {
+          if (!isIdentified) {
+            _showTagRelativeSheet();
+          }
+        },
+        child: Column(
+          children: [
+            Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isIdentified
+                      ? Colors.blue
+                      : Colors.white.withValues(alpha: 0.5),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: isIdentified
+                  ? const Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Icon(
+                          Icons.check_circle,
+                          color: Colors.blue,
+                          size: 16,
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isIdentified
+                    ? Colors.blue.withValues(alpha: 0.9)
+                    : Colors.black54,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

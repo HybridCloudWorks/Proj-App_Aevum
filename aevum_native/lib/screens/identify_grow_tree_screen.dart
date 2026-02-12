@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
 
 class IdentifyGrowTreeScreen extends StatelessWidget {
   const IdentifyGrowTreeScreen({super.key});
@@ -83,7 +82,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: 0.2,
-              backgroundColor: Colors.white.withOpacity(0.05),
+              backgroundColor: Colors.white.withValues(alpha: 0.05),
               valueColor: const AlwaysStoppedAnimation<Color>(
                 Color(0xFF1173d4),
               ),
@@ -176,7 +175,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(4),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   shape: BoxShape.circle,
                   image: url != null
                       ? DecorationImage(
@@ -188,7 +187,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
                 child: url == null
                     ? Icon(
                         Icons.person,
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         size: 40,
                       )
                     : null,
@@ -207,7 +206,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Text(
@@ -262,7 +261,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.8),
                       ],
                     ),
                   ),
@@ -276,7 +275,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -359,7 +358,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
       icon: Icon(icon, size: 18),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white.withOpacity(0.08),
+        backgroundColor: Colors.white.withValues(alpha: 0.08),
         foregroundColor: Colors.white70,
         minimumSize: const Size(0, 60),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
@@ -391,7 +390,7 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1173d4).withOpacity(0.15),
+                  color: const Color(0xFF1173d4).withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -471,9 +470,9 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
         aspectRatio: 1,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.04),
+            color: Colors.white.withValues(alpha: 0.04),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.04)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -512,7 +511,9 @@ class IdentifyGrowTreeScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFF0B1121),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
+        border: Border(
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

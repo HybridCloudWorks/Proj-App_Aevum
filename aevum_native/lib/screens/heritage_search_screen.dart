@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
 
 class HeritageSearchScreen extends StatefulWidget {
   const HeritageSearchScreen({super.key});
@@ -66,7 +65,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               image: const DecorationImage(
                 image: NetworkImage(
                   "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop",
@@ -85,13 +84,17 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
-          Icon(Icons.search, color: Colors.white.withOpacity(0.5), size: 20),
+          Icon(
+            Icons.search,
+            color: Colors.white.withValues(alpha: 0.5),
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
@@ -102,7 +105,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
               decoration: InputDecoration(
                 hintText: "Search ancestors, locations...",
                 hintStyle: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   fontSize: 15,
                 ),
                 border: InputBorder.none,
@@ -228,12 +231,12 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
         decoration: BoxDecoration(
           color: isSelected
               ? Colors.blue.shade600
-              : Colors.white.withOpacity(0.05),
+              : Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? Colors.blue.shade400
-                : Colors.white.withOpacity(0.1),
+                : Colors.white.withValues(alpha: 0.1),
           ),
         ),
         child: Text(
@@ -256,12 +259,12 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
           decoration: BoxDecoration(
             color: active
                 ? Colors.blue.shade600
-                : Colors.white.withOpacity(0.05),
+                : Colors.white.withValues(alpha: 0.05),
             shape: BoxShape.circle,
             border: Border.all(
               color: active
                   ? Colors.blue.shade400
-                  : Colors.white.withOpacity(0.1),
+                  : Colors.white.withValues(alpha: 0.1),
             ),
           ),
           child: Icon(icon, color: Colors.white, size: 16),
@@ -319,7 +322,9 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: active ? Colors.white.withOpacity(0.1) : Colors.transparent,
+        color: active
+            ? Colors.white.withValues(alpha: 0.1)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(
@@ -327,50 +332,6 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
         color: active ? Colors.white : Colors.white24,
         size: 18,
       ),
-    );
-  }
-
-  Widget _buildResultsGrid() {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 0.85,
-      children: [
-        _buildResultCard(
-          "Arthur J. Rutherford",
-          "Portrait • London",
-          "1883",
-          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop",
-        ),
-        _buildResultCard(
-          "Census Record",
-          "1880 • New York",
-          "RECORD",
-          "https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=400&auto=format&fit=crop",
-          isRecord: true,
-        ),
-        _buildResultCard(
-          "The Journey West",
-          "AI reconstruction of the 1848 migration...",
-          "AI",
-          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&auto=format&fit=crop",
-          isAI: true,
-        ),
-        _buildResultCard(
-          "Sarah E. Miller",
-          "1921 • Chicago",
-          "1921",
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop",
-        ),
-        _buildWideCard(
-          "Edinburgh Homestead",
-          "HERITAGE SITE",
-          "https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=800&auto=format&fit=crop",
-        ),
-      ],
     );
   }
 
@@ -389,7 +350,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
           image: NetworkImage(imgUrl),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.3),
+            Colors.black.withValues(alpha: 0.3),
             BlendMode.darken,
           ),
         ),
@@ -421,7 +382,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
               decoration: BoxDecoration(
                 color: isRecord
                     ? Colors.blue.shade600
-                    : Colors.black.withOpacity(0.5),
+                    : Colors.black.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -524,7 +485,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
           image: NetworkImage(imgUrl),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.3),
+            Colors.black.withValues(alpha: 0.3),
             BlendMode.darken,
           ),
         ),
@@ -578,15 +539,17 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       decoration: BoxDecoration(
         color: const Color(0xFF0F151B),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
+        border: Border(
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.home, color: Colors.white.withOpacity(0.3)),
+          Icon(Icons.home, color: Colors.white.withValues(alpha: 0.3)),
           const Icon(Icons.search, color: Colors.blue),
-          Icon(Icons.account_tree, color: Colors.white.withOpacity(0.3)),
-          Icon(Icons.settings, color: Colors.white.withOpacity(0.3)),
+          Icon(Icons.account_tree, color: Colors.white.withValues(alpha: 0.3)),
+          Icon(Icons.settings, color: Colors.white.withValues(alpha: 0.3)),
         ],
       ),
     );

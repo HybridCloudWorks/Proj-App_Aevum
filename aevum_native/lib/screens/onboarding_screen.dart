@@ -30,7 +30,7 @@ class OnboardingScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                   _buildStatsRow(),
                   const Spacer(),
-                  _buildFooter(),
+                  _buildFooter(context),
                 ],
               ),
             ),
@@ -61,7 +61,7 @@ class OnboardingScreen extends StatelessWidget {
           top: 80,
           left: -40,
           child: _buildBlurCircle(
-            const Color(0xFF1173D4).withOpacity(0.3),
+            const Color(0xFF1173D4).withValues(alpha: 0.3),
             200,
           ),
         ),
@@ -69,7 +69,7 @@ class OnboardingScreen extends StatelessWidget {
           bottom: 150,
           right: -50,
           child: _buildBlurCircle(
-            const Color(0xFFA855F7).withOpacity(0.2),
+            const Color(0xFFA855F7).withValues(alpha: 0.2),
             250,
           ),
         ),
@@ -182,9 +182,9 @@ class OnboardingScreen extends StatelessWidget {
   Widget _buildBentoGrid() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       padding: const EdgeInsets.all(4),
       child: Column(
@@ -217,7 +217,7 @@ class OnboardingScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Stack(
@@ -237,10 +237,10 @@ class OnboardingScreen extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1173D4).withOpacity(0.2),
+                  color: const Color(0xFF1173D4).withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFF1173D4).withOpacity(0.3),
+                    color: const Color(0xFF1173D4).withValues(alpha: 0.3),
                   ),
                 ),
                 child: const Icon(
@@ -284,7 +284,7 @@ class OnboardingScreen extends StatelessWidget {
         height: 140,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.black.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
@@ -295,9 +295,9 @@ class OnboardingScreen extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
-                border: Border.all(color: color.withOpacity(0.3)),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
               ),
               child: Icon(icon, color: color, size: 16),
             ),
@@ -366,7 +366,7 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(BuildContext context) {
     return Column(
       children: [
         GestureDetector(
@@ -381,7 +381,7 @@ class OnboardingScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF1173D4).withOpacity(0.3),
+                  color: const Color(0xFF1173D4).withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),

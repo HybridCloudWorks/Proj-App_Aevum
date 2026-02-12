@@ -73,8 +73,30 @@ class StorageService {
 
       return uuid;
     } catch (e) {
-      print('Error uploading media: $e');
+      // Error handling should ideally use a logging framework
       return null;
+    }
+  }
+
+  /// Requests AI restoration for a media item.
+  Future<void> requestRestoration({
+    required String mediaId,
+    required bool colorize,
+    required bool sharpen,
+    required bool repair,
+  }) async {
+    try {
+      await _firestore.collection('media_items').doc(mediaId).update({
+        'aiStatus': 'restoration_pending',
+        'restorationParams': {
+          'colorize': colorize,
+          'sharpen': sharpen,
+          'repair': repair,
+          'requestedAt': FieldValue.serverTimestamp(),
+        },
+      });
+    } catch (e) {
+      rethrow;
     }
   }
 

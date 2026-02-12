@@ -1,63 +1,74 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:aevum_native/widgets/heritage_bottom_nav.dart';
+import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
+import 'package:aevum_native/widgets/heritage_top_nav.dart';
 
-class HeritageMapScreen extends StatelessWidget {
+class HeritageMapScreen extends StatefulWidget {
   const HeritageMapScreen({super.key});
 
   @override
+  State<HeritageMapScreen> createState() => _HeritageMapScreenState();
+}
+
+class _HeritageMapScreenState extends State<HeritageMapScreen> {
+  // Firebase integration disabled - uncomment when Firebase is configured
+  // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
   Widget build(BuildContext context) {
+    // final User? user = _auth.currentUser;
     return Scaffold(
       backgroundColor: const Color(0xFF0B1015),
-      body: Stack(
-        children: [
-          // 1. Interactive Map Layer (Simulated with Image)
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.6,
-              child: Image.network(
-                'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&auto=format&fit=crop',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
-                    Container(color: Colors.black26),
+      body: SmartNavigationWrapper(
+        topNav: const HeritageTopNav(
+          title: "HERITAGE MAP",
+          subtitle: "Explore your family roots",
+        ),
+        bottomNav: const HeritageBottomNav(activeIndex: 1),
+        child: Stack(
+          children: [
+            // 1. Interactive Map Layer (Simulated with Image)
+            Positioned.fill(
+              child: Opacity(
+                opacity: 0.6,
+                child: Image.network(
+                  'https://lh3.googleusercontent.com/aida-public/AB6AXuDipXXkhtdLez0uOSBrxpYrZ3aj5qn2LxSI410UIY4fwaYQARZvG6MI1UzRkWCJYSJhXrXOCNngHQSYbA5we3pwiUfffPFH285sYxxR5Dq5wDsiufbFYGHGkT8dc3JQTFkif3eJiJtrrhjUToQ44KqRbby586qGHYIuQ87Eo_yDXVuhl7coEQkdi7lIqutzHNFVsau7jIUQueow3tmdnnquZOBIkbM-Cid_NGGjaByeS1HGs0h-qsTlATRelHkC6w457cglF76Nkak',
+                  fit: BoxFit.cover,
+                  color: const Color(0xFF0B1015).withValues(alpha: 0.5),
+                  colorBlendMode: BlendMode.dstATop,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(color: const Color(0xFF0B1015)),
+                ),
               ),
             ),
-          ),
 
-          // 2. Map Pins (Glass Orbs)
-          _buildMapPin(
-            context,
-            top: 0.40,
-            left: 0.45,
-            imageUrl:
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
-            badgeCount: '+14',
-            label: 'Tuscany Roots',
-            isFeatured: true,
-          ),
-          _buildMapPin(
-            context,
-            top: 0.28,
-            left: 0.35,
-            imageUrl:
-                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
-            isGrayscale: true,
-          ),
-          _buildMapPin(
-            context,
-            top: 0.55,
-            left: 0.52,
-            imageUrl:
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
-          ),
+            // 2. Map Pins (Static - Firebase integration disabled)
+            Stack(
+              children: [
+                _buildMapPin(
+                  context,
+                  top: 0.40,
+                  left: 0.45,
+                  imageUrl:
+                      'https://lh3.googleusercontent.com/aida-public/AB6AXuDtLi3Kg6MacYJ8tK6FuMGwbBWGIy0aDc-zS-_TmdQUKxChBjCABdycrSGe9DvMvjMwGTVApKFbtr6BVDrKW_kkF_O24yeuNgKsVkK4ZK6BUQPXa6YtpuNgAvy8j_j15ZeV1qGH2MsoqygOzNh87ubF-G2mDzsw2v9GgFlek4Q5SRJyp106yECoumifEXauxho3vtM3yKaK5Tov8jiA0MxJGwchf2bGsRkk0EHR_nbGxdsT7RaRBlJvz4DEj62-EayRfdgukxx_b10',
+                  badgeCount: '+14',
+                  label: 'Tuscany Roots',
+                  isFeatured: true,
+                ),
+              ],
+            ),
 
-          // 3. UI Overlay Layers
-          _buildTopOverlay(context),
-          _buildRightControls(context),
+            // 3. UI Overlay Layers
+            _buildTopOverlay(context),
+            _buildRightControls(context),
 
-          // 4. Draggable Bento Bottom Sheet
-          _buildDraggableBottomSheet(context),
-        ],
+            // 4. Draggable Bento Bottom Sheet
+            _buildDraggableBottomSheet(context),
+          ],
+        ),
       ),
     );
   }
@@ -90,7 +101,7 @@ class HeritageMapScreen extends StatelessWidget {
                   border: Border.all(color: const Color(0x801173D4), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0x661173D4).withOpacity(0.4),
+                      color: const Color(0x661173D4).withValues(alpha: 0.4),
                       blurRadius: 15,
                       spreadRadius: 2,
                     ),
@@ -205,7 +216,7 @@ class HeritageMapScreen extends StatelessWidget {
                 height: 52,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Colors.white12),
                 ),
@@ -456,7 +467,10 @@ class HeritageMapScreen extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.8),
+                ],
               ),
             ),
             child: Column(
@@ -501,7 +515,7 @@ class HeritageMapScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.white10),
                 ),
@@ -575,7 +589,7 @@ class HeritageMapScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.white10),
           ),

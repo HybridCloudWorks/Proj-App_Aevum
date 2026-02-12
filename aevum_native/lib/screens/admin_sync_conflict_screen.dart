@@ -25,7 +25,7 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.1),
+              color: Colors.red.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.sync_problem, color: Colors.red, size: 20),
@@ -120,9 +120,9 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -160,13 +160,13 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.white.withOpacity(0.06)
-              : Colors.white.withOpacity(0.02),
+              ? Colors.white.withValues(alpha: 0.06)
+              : Colors.white.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF1173d4).withOpacity(0.5)
-                : Colors.white.withOpacity(0.05),
+                ? const Color(0xFF1173d4).withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.05),
             width: 1.5,
           ),
         ),
@@ -177,7 +177,7 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: color.withOpacity(0.2),
+                  backgroundColor: color.withValues(alpha: 0.2),
                   backgroundImage: NetworkImage(avatarUrl),
                 ),
                 const SizedBox(width: 12),
@@ -234,7 +234,7 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
               padding: const EdgeInsets.all(16),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -284,8 +284,8 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: highlight
-                ? const Color(0xFF10B981).withOpacity(0.15)
-                : Colors.white.withOpacity(0.05),
+                ? const Color(0xFF10B981).withValues(alpha: 0.15)
+                : Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -311,9 +311,9 @@ class _AdminSyncConflictScreenState extends State<AdminSyncConflictScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,

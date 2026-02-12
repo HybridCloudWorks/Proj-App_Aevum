@@ -76,7 +76,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1173d4).withOpacity(0.1),
+                    color: const Color(0xFF1173d4).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -113,7 +113,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -132,11 +132,11 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         color: isActive
-            ? const Color(0xFF1173d4).withOpacity(0.2)
+            ? const Color(0xFF1173d4).withValues(alpha: 0.2)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         border: isActive
-            ? Border.all(color: const Color(0xFF1173d4).withOpacity(0.5))
+            ? Border.all(color: const Color(0xFF1173d4).withValues(alpha: 0.5))
             : null,
       ),
       child: Row(
@@ -163,9 +163,9 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +220,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
+                  color: const Color(0xFF10B981).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -272,7 +272,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -322,7 +322,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
         color: isSelected
-            ? const Color(0xFF1173d4).withOpacity(0.1)
+            ? const Color(0xFF1173d4).withValues(alpha: 0.1)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
@@ -398,7 +398,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
         Container(
           height: 160,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.03),
+            color: Colors.white.withValues(alpha: 0.03),
             borderRadius: BorderRadius.circular(24),
             image: const DecorationImage(
               image: NetworkImage(
@@ -548,7 +548,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1173d4).withOpacity(0.3),
+            color: const Color(0xFF1173d4).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),

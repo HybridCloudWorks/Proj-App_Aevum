@@ -14,7 +14,7 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
             center: Alignment.center,
             radius: 1.0,
             colors: [
-              const Color(0xFF1E1B4B).withOpacity(0.3),
+              const Color(0xFF1E1B4B).withValues(alpha: 0.3),
               const Color(0xFF0B1121),
             ],
           ),
@@ -133,9 +133,9 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Icon(icon, color: Colors.white, size: 20),
     );
@@ -145,9 +145,9 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: child,
     );
@@ -210,7 +210,7 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF1173d4).withOpacity(0.5),
+                    color: const Color(0xFF1173d4).withValues(alpha: 0.5),
                     blurRadius: 40,
                     spreadRadius: 10,
                   ),
@@ -254,7 +254,7 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -279,9 +279,9 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Text(
             "Clara Sterling",
@@ -301,9 +301,9 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(50),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -324,7 +324,7 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isActive
-                ? const Color(0xFF1173d4).withOpacity(0.2)
+                ? const Color(0xFF1173d4).withValues(alpha: 0.2)
                 : Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(
@@ -333,7 +333,7 @@ class AdminSpatialExplorerScreen extends StatelessWidget {
             boxShadow: isActive
                 ? [
                     BoxShadow(
-                      color: const Color(0xFF1173d4).withOpacity(0.2),
+                      color: const Color(0xFF1173d4).withValues(alpha: 0.2),
                       blurRadius: 10,
                     ),
                   ]
@@ -363,7 +363,7 @@ class ConnectionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha: 0.05)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 

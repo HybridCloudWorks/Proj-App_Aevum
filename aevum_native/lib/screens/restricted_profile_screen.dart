@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
 
 class RestrictedProfileScreen extends StatelessWidget {
   const RestrictedProfileScreen({super.key});
@@ -67,9 +66,9 @@ class RestrictedProfileScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.3),
+        color: const Color(0xFF1E293B).withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -141,7 +140,7 @@ class RestrictedProfileScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -187,9 +186,9 @@ class RestrictedProfileScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.03),
+            color: Colors.white.withValues(alpha: 0.03),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Row(
             children: [
@@ -262,9 +261,9 @@ class RestrictedProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -275,7 +274,7 @@ class RestrictedProfileScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Icon(
@@ -318,9 +317,9 @@ class RestrictedProfileScreen extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 24),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.orange.withOpacity(0.2)),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +330,7 @@ class RestrictedProfileScreen extends StatelessWidget {
                   child: Text(
                     "This profile is currently sealed under the 'Out-of-Wedlock Privacy Protocol'. Direct access is restricted to the Tree Owner.",
                     style: GoogleFonts.plusJakartaSans(
-                      color: Colors.orange.withOpacity(0.8),
+                      color: Colors.orange.withValues(alpha: 0.8),
                       fontSize: 11,
                       height: 1.4,
                     ),
@@ -376,9 +375,9 @@ class RestrictedProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.8),
+        color: const Color(0xFF1E293B).withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -395,7 +394,7 @@ class RestrictedProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: active ? Colors.blue.withOpacity(0.2) : Colors.transparent,
+        color: active ? Colors.blue.withValues(alpha: 0.2) : Colors.transparent,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(

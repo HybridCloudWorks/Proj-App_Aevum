@@ -126,9 +126,9 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +172,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: progress,
-                backgroundColor: Colors.white.withOpacity(0.05),
+                backgroundColor: Colors.white.withValues(alpha: 0.05),
                 valueColor: AlwaysStoppedAnimation<Color>(color),
                 minHeight: 4,
               ),
@@ -187,7 +187,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -228,7 +228,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -265,13 +265,13 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isActive
-              ? const Color(0xFF1173d4).withOpacity(0.2)
-              : Colors.white.withOpacity(0.02),
+              ? const Color(0xFF1173d4).withValues(alpha: 0.2)
+              : Colors.white.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isActive
                 ? const Color(0xFF1173d4)
-                : Colors.white.withOpacity(0.05),
+                : Colors.white.withValues(alpha: 0.05),
           ),
         ),
         child: Column(
@@ -300,9 +300,9 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -377,7 +377,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(2),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.white.withOpacity(0.05),
+            backgroundColor: Colors.white.withValues(alpha: 0.05),
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 3,
           ),
@@ -392,12 +392,14 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF1173d4).withOpacity(0.1),
-            Colors.black.withOpacity(0.2),
+            const Color(0xFF1173d4).withValues(alpha: 0.1),
+            Colors.black.withValues(alpha: 0.2),
           ],
         ),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFF1173d4).withOpacity(0.2)),
+        border: Border.all(
+          color: const Color(0xFF1173d4).withValues(alpha: 0.2),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +421,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1173d4).withOpacity(0.2),
+                  color: const Color(0xFF1173d4).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -453,8 +455,8 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         color: isActive
-            ? const Color(0xFF1173d4).withOpacity(0.3)
-            : Colors.white.withOpacity(0.02),
+            ? const Color(0xFF1173d4).withValues(alpha: 0.3)
+            : Colors.white.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isActive ? const Color(0xFF1173d4) : Colors.transparent,
@@ -519,7 +521,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
       width: 12,
       height: height,
       decoration: BoxDecoration(
-        color: const Color(0xFF1173d4).withOpacity(0.4),
+        color: const Color(0xFF1173d4).withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -529,7 +531,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -563,7 +565,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
@@ -603,8 +605,8 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isMain
-                ? const Color(0xFF1173d4).withOpacity(0.2)
-                : Colors.white.withOpacity(0.05),
+                ? const Color(0xFF1173d4).withValues(alpha: 0.2)
+                : Colors.white.withValues(alpha: 0.05),
             shape: BoxShape.circle,
             border: Border.all(
               color: isMain
@@ -638,7 +640,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
       width: 40,
       height: 1.5,
       color: isActive
-          ? const Color(0xFF1173d4).withOpacity(0.5)
+          ? const Color(0xFF1173d4).withValues(alpha: 0.5)
           : Colors.white10,
     );
   }
@@ -647,7 +649,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -712,7 +714,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -720,7 +722,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: Colors.white70, size: 18),
@@ -751,7 +753,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           Switch(
             value: true,
             onChanged: (v) {},
-            activeColor: const Color(0xFF1173d4),
+            activeThumbColor: const Color(0xFF1173d4),
           ),
         ],
       ),
@@ -763,7 +765,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.4),
+        color: Colors.black.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:aevum_native/screens/intro_page_screen.dart';
-import 'package:aevum_native/main.dart';
 import 'dart:io';
 
 // Simple MockHttpOverrides that does nothing but allow tests to run

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
+import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
+import 'package:aevum_native/widgets/heritage_top_nav.dart';
 
 class InviteMemberScreen extends StatelessWidget {
   const InviteMemberScreen({super.key});
@@ -9,82 +11,37 @@ class InviteMemberScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0F151B),
-      body: Stack(
-        children: [
-          _buildMeshBackground(),
-          _buildAppBar(context),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 32),
-                  _buildInviteCard(),
-                  const SizedBox(height: 120), // Bottom nav spacer
-                ],
+      body: SmartNavigationWrapper(
+        topNav: const HeritageTopNav(
+          title: "CONNECT YOUR ROOTS",
+          subtitle: "Expand the Aevum Tree together",
+        ),
+        bottomNav: _buildBottomNav(),
+        child: Stack(
+          children: [
+            _buildMeshBackground(),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 100,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 32),
+                    _buildInviteCard(),
+                    const SizedBox(height: 120),
+                  ],
+                ),
               ),
             ),
-          ),
-          _buildBottomNav(),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildMeshBackground() {
-    return Positioned.fill(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.topLeft,
-            radius: 1.5,
-            colors: [Color(0xFF1E1B4B), Colors.transparent],
-          ),
-        ),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-          child: Container(color: Colors.transparent),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return Positioned(
-      top: 50,
-      left: 20,
-      right: 20,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _circleIconButton(
-            Icons.arrow_back_ios_new,
-            () => Navigator.pop(context),
-          ),
-          _circleIconButton(Icons.help_outline, () {}),
-        ],
-      ),
-    );
-  }
-
-  Widget _circleIconButton(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
-        ),
-        child: Icon(icon, color: Colors.white, size: 18),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
     return Column(
       children: [
         Text(
@@ -119,9 +76,9 @@ class InviteMemberScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Column(
             children: [
@@ -285,7 +242,7 @@ class InviteMemberScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.4),
+            color: Colors.blue.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -324,9 +281,9 @@ class InviteMemberScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -340,7 +297,7 @@ class InviteMemberScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
+                    color: Colors.blue.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(

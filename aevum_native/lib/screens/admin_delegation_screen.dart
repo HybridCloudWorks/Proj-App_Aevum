@@ -106,7 +106,7 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
       ),
       child: TextField(
@@ -125,9 +125,9 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -188,7 +188,11 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
               ],
             ),
           ),
-          Icon(Icons.shield, color: Colors.white.withOpacity(0.1), size: 40),
+          Icon(
+            Icons.shield,
+            color: Colors.white.withValues(alpha: 0.1),
+            size: 40,
+          ),
         ],
       ),
     );
@@ -198,9 +202,9 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
@@ -255,7 +259,7 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -352,9 +356,9 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.06),
+        color: Colors.white.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -390,7 +394,7 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1173d4).withOpacity(0.2),
+                      color: const Color(0xFF1173d4).withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -413,8 +417,8 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
                 member['isAdmin'] = val;
               });
             },
-            activeColor: const Color(0xFF1173d4),
-            activeTrackColor: const Color(0xFF1173d4).withOpacity(0.2),
+            activeThumbColor: const Color(0xFF1173d4),
+            activeTrackColor: const Color(0xFF1173d4).withValues(alpha: 0.2),
             inactiveThumbColor: Colors.white24,
             inactiveTrackColor: Colors.white10,
           ),
