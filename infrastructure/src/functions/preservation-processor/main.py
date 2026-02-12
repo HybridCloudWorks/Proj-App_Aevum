@@ -108,6 +108,7 @@ def process_upload(cloud_event):
             'original': f"{original_image.width}x{original_image.height}",
             'display': f"{display_img.width}x{display_img.height}"
         },
+        'aiStatus': 'pending', 
         'processedAt': firestore.SERVER_TIMESTAMP
     }, merge=True)
 

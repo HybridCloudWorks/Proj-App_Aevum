@@ -43,7 +43,8 @@ resource "google_project_service" "apis" {
     "cloudfunctions.googleapis.com",
     "cloudbuild.googleapis.com",
     "eventarc.googleapis.com",
-    "artifactregistry.googleapis.com"
+    "artifactregistry.googleapis.com",
+    "vision.googleapis.com"
   ])
   service = each.key
   disable_on_destroy = false
@@ -133,7 +134,64 @@ data "archive_file" "source" {
 }
 
 resource "google_storage_bucket_object" "source_zip" {
-  name   = "function-source-${data.archive_file.source.output_sha}.zip"
+  name   = "preservation-source-${data.archive_file.source.output_sha}.zip"
   bucket = data.google_storage_bucket.uploads_temp.name
   source = data.archive_file.source.output_path
+}
+
+# --- AI Analyzer Function ---
+
+# Archive for AI Analyzer source
+data "archive_file" "ai_source" {
+  type        = "zip"
+  source_dir  = "${path.module}/../../src/functions/ai-analyzer"
+  output_path = "${path.module}/ai-analyzer-source.zip"
+}
+
+resource "google_storage_bucket_object" "ai_source_zip" {
+  name   = "ai-analyzer-source-${data.archive_file.ai_source.output_sha}.zip"
+  bucket = data.google_storage_bucket.uploads_temp.name
+  source = data.archive_file.ai_source.output_path
+}
+
+# Cloud Function (Gen 2) - AI Analyzer
+resource "google_cloudfunctions2_function" "ai_analyzer" {
+  name        = "ai-analyzer"
+  location    = var.region
+  description = "Analyzes photos using Vision API: labels, faces, OCR."
+
+  build_config {
+    runtime     = "python311"
+    entry_point = "analyze_media"
+    source {
+      storage_source {
+        bucket = data.google_storage_bucket.uploads_temp.name
+        object = google_storage_bucket_object.ai_source_zip.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 5
+    available_memory   = "1024M" # Vision API and heavy libraries need more RAM
+    timeout_seconds    = 120
+    service_account_email = google_service_account.function_sa.email
+  }
+
+  event_trigger {
+    trigger_region = var.region
+    event_type     = "google.cloud.firestore.document.v1.updated"
+    retry_policy   = "RETRY_POLICY_RETRY"
+    service_account_email = google_service_account.function_sa.email
+    
+    event_filters {
+      attribute = "database"
+      value     = "(default)"
+    }
+    event_filters {
+      attribute = "document"
+      # Regex or pattern for all documents in media_items
+      value     = "media_items/{id}"
+    }
+  }
 }
