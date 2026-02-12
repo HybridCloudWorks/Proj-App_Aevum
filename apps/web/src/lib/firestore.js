@@ -33,7 +33,7 @@ const COLLECTIONS = {
   USERS: "users",
   FAMILIES: "families",
   MEMBERS: "members",
-  MEMORIES: "memories",
+  MEDIA_ITEMS: "media_items",
   HERITAGE: "heritage",
   AI_TASKS: "ai_tasks",
 };
@@ -180,102 +180,102 @@ export function subscribeToFamilies(userId, callback) {
 }
 
 // ==========================================
-// Memory Operations
+// Media Item Operations
 // ==========================================
 
 /**
- * Create a new memory
+ * Create a new media item
  */
-export async function createMemory(familyId, memoryData) {
+export async function createMediaItem(familyId, mediaData) {
   try {
-    const memoryRef = doc(collection(db, COLLECTIONS.MEMORIES));
-    const memory = {
-      ...memoryData,
+    const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+    const mediaItem = {
+      ...mediaData,
       familyId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
 
-    await setDoc(memoryRef, memory);
-    return { success: true, memoryId: memoryRef.id };
+    await setDoc(mediaRef, mediaItem);
+    return { success: true, mediaId: mediaRef.id };
   } catch (error) {
-    console.error("Error creating memory:", error);
+    console.error("Error creating media item:", error);
     return { success: false, error: error.message };
   }
 }
 
 /**
- * Get memories for a family
+ * Get media items for a family
  */
-export async function getFamilyMemories(familyId, maxResults = 20) {
+export async function getFamilyMediaItems(familyId, maxResults = 20) {
   try {
-    const memoriesQuery = query(
-      collection(db, COLLECTIONS.MEMORIES),
+    const mediaQuery = query(
+      collection(db, COLLECTIONS.MEDIA_ITEMS),
       where("familyId", "==", familyId),
       orderBy("createdAt", "desc"),
       limit(maxResults),
     );
 
-    const snapshot = await getDocs(memoriesQuery);
-    const memories = snapshot.docs.map((doc) => ({
+    const snapshot = await getDocs(mediaQuery);
+    const mediaItems = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    return { success: true, data: memories };
+    return { success: true, mediaItems };
   } catch (error) {
-    console.error("Error getting family memories:", error);
-    return { success: false, error: error.message };
+    console.error("Error fetching media items:", error);
+    return { success: false, error: error.message, mediaItems: [] };
   }
 }
 
 /**
- * Subscribe to family memories
+ * Subscribe to family media items
  */
-export function subscribeToMemories(familyId, callback, maxResults = 20) {
-  const memoriesQuery = query(
-    collection(db, COLLECTIONS.MEMORIES),
+export function subscribeToMediaItems(familyId, callback, maxResults = 20) {
+  const mediaQuery = query(
+    collection(db, COLLECTIONS.MEDIA_ITEMS),
     where("familyId", "==", familyId),
     orderBy("createdAt", "desc"),
     limit(maxResults),
   );
 
-  return onSnapshot(memoriesQuery, (snapshot) => {
-    const memories = snapshot.docs.map((doc) => ({
+  return onSnapshot(mediaQuery, (snapshot) => {
+    const mediaItems = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    callback(memories);
+    callback(mediaItems);
   });
 }
 
 /**
- * Update a memory
+ * Update a media item
  */
-export async function updateMemory(familyId, memoryId, updates) {
+export async function updateMediaItem(familyId, mediaId, updates) {
   try {
-    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
-    await updateDoc(memoryRef, {
+    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
+    await updateDoc(mediaRef, {
       ...updates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error updating memory:", error);
+    console.error("Error updating media item:", error);
     return { success: false, error: error.message };
   }
 }
 
 /**
- * Delete a memory
+ * Delete a media item
  */
-export async function deleteMemory(familyId, memoryId) {
+export async function deleteMediaItem(familyId, mediaId) {
   try {
-    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
-    await deleteDoc(memoryRef);
+    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
+    await deleteDoc(mediaRef);
     return { success: true };
   } catch (error) {
-    console.error("Error deleting memory:", error);
+    console.error("Error deleting media item:", error);
     return { success: false, error: error.message };
   }
 }
@@ -289,11 +289,10 @@ export async function deleteMemory(familyId, memoryId) {
  */
 export async function addFamilyMember(familyId, memberData) {
   try {
-    const memberRef = doc(
-      collection(db, COLLECTIONS.FAMILIES, familyId, COLLECTIONS.MEMBERS),
-    );
+    const memberRef = doc(collection(db, COLLECTIONS.MEMBERS));
     const member = {
       ...memberData,
+      familyId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
@@ -311,13 +310,7 @@ export async function addFamilyMember(familyId, memberData) {
  */
 export async function updateFamilyMember(familyId, memberId, updates) {
   try {
-    const memberRef = doc(
-      db,
-      COLLECTIONS.FAMILIES,
-      familyId,
-      COLLECTIONS.MEMBERS,
-      memberId,
-    );
+    const memberRef = doc(db, COLLECTIONS.MEMBERS, memberId);
     await updateDoc(memberRef, {
       ...updates,
       updatedAt: serverTimestamp(),
@@ -334,13 +327,7 @@ export async function updateFamilyMember(familyId, memberId, updates) {
  */
 export async function deleteFamilyMember(familyId, memberId) {
   try {
-    const memberRef = doc(
-      db,
-      COLLECTIONS.FAMILIES,
-      familyId,
-      COLLECTIONS.MEMBERS,
-      memberId,
-    );
+    const memberRef = doc(db, COLLECTIONS.MEMBERS, memberId);
     await deleteDoc(memberRef);
     return { success: true };
   } catch (error) {
@@ -353,14 +340,12 @@ export async function deleteFamilyMember(familyId, memberId) {
  * Subscribe to family members
  */
 export function subscribeToFamilyMembers(familyId, callback) {
-  const membersRef = collection(
-    db,
-    COLLECTIONS.FAMILIES,
-    familyId,
-    COLLECTIONS.MEMBERS,
+  const membersQuery = query(
+    collection(db, COLLECTIONS.MEMBERS),
+    where("familyId", "==", familyId),
   );
 
-  return onSnapshot(membersRef, (snapshot) => {
+  return onSnapshot(membersQuery, (snapshot) => {
     const members = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -412,10 +397,10 @@ export async function updateAITaskStatus(taskId, status) {
 /**
  * Request AI Media Analysis (Face detection, storytelling)
  */
-export async function requestMediaAnalysis(memoryId) {
+export async function requestMediaAnalysis(mediaId) {
   try {
-    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
-    await updateDoc(memoryRef, {
+    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
+    await updateDoc(mediaRef, {
       aiStatus: "pending",
       status: "processed", // Required by backend ai-analyzer
       updatedAt: serverTimestamp(),
@@ -430,10 +415,10 @@ export async function requestMediaAnalysis(memoryId) {
 /**
  * Request AI Photo Restoration
  */
-export async function requestPhotoRestoration(memoryId, params) {
+export async function requestPhotoRestoration(mediaId, params) {
   try {
-    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
-    await updateDoc(memoryRef, {
+    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
+    await updateDoc(mediaRef, {
       aiStatus: "restoration_pending",
       restorationParams: params,
       updatedAt: serverTimestamp(),
@@ -474,11 +459,11 @@ export default {
   createFamily,
   getUserFamilies,
   subscribeToFamilies,
-  createMemory,
-  getFamilyMemories,
-  subscribeToMemories,
-  updateMemory,
-  deleteMemory,
+  createMediaItem,
+  getFamilyMediaItems,
+  subscribeToMediaItems,
+  updateMediaItem,
+  deleteMediaItem,
   addFamilyMember,
   updateFamilyMember,
   deleteFamilyMember,

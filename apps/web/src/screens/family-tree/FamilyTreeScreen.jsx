@@ -9,7 +9,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { subscribeToFamilies, subscribeToFamilyMembers } from "@lib/firestore";
-import BottomNav from "@/components/BottomNav";
 
 function FamilyTreeScreen() {
   const { user } = useAuth();
@@ -94,6 +93,44 @@ function FamilyTreeScreen() {
     },
   };
 
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    setPosition((prev) => ({
+      x: prev.x + e.movementX,
+      y: prev.y + e.movementY,
+    }));
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Touch support for mobile panning
+  const lastTouch = useRef(null);
+  const handleTouchStart = (e) => {
+    lastTouch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+
+  const handleTouchMove = (e) => {
+    if (!lastTouch.current) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - lastTouch.current.x;
+    const dy = touch.clientY - lastTouch.current.y;
+    setPosition((prev) => ({
+      x: prev.x + dx,
+      y: prev.y + dy,
+    }));
+    lastTouch.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = () => {
+    lastTouch.current = null;
+  };
+
   return (
     <div className="bg-[#0f151b] text-white font-display overflow-hidden h-screen flex flex-col selection:bg-primary selection:text-white">
       {/* Header */}
@@ -134,6 +171,13 @@ function FamilyTreeScreen() {
       {/* Tree Canvas */}
       <main
         ref={canvasRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="flex-1 overflow-hidden relative cursor-grab active:cursor-grabbing bg-[#0b0f14]"
         style={{
           backgroundImage:
@@ -289,8 +333,6 @@ function FamilyTreeScreen() {
           </span>
         </button>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

@@ -17,7 +17,6 @@ import {
   subscribeToFamilyMembers,
 } from "@lib/firestore";
 import { signOut } from "@lib/auth";
-import BottomNav from "@/components/BottomNav";
 
 function DashboardScreen() {
   const { user } = useAuth();
@@ -382,8 +381,6 @@ function DashboardScreen() {
 
         <div className="h-8" />
       </main>
-
-      <BottomNav />
     </div>
   );
 }

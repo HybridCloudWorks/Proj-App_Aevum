@@ -13,6 +13,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import MainLayout from "@/layouts/MainLayout";
 
 // Lazy-loaded screen components (Code splitting per FED best practices)
 const ScreenGallery = lazy(() => import("@screens/ScreenGallery"));
@@ -74,7 +75,9 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <DashboardScreen />
+                  <MainLayout>
+                    <DashboardScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -82,7 +85,9 @@ function App() {
               path="/family-tree"
               element={
                 <ProtectedRoute>
-                  <FamilyTreeScreen />
+                  <MainLayout>
+                    <FamilyTreeScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -90,7 +95,9 @@ function App() {
               path="/memories"
               element={
                 <ProtectedRoute>
-                  <MemoriesScreen />
+                  <MainLayout>
+                    <MemoriesScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -98,7 +105,9 @@ function App() {
               path="/upload"
               element={
                 <ProtectedRoute>
-                  <UploadScreen />
+                  <MainLayout>
+                    <UploadScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -106,7 +115,9 @@ function App() {
               path="/heritage-map"
               element={
                 <ProtectedRoute>
-                  <HeritageMapScreen />
+                  <MainLayout>
+                    <HeritageMapScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -114,7 +125,9 @@ function App() {
               path="/ai"
               element={
                 <ProtectedRoute>
-                  <AIFeaturesScreen />
+                  <MainLayout>
+                    <AIFeaturesScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -122,7 +135,9 @@ function App() {
               path="/ai/identity-matcher"
               element={
                 <ProtectedRoute>
-                  <IdentityMatcherScreen />
+                  <MainLayout>
+                    <IdentityMatcherScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -130,7 +145,9 @@ function App() {
               path="/ai/restoration"
               element={
                 <ProtectedRoute>
-                  <RestorationScreen />
+                  <MainLayout>
+                    <RestorationScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -138,7 +155,9 @@ function App() {
               path="/messages"
               element={
                 <ProtectedRoute>
-                  <MessengerHubScreen />
+                  <MainLayout>
+                    <MessengerHubScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -146,7 +165,9 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <IdentityScreen />
+                  <MainLayout>
+                    <IdentityScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />
@@ -154,7 +175,9 @@ function App() {
               path="/settings"
               element={
                 <ProtectedRoute>
-                  <SettingsScreen />
+                  <MainLayout>
+                    <SettingsScreen />
+                  </MainLayout>
                 </ProtectedRoute>
               }
             />

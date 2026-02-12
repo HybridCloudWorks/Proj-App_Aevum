@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
-import BottomNav from "@/components/BottomNav";
 import "./MemoriesScreen.css";
 
 function MemoriesScreen() {
@@ -175,8 +174,6 @@ function MemoriesScreen() {
           <span className="text-sm font-semibold">Magic Tagging</span>
         </button>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

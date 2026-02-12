@@ -17,7 +17,7 @@ class DatabaseService {
     if (user == null) return Stream.value(0);
 
     return _firestore
-        .collection('family_members')
+        .collection('members')
         .where('userId', isEqualTo: user.uid)
         .snapshots()
         .map((snapshot) => snapshot.docs.length);
@@ -36,7 +36,7 @@ class DatabaseService {
     if (user == null) throw Exception('User not authenticated');
 
     final String memberId = _uuid.v4();
-    await _firestore.collection('family_members').doc(memberId).set({
+    await _firestore.collection('members').doc(memberId).set({
       'id': memberId,
       'userId': user.uid,
       'name': name,

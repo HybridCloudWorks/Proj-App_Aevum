@@ -1,119 +1,57 @@
-# Aevum Stitch Code Export - Action Required
+# Aevum Project Roadmap & TODO 📝
 
-## The Problem
+## 🎯 The "Meal Ticket": MVP Priority #1
 
-The Stitch MCP provides **download URLs** for the HTML code, but these URLs require **authentication** to access. When I tried to fetch them directly, they returned parsed markdown instead of raw HTML/CSS code.
+- [ ] **Family Tree "Pannable" Screen** (Feature #1)
+  - [ ] Integrate Stitch-generated HTML/CSS into `FamilyTreeScreen.jsx`.
+  - [ ] Implement smooth panning and zooming for the tree canvas.
+  - [ ] Connect tree nodes to the standardized `members` collection.
+  - [ ] Handle real-time updates when new branches are merged.
+  - [ ] Ensure flawless interaction on both mobile and web viewports.
 
----
+## 🛠️ Core Infrastructure (GDEF Focused)
 
-## Option 1: You Export from Stitch Web UI (Recommended)
+- [x] **Collection Standardization**
+  - [x] Consolidate `family_members` (mobile) into top-level `members`.
+  - [x] Consolidate `memories` into `media_items`.
+  - [x] Ensure real-time sync works across platforms without dual-writes.
+- [ ] **Firestore Security Rules**
+  - [ ] Implement `request.auth.uid` isolation for all family data.
+  - [ ] Validate rules against the new top-level `members` structure.
+  - [ ] Lock down `media_items` and `ai_tasks` collections.
+- [ ] **Bottom Navigation Standardization**
+  - [ ] Create a reusable `BottomNav` component in `apps/web/src/components/Navigation/`.
+  - [ ] Standardize the mobile nav in `apps/mobile/lib/widgets/`.
+  - [ ] Link all primary screens: Home, Family Tree, Memories, Heritage Map.
 
-### Steps
+## 🤖 AI Features & Backend Integration
 
-1. **Open Stitch in your browser**
+- [ ] **Semantic Discovery / Face Detection**
+  - [ ] Link `AIFeaturesScreen` to trigger backend analysis.
+  - [ ] Implement the "Confirm & Merge Branch" logic (Data flow: AI Suggestion -> `members` collection).
+- [ ] **Photo Restoration**
+  - [ ] Connect `MemoriesScreen` "Start Restore" action to trigger backend workers.
+  - [ ] Monitor `ai_tasks` status in real-time.
 
-   ```
-   https://stitch.withgoogle.com/projects/6323824354776268694
-   ```
+## 📦 Deployment & DevOps
 
-2. **For each screen, export the code**:
-   - Click on a screen in the canvas
-   - Click the **"Code"** or **"</>"** button in the toolbar
-   - Copy the HTML code
-   - Save to the corresponding file in `src/screens/[category]/`
-
-3. **Screen-to-File Mapping**:
-
-   | Screen Title                    | Save To                                          |
-   | ------------------------------- | ------------------------------------------------ |
-   | Welcome to Kinship (4 variants) | `src/screens/onboarding/WelcomeScreen.jsx`       |
-   | Aevum Secure Auth               | `src/screens/auth/AuthScreen.jsx`                |
-   | Family Tree Explorer (3)        | `src/screens/family-tree/FamilyTreeScreen.jsx`   |
-   | Member Memories (5)             | `src/screens/memories/MemoriesScreen.jsx`        |
-   | Aevum Global Heritage Map (12)  | `src/screens/heritage-map/HeritageMapScreen.jsx` |
-   | AI Identity Matcher (3)         | `src/screens/ai-features/AIFeaturesScreen.jsx`   |
-   | Aevum Identity Profile (5)      | `src/screens/identity/IdentityScreen.jsx`        |
-   | Privacy & Security Settings (2) | `src/screens/settings/SettingsScreen.jsx`        |
-   | Aevum Admin Infrastructure (14) | `src/screens/admin/AdminScreen.jsx`              |
-
----
-
-## Option 2: Provide Me Browser Access
-
-If you want me to do it, I can use the **browser automation** to:
-
-1. Navigate to Stitch
-2. Log in using your session
-3. Export each screen's code
-4. Save to the project files
-
-### How to Enable This
-
-**You have two choices:**
-
-### A) Let Me Use Your Browser Session
-
-1. Open Stitch in your browser and log in
-2. Tell me to proceed - I'll use browser automation to:
-   - Open each screen in Stitch
-   - Copy the code
-   - Save it to your project
-
-### B) Provide API Token (If Available)
-
-If Stitch supports API authentication:
-
-1. Go to Stitch settings
-2. Generate an API token or find existing credentials
-3. Share the token (I'll use it securely via MCP)
+- [ ] **GitOps Protocol**
+  - [ ] Commit and stage all standardized code changes.
+  - [ ] Verify build status for Web and Mobile.
+  - [ ] Push to main for deployment.
 
 ---
 
-## Option 3: Bulk Export Script
+## Artifact: Stitch Integration Status
 
-If Stitch has a bulk export feature, you could:
-
-1. **Check for export option** in Stitch:
-   - Project settings → Export
-   - Download all screens as HTML/CSS bundle
-
-2. **If available**, download the ZIP and tell me the path - I'll integrate it into the project structure.
-
----
-
-## Quick Reference: All 61 Screen IDs
-
-See the full list in: [`docs/screens-inventory.md`](file:///c:/Users/saulp/.gemini/antigravity/playground/rapid-protostar/docs/screens-inventory.md)
+- [ ] Import Stitch-generated UI into the following screens:
+      | Screen Title | Component Path | Status |
+      | :--- | :--- | :--- |
+      | Family Tree Explorer | `FamilyTreeScreen.jsx` | 🔄 Priority |
+      | Member Memories | `MemoriesScreen.jsx` | ⏳ Pending |
+      | Welcome to Kinship | `WelcomeScreen.jsx` | ⏳ Pending |
+      | Aevum Global Heritage Map | `HeritageMapScreen.jsx` | ⏳ Pending |
 
 ---
 
-## What's Already Done ✅
-
-- Project structure created
-- All placeholder components ready
-- Firebase security rules configured
-- CI/CD pipeline set up
-- Design system matches Stitch theme
-
-**All that's left is importing the actual Stitch-generated HTML/CSS into each component.**
-
----
-
-## Recommended Action
-
-**Tell me**: "Use the browser to export the Stitch screens"
-
-I'll then:
-
-1. Open Stitch in a browser window
-2. Navigate to each screen
-3. Export the code
-4. Update the component files
-
----
-
-## Post-Migration & Logic TODOs 📝
-
-- [x] Connect the UI components to actual backend data streams (e.g., Firebase real-time sync status).
-- [x] Implement the "Confirm & Merge Branch" logic in the Semantic Discovery screen.
-- [x] Finalize the "Start Restore" action for AI tasks on the dashboard.
+_Note: Any references to Kubernetes, VPS, or ArgoCD have been struck from the project architecture to focus exclusively on the Firebase Serverless stack._

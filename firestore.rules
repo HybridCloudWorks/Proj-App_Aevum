@@ -1,18 +1,65 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 3, 10);
+    
+    // Auth check helper
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Owner check helper - for documents with a 'userId' field
+    function isOwner(resource) {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    
+    // Owner check for NEW documents (check request.resource)
+    function isNewOwner() {
+      return isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    // --- USERS ---
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // --- MEMBERS (Standardized) ---
+    // Since we consolidated to a top-level collection, we check the 'userId' field
+    match /members/{memberId} {
+      allow read, delete: if isOwner(resource);
+      allow create: if isNewOwner();
+      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+    }
+
+    // --- MEDIA ITEMS ---
+    match /media_items/{mediaId} {
+      allow read, delete: if isOwner(resource);
+      allow create: if isNewOwner();
+      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+    }
+
+    // --- AI TASKS ---
+    match /ai_tasks/{taskId} {
+      allow read, delete: if isOwner(resource);
+      allow create: if isNewOwner();
+      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+    }
+
+    // --- FAMILIES ---
+    match /families/{familyId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.ownerId || 
+        request.auth.uid in resource.data.members
+      );
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.ownerId;
+      allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.ownerId;
+    }
+    
+    // Legacy support (subcollections of families if any remain)
+    match /families/{familyId}/members/{memberId} {
+      allow read, write: if isAuthenticated() && (
+        request.auth.uid == get(/databases/$(database)/documents/families/$(familyId)).data.ownerId
+      );
     }
   }
 }
