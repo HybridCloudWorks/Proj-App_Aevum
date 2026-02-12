@@ -2,3 +2,5 @@ functions-framework==3.*
 google-cloud-firestore
 google-cloud-storage
 google-cloud-vision
+google-cloud-aiplatform
+

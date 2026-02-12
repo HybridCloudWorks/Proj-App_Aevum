@@ -44,7 +44,8 @@ resource "google_project_service" "apis" {
     "cloudbuild.googleapis.com",
     "eventarc.googleapis.com",
     "artifactregistry.googleapis.com",
-    "vision.googleapis.com"
+    "vision.googleapis.com",
+    "aiplatform.googleapis.com"
   ])
   service = each.key
   disable_on_destroy = false
@@ -82,6 +83,13 @@ resource "google_storage_bucket_iam_member" "gallery_bucket_writer" {
 resource "google_project_iam_member" "firestore_user" {
   project = var.project_id
   role    = "roles/datastore.user"
+  member  = "serviceAccount:${google_service_account.function_sa.email}"
+}
+
+# 5. Vertex AI Access (for Gemini)
+resource "google_project_iam_member" "ai_user" {
+  project = var.project_id
+  role    = "roles/aiplatform.user"
   member  = "serviceAccount:${google_service_account.function_sa.email}"
 }
 
