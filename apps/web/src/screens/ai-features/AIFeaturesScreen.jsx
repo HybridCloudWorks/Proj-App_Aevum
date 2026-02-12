@@ -8,8 +8,6 @@
  */
 
 import { useNavigate } from "react-router-dom";
-import BottomNav from "@/components/BottomNav";
-import "./IdentityMatcherScreen.css"; // Reuse glass styles
 
 function AIFeaturesScreen() {
   const navigate = useNavigate();
@@ -21,7 +19,7 @@ function AIFeaturesScreen() {
       desc: "Connect faces in old photos to your family tree nodes.",
       icon: "face",
       path: "/ai/identity-matcher",
-      color: "indigo",
+      color: "blue",
     },
     {
       id: "restore",
@@ -36,21 +34,19 @@ function AIFeaturesScreen() {
       title: "Family Chronicles",
       desc: "Generate narrative stories from your family documents.",
       icon: "auto_stories",
-      path: "/ai/chronicles", // Upcoming
+      path: "/ai/chronicles",
       color: "orange",
     },
   ];
 
   return (
-    <div className="identity-matcher-container p-6 pb-32">
-      <div className="mesh-bg"></div>
-
+    <div className="bg-background-light dark:bg-background-dark min-h-screen p-6 pb-24 font-display">
       <header className="mb-10 pt-8">
-        <h1 className="text-3xl font-serif font-bold text-white mb-2">
+        <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
           AI Lab
         </h1>
-        <p className="text-white/50 text-sm">
-          Advanced tools to preserve your heritage.
+        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+          Advanced tools to preserve and rediscover your heritage.
         </p>
       </header>
 
@@ -59,42 +55,44 @@ function AIFeaturesScreen() {
           <div
             key={tool.id}
             onClick={() => navigate(tool.path)}
-            className="glass-pane p-6 flex items-center gap-5 cursor-pointer hover:bg-white/10 transition-colors"
+            className="glass-panel p-6 flex items-center gap-5 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-all transform active:scale-[0.98] rounded-2xl"
           >
             <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${tool.color}-500/20 text-${tool.color}-400`}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-${tool.color}-500/20 text-${tool.color}-500 shadow-inner`}
             >
               <span className="material-symbols-outlined text-3xl">
                 {tool.icon}
               </span>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-white mb-1">{tool.title}</h3>
-              <p className="text-xs text-white/40 leading-relaxed">
+              <h3 className="font-bold text-slate-900 dark:text-white mb-1">
+                {tool.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                 {tool.desc}
               </p>
             </div>
-            <span className="material-symbols-outlined text-white/20">
+            <span className="material-symbols-outlined text-slate-300 dark:text-white/20">
               chevron_right
             </span>
           </div>
         ))}
       </div>
 
-      <div className="mt-8 glass-pane p-5 border-dashed border-indigo-500/30">
+      <div className="mt-8 glass-panel p-5 border-dashed border-primary/30 rounded-2xl">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse shadow-[0_0_8px_#6366f1]"></div>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">
-            Deep Search Active
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(17,115,212,0.6)]"></div>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+            Neural Indexing Active
           </span>
         </div>
-        <p className="text-xs text-white/60">
-          AI is currently indexing 42 new archival documents found in the Global
-          Heritage Map.
+        <p className="text-xs text-slate-600 dark:text-white/60 leading-relaxed">
+          The engine is currently analyzing{" "}
+          <span className="text-primary font-bold">42 archival documents</span>{" "}
+          found in the Global Heritage Map. New matches will appear in your
+          notifications.
         </p>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

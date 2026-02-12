@@ -7,7 +7,6 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNav from "@/components/BottomNav";
 import "./HeritageMapScreen.css";
 
 function HeritageMapScreen() {
@@ -177,8 +176,6 @@ function HeritageMapScreen() {
           </div>
         </div>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

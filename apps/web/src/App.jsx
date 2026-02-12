@@ -135,9 +135,7 @@ function App() {
               path="/ai/identity-matcher"
               element={
                 <ProtectedRoute>
-                  <MainLayout>
-                    <IdentityMatcherScreen />
-                  </MainLayout>
+                  <IdentityMatcherScreen />
                 </ProtectedRoute>
               }
             />
@@ -145,9 +143,7 @@ function App() {
               path="/ai/restoration"
               element={
                 <ProtectedRoute>
-                  <MainLayout>
-                    <RestorationScreen />
-                  </MainLayout>
+                  <RestorationScreen />
                 </ProtectedRoute>
               }
             />
