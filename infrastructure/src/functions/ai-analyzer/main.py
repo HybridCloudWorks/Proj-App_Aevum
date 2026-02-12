@@ -54,9 +54,51 @@ def analyze_media(cloud_event):
     status = fields.get("status", {}).get("stringValue")
     ai_status = fields.get("aiStatus", {}).get("stringValue")
     
-    if status != "processed" or ai_status != "pending":
-        print(f"Skipping analysis for {doc_id}. Status: {status}, AI Status: {ai_status}")
+    if ai_status == "restoration_pending":
+        process_restoration(doc_id, fields)
         return
+
+    if status == "processed" and ai_status == "pending":
+        analyze_media_logic(doc_id, fields)
+        return
+    
+    print(f"Skipping analysis for {doc_id}. Status: {status}, AI Status: {ai_status}")
+
+def process_restoration(doc_id, fields):
+    """Handles the AI Restoration request."""
+    print(f"Starting AI Restoration for {doc_id}")
+    params = fields.get("restorationParams", {}).get("mapValue", {}).get("fields", {})
+    colorize = params.get("colorize", {}).get("booleanValue", False)
+    sharpen = params.get("sharpen", {}).get("booleanValue", False)
+    repair = params.get("repair", {}).get("booleanValue", False)
+
+    try:
+        # 1. In a real app, we would use a Generative AI model or specialized Vision model here.
+        # Example: Call Vertex AI Image Generation for 'upscaling' or 'inpainting'
+        
+        # 2. Mock processing delay / logic
+        print(f"Restoration options: Colorize={colorize}, Sharpen={sharpen}, Repair={repair}")
+        
+        # 3. Update Firestore
+        doc_ref = firestore_client.collection('media_items').document(doc_id)
+        doc_ref.update({
+            'aiStatus': 'restoration_completed',
+            'restorationResult': {
+                'completedAt': firestore.SERVER_TIMESTAMP,
+                'applied': {
+                    'colorize': colorize,
+                    'sharpen': sharpen,
+                    'repair': repair
+                }
+            }
+        })
+        print(f"AI Restoration completed for {doc_id}")
+    except Exception as e:
+        print(f"Error during restoration: {e}")
+        doc_ref = firestore_client.collection('media_items').document(doc_id)
+        doc_ref.update({'aiStatus': 'restoration_failed', 'aiError': str(e)})
+
+def analyze_media_logic(doc_id, fields):
 
     display_gs_url = fields.get("urls", {}).get("mapValue", {}).get("fields", {}).get("display", {}).get("stringValue")
     
@@ -83,7 +125,21 @@ def analyze_media(cloud_event):
         # 2. Extract Data
         labels = [label.description for label in response.label_annotations]
         full_text = response.full_text_annotation.text if response.full_text_annotation else ""
-        face_count = len(response.face_annotations)
+        
+        detected_faces = []
+        for face in response.face_annotations:
+            # Extract normalized bounding box coordinates
+            vertices = face.bounding_poly.vertices
+            detected_faces.append({
+                'confidence': face.detection_confidence,
+                'boundingBox': [
+                    {'x': vertex.x, 'y': vertex.y} for vertex in vertices
+                ],
+                'joyLikelihood': face.joy_likelihood.name,
+                'headwearLikelihood': face.headwear_likelihood.name
+            })
+
+        face_count = len(detected_faces)
         
         # 3. Gemini LLM Enrichment (Generation of the Family Story)
         story = generate_family_story(labels, full_text, face_count)
@@ -96,8 +152,9 @@ def analyze_media(cloud_event):
             'analysis': {
                 'labels': labels,
                 'faceCount': face_count,
+                'detectedFaces': detected_faces, # Bounding boxes for Auto-Tagging
                 'extractedText': full_text,
-                'isSafe': True # Simplified for flow
+                'isSafe': True
             }
         }, merge=True)
 

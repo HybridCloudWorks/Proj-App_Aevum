@@ -7,58 +7,52 @@
 
 ---
 
-## 🏛️ Project Architecture
+## 🏛️ Project Architecture (Monorepo)
 
-Aevum is built as a high-performance, mobile-first React application powered by Firebase, following the **GDEF (Google Developer Expert for Firebase)** and **MAD (Mobile App Development)** best practices.
+Aevum is organized as a unified monorepo containing both the web and native mobile platforms.
 
 ### 🧩 Core Modules
 
-| Module           | Description                                                        |
-| :--------------- | :----------------------------------------------------------------- |
-| **Onboarding**   | Immersive multi-screen introduction to the Kinship journey.        |
-| **Family Tree**  | Dynamic, interactive genealogy tree with identification features.  |
-| **Memories**     | Multimedia repository for family photos, stories, and artifacts.   |
-| **Heritage Map** | Geographic visualization of ancestral origins and global heritage. |
-| **AI Features**  | Identity matching and automated family chronicling.                |
-| **Identity**     | Security-first profile management and privacy controls.            |
-
-## 🗺️ Navigation & Mapping
-
-To facilitate implementation, we maintain detailed mapping between Stitch designs and React components:
-
-- **[Master Mapping Registry](docs/mapping.md)**: 1-to-1 link between all 57 design folders and their target code.
-- **[End-to-End User Flows](docs/user-flow.md)**: Visualized journey map (Mermaid) including Onboarding, Admin, and AI logic.
-
-### 👓 Spatial & visionOS Strategy
-
-Aevum is built with **Spatial Computing** in mind. The [Deployment Hub](src/stitch-screens/aevum_frontend_deployment_hub) manages build pipelines that sync heritage data to RealityKit-enabled environments, particularly for the **Heritage Map** and **3D Family Tree**.
+| Path              | Platform  | Tech Stack                        | Status      |
+| :---------------- | :-------- | :-------------------------------- | :---------- |
+| `apps/web`        | Web/PWA   | React 18, Vite, Tailwind, GDEF    | Refactoring |
+| `apps/mobile`     | Native    | Flutter Stable, MAD Best Factors  | Active Dev  |
+| `docs/`           | Shared    | Strategic Docs & Design Baselines | Centralized |
+| `infrastructure/` | DevSecOps | Firebase Rules, Terraform, CI/CD  | Locked      |
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Node.js (v18+)
-- Firebase CLI (`npm install -g firebase-tools`)
-
-### Setup
+### 🌐 Web Project
 
 ```bash
-# Clone and install
-git clone <repo-url>
-cd MVP-Aevum
+cd apps/web
 npm install
-
-# Start Development
 npm run dev
 ```
 
-### Emulators
-
-To test locally with Firestore and Storage:
+### 📱 Mobile Project
 
 ```bash
-npm run firebase:emulators
+cd apps/mobile
+flutter pub get
+flutter run
 ```
+
+### 🔐 Shared Infrastructure
+
+To deploy Firestore or Storage rules:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+## 🗺️ Documentation & Mapping
+
+We maintain a centralized documentation hub in the `docs/` folder:
+
+- **[Strategic Docs](docs/)**: Migration logs, implementation plans, and walkthroughs.
+- **[Design Baselines](docs/baselines/)**: 57 high-fidelity design captures for 1-to-1 UI matching.
+- **[Master Mapping](docs/mapping.md)**: Registry of design-to-code components.
 
 ## 🔐 Security & Data (GDEF Guidelines)
 

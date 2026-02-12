@@ -94,8 +94,46 @@ def process_upload(cloud_event):
         print("Failed to copy to Archive bucket.")
         return
 
-    # 5. Update Firestore Metadata
-    # Update media_items/{media_uuid}
+    # 5. Extract EXIF Data
+    exif_data = {}
+    try:
+        exif = original_image._getexif()
+        if exif:
+            from PIL.ExifTags import TAGS, GPSTAGS
+            for tag, value in exif.items():
+                decoded = TAGS.get(tag, tag)
+                if decoded == "GPSInfo":
+                    gps_data = {}
+                    for t in value:
+                        sub_decoded = GPSTAGS.get(t, t)
+                        gps_data[sub_decoded] = value[t]
+                    exif_data["gps"] = gps_data
+                else:
+                    exif_data[decoded] = str(value)
+    except Exception as e:
+        print(f"Error extracting EXIF: {e}")
+
+    # Helper to convert GPS to decimal
+    def get_decimal_from_dms(dms, ref):
+        degrees = dms[0]
+        minutes = dms[1]
+        seconds = dms[2]
+        decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
+        if ref in ['S', 'W']:
+            decimal = -decimal
+        return decimal
+
+    lat = None
+    lng = None
+    if "gps" in exif_data:
+        try:
+            gps = exif_data["gps"]
+            lat = get_decimal_from_dms(gps["GPSLatitude"], gps["GPSLatitudeRef"])
+            lng = get_decimal_from_dms(gps["GPSLongitude"], gps["GPSLongitudeRef"])
+        except:
+            pass
+
+    # 6. Update Firestore Metadata
     doc_ref = firestore_client.collection('media_items').document(media_uuid)
     doc_ref.set({
         'status': 'processed',
@@ -108,8 +146,13 @@ def process_upload(cloud_event):
             'original': f"{original_image.width}x{original_image.height}",
             'display': f"{display_img.width}x{display_img.height}"
         },
+        'location': {
+            'latitude': lat,
+            'longitude': lng
+        } if lat and lng else None,
+        'takenAt': exif_data.get('DateTimeOriginal') or exif_data.get('DateTime'),
         'aiStatus': 'pending', 
         'processedAt': firestore.SERVER_TIMESTAMP
     }, merge=True)
 
-    print(f"Updated Firestore document: {media_uuid}")
+    print(f"Updated Firestore document: {media_uuid} with location: {lat}, {lng}")
