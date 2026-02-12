@@ -69,7 +69,11 @@ class AdminFinalAuditScreen extends StatelessWidget {
                 color: const Color(0xFF1173d4),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.infinity, color: Colors.white, size: 24),
+              child: const Icon(
+                Icons.all_inclusive,
+                color: Colors.white,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 16),
             Column(

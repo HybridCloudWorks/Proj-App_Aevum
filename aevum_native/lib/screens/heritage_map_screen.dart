@@ -16,7 +16,7 @@ class HeritageMapScreen extends StatelessWidget {
             child: Opacity(
               opacity: 0.6,
               child: Image.network(
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDipXXkhtdLez0uOSBrxpYrZ3aj5qn2LxSI410UIY4fwaYQARZvG6MI1UzRkWCJYSJhXrXOCNngHQSYbA5we3pwiUfffPFH285sYxxR5Dq5wDsiufbFYGHGkT8dc3JQTFkif3eJiJtrrhjUToQ44KqRbby586qGHYIuQ87Eo_yDXVuhl7coEQkdi7lIqutzHNFVsau7jIUQueow3tmdnnquZOBIkbM-Cid_NGGjaByeS1HGs0h-qsTlATRelHkC6w457cglF76Nkak',
+                'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&auto=format&fit=crop',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
                     Container(color: Colors.black26),
@@ -30,7 +30,7 @@ class HeritageMapScreen extends StatelessWidget {
             top: 0.40,
             left: 0.45,
             imageUrl:
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDtLi3Kg6MacYJ8tK6FuMGwbBWGIy0aDc-zS-_TmdQUKxChBjCABdycrSGe9DvMvjMwGTVApKFbtr6BVDrKW_kkF_O24yeuNgKsVkK4ZK6BUQPXa6YtpuNgAvy8j_j15ZeV1qGH2MsoqygOzNh87ubF-G2mDzsw2v9GgFlek4Q5SRJyp106yECoumifEXauxho3vtM3yKaK5Tov8jiA0MxJGwchf2bGsRkk0EHR_nbGxdsT7RaRBlJvz4DEj62-EayRfdgukxx_b10',
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
             badgeCount: '+14',
             label: 'Tuscany Roots',
             isFeatured: true,
@@ -40,7 +40,7 @@ class HeritageMapScreen extends StatelessWidget {
             top: 0.28,
             left: 0.35,
             imageUrl:
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuC09m8XmORd7jMBDvGyk68B4PyuJwDzSlTQyZg8C2HPMBWPugQyF0o_p6KFmEaZyjHvaDW4BO4dHKjnGXwKp3DjvC43HAQIDJccNyWg0k5bt7BfGhwfpEzBjNp3-wb5rajC-Pv8Q3uroaiPAO8lAhN2qBKj-22_iOQzO_57tMUqMPofxEOsTxkyTNtos8yjRstoQQNPQKRMlHySo_fydxbbsgazrREQVIlgnZ4cID2rK1zOkQhdvSJWCEqK212_v8IZvanmNGlj21I',
+                'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200',
             isGrayscale: true,
           ),
           _buildMapPin(
@@ -48,7 +48,7 @@ class HeritageMapScreen extends StatelessWidget {
             top: 0.55,
             left: 0.52,
             imageUrl:
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuCpT9fqAYWWjViykT-ROnMfPQBZFpiUXJQ9wPmsYWrF0R93jiyZcw_XVhB3KOxAcOr-hO20FrXz3q27yAscGG614vwb-Qd-XZLx-_6J_TOHI9NdtdgE2Pmc4EzvO6zgKylgazBhTna2JuVidRu2w70rzTTEYmh_kNtQsXBbGR3AiHhnjPDCa0I48R2ZEmH9KvWFkjpROs-oOJ5aQ1MFCKGVnzAg4OkLNN1wDhAhOFPsQWBaIsbJxf58DYIpGZsV1q91CgvmcWyplXc',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200',
           ),
 
           // 3. UI Overlay Layers
@@ -157,7 +157,7 @@ class HeritageMapScreen extends StatelessWidget {
           ),
           if (label != null)
             Padding(
-              padding: const EdgeInsets.top(8.0),
+              padding: const EdgeInsets.only(top: 8.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
@@ -288,7 +288,6 @@ class HeritageMapScreen extends StatelessWidget {
       right: 20,
       top: MediaQuery.of(context).size.height * 0.35,
       child: Column(
-        gap: 12,
         children: [
           Container(
             decoration: BoxDecoration(
@@ -365,7 +364,7 @@ class HeritageMapScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   // Bottom Sheet Header
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,7 +444,7 @@ class HeritageMapScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             image: const DecorationImage(
               image: NetworkImage(
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDk0698TlNnmR9J57eq-ABO-w1CfkmZc5Hgftu3p4yLlyuxppJkV5_gwUUtTGxPS7nkSSfBqph5veJkv1BdGQGwWcZdne4n3yti6zY40hCw1PwRbtIHn1HAhxkO7okldjUN4865vBUyVQutaf_N9qNXlrcmJr8WK-5iBEDwNuvg6-Fgs2t3ncCD_bzvzrb0UV4QS9HPv94h9hLb5lglYkgH9x5SPqeQWC3seYkJmNL08EW6s5UDnLvU5AWAZAjkP8IUxDAYTedP_XI',
+                'https://images.unsplash.com/photo-1599388307409-91c2c2f10b7f?w=600',
               ),
               fit: BoxFit.cover,
             ),
@@ -496,7 +495,6 @@ class HeritageMapScreen extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Row(
-          gap: 12,
           children: [
             // Gallery Tile
             Expanded(
@@ -623,7 +621,7 @@ class HeritageMapScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           '1880',
@@ -666,15 +664,15 @@ class HeritageMapScreen extends StatelessWidget {
         children: [
           _buildStackedAvatar(
             0,
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuDyFb_aap00-1Bxx_9bvAK3wLkoRKF7u-vqIgigZSv3n2BaP4nAFMMPvRG5d7e-GikDsfEL8SPnNAXoslikw7Ke7OR9-zTSuNk6QA3uvW-lMO4Wb4WACNKq9uauUDbkR2OrH58MOAOdTKqU1lf0vHl_W-TIojjAIDlyZlW-_toxNya2mhals7ECMyDUY-CrG4wl_NNdBldrH_a5s-g8MY0do5bW0PZTl9n4vngdqI5WbbwqSfYEzrsk6CGagk04BfDQoEKp6RF7tWI',
+            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
           ),
           _buildStackedAvatar(
             1,
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuARbdC-_YtWtO3zX5uZJvatpys5wwbvW8zJM5x2liNna2UeAHA9ksDZfAsf6xf6nzzX6HgJmT50IImVuzUdD_o4KNzaXlhVITntxpEvE-u10Ins4YcdQZXJH3xSCBM4iQqH-T3AOXcSu7QD7p2-GjpFZZtaQuNEWVMghBbFmgz2vHIc-xf8zqjU_A3iDChEPjr_LXXkav8WmwaPm2B1dhCUzDo5mRJQbScRjLVoP4eG7nRH-R50EtqUn42DTEZVAccQXg93U22yP9A',
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200',
           ),
           _buildStackedAvatar(
             2,
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuAWKVt9AJuVbXhzZPCAeU9RiXhJive8FBHw0h620dO3we_Xl6teRX-fG7aBCnqG6dNelxuEQAsUP3D4VhW489Hs03HtqoIn65wV4BS0WDfSIcX4g5-jxxhyaTVGk81w_WkzHlESieiLicn7qmCFo3U9CX2fnJwi2tTPYWJGboVbNiN7c20rvIQPxARCgnHtyRRP8DR6jXPRRO9mF8Qc3xh8JToqImCVL7CGHDUjUlnkq1E0qIaLrOFGKuFKd4-R-2VQHRIgWh9FEUs',
+            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200',
           ),
           Positioned(
             left: 24 * 3.0,

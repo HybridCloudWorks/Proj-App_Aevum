@@ -360,7 +360,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
           ),
           Text(
             perm,
-            style: GoogleFonts.fira_code(
+            style: GoogleFonts.firaCode(
               fontSize: 9,
               color: Colors.white10,
               fontWeight: FontWeight.bold,
@@ -414,7 +414,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
           children: [
             Text(
               "HEIC",
-              style: GoogleFonts.fira_code(
+              style: GoogleFonts.firaCode(
                 fontSize: 9,
                 color: Colors.white10,
                 fontWeight: FontWeight.bold,
@@ -422,7 +422,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
             ),
             Text(
               "4032 x 3024",
-              style: GoogleFonts.fira_code(
+              style: GoogleFonts.firaCode(
                 fontSize: 9,
                 color: Colors.white10,
                 fontWeight: FontWeight.bold,
@@ -478,7 +478,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: RichText(
               text: TextSpan(
-                style: GoogleFonts.fira_code(fontSize: 9, height: 1.5),
+                style: GoogleFonts.firaCode(fontSize: 9, height: 1.5),
                 children: const [
                   TextSpan(
                     text: "1  { \"event\":\n",
@@ -519,7 +519,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
           children: [
             Text(
               "JSON",
-              style: GoogleFonts.fira_code(
+              style: GoogleFonts.firaCode(
                 fontSize: 9,
                 color: Colors.white10,
                 fontWeight: FontWeight.bold,
@@ -527,7 +527,7 @@ class AdminStorageArchitectureScreen extends StatelessWidget {
             ),
             Text(
               "Portable",
-              style: GoogleFonts.fira_code(
+              style: GoogleFonts.firaCode(
                 fontSize: 9,
                 color: Colors.white10,
                 fontWeight: FontWeight.bold,

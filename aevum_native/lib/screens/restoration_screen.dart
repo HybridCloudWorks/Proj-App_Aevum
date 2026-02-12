@@ -132,7 +132,7 @@ class _RestorationScreenState extends State<RestorationScreen> {
                       0,
                     ]),
                     child: Image.network(
-                      "https://lh3.googleusercontent.com/aida-public/AB6AXuD6rLWYNqR4sQgKqUxA8itpYbWXVX2-AazxpOq2ruKAUHeE88QzbLzddOdrSSPueXXolY0mRc53w7JH1MHgnxowqUH38duGKayQBL3QGkFmy67PfrafwkAncBVgXFshhCrlV5O9l5XYFtSWDjvsZgOmDibOqOf9VfohVZPB8t3L1XsH0o7Gc8wHDiTMDJLR3Mkv8u1JKpekBv7hqaZN-XbkutgK1HMXkryD667osEYGmVBJUXNSmRkMazqU6vZYrXp21beGfnhnR_Q",
+                      "https://images.unsplash.com/photo-1516239327699-2a91219cd4f0?w=600&auto=format&fit=crop",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -144,7 +144,7 @@ class _RestorationScreenState extends State<RestorationScreen> {
                     widthFactor: _sliderValue,
                     child: ClipRect(
                       child: Image.network(
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuD6rLWYNqR4sQgKqUxA8itpYbWXVX2-AazxpOq2ruKAUHeE88QzbLzddOdrSSPueXXolY0mRc53w7JH1MHgnxowqUH38duGKayQBL3QGkFmy67PfrafwkAncBVgXFshhCrlV5O9l5XYFtSWDjvsZgOmDibOqOf9VfohVZPB8t3L1XsH0o7Gc8wHDiTMDJLR3Mkv8u1JKpekBv7hqaZN-XbkutgK1HMXkryD667osEYGmVBJUXNSmRkMazqU6vZYrXp21beGfnhnR_Q",
+                        "https://images.unsplash.com/photo-1516239327699-2a91219cd4f0?w=600&auto=format&fit=crop",
                         fit: BoxFit.cover,
                       ),
                     ),

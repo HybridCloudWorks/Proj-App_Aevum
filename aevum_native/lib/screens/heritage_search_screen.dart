@@ -33,7 +33,7 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
                     const SizedBox(height: 32),
                     _buildResultsHeader(),
                     const SizedBox(height: 20),
-                    _buildResultsGrid(),
+                    _buildResultsGridWithWide(),
                   ],
                 ),
               ),
@@ -464,14 +464,6 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
     );
   }
 
-  Widget _buildWideCard(String title, String tag, String imgUrl) {
-    return Container(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
-      ), // Wait, GridView.count doesn't support this easily
-    );
-  }
-
   // Helper for the wide card since it's in a grid
   Widget _buildResultsGridWithWide() {
     return Column(
@@ -513,98 +505,73 @@ class _HeritageSearchScreenState extends State<HeritageSearchScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        Container(
-          height: 180,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            image: DecorationImage(
-              image: const NetworkImage(
-                "https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=800&auto=format&fit=crop",
-              ),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.3),
-                BlendMode.darken,
-              ),
-            ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                bottom: 12,
-                left: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          tag,
-                          style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      title,
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        _buildWideCard(
+          "Edinburgh Homestead",
+          "HERITAGE SITE",
+          "https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?w=800&auto=format&fit=crop",
         ),
       ],
     );
   }
 
-  // Redefining build to use the corrected grid
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F151B),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildAppBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildWideCard(String title, String tag, String imgUrl) {
+    return Container(
+      height: 180,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        image: DecorationImage(
+          image: NetworkImage(imgUrl),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.3),
+            BlendMode.darken,
+          ),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            bottom: 12,
+            left: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    _buildSearchBar(),
-                    const SizedBox(height: 24),
-                    _buildFilterSection(),
-                    const SizedBox(height: 32),
-                    _buildResultsHeader(),
-                    const SizedBox(height: 20),
-                    _buildResultsGridWithWide(),
+                    const Icon(
+                      Icons.location_on,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      tag,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
-              ),
+                Text(
+                  title,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            _buildBottomNav(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
+  // Removed redundant build method
 
   Widget _buildBottomNav() {
     return Container(

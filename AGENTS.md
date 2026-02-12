@@ -818,20 +818,22 @@ Google Cloud Platform underpins the frontend infrastructure, CI/CD workflows, an
 
 **Primary Responsibilities**:
 
-1. **GCP Architecture**: Design solutions using Google Cloud services
-2. **Compute**: App Engine, Cloud Run, Compute Engine, Kubernetes Engine
-3. **Data & Analytics**: BigQuery, Pub/Sub, Dataflow, Cloud Storage
-4. **Networking**: VPC, Cloud Load Balancing, Cloud CDN, Cloud Interconnect
-5. **Security**: IAM, VPC Service Controls, Secret Manager, encryption
-6. **Databases**: Firestore, Cloud SQL, Cloud Spanner, Datastore
-7. **DevOps**: Cloud Build, Cloud Deploy, artifact management, monitoring
-8. **Compliance**: Meeting regulatory requirements, audit logging
-9. **Cost Optimization**: Resource management, commitment discounts
-10. **Observability**: Cloud Logging, Cloud Monitoring, Cloud Trace
+1. **GCP Architecture**: Design scalable, resilient cloud solutions using Google Cloud services.
+2. **Storage Strategy**: Execute **[STRATEGY-STORAGE-AI.md](documentation/STRATEGY-STORAGE-AI.md)** via tiered storage (Hot/Warm/Cold) with Lifecycle Policies to minimize costs for massive photo archives.
+3. **AI & Data Pipeline**: Design event-driven workflows (GCS -> Cloud Run -> Vertex AI) for cost-effective image processing and metadata extraction.
+4. **Networking**: VPC, Cloud Load Balancing, Cloud CDN, Cloud Interconnect.
+5. **Security**: IAM, VPC Service Controls, Secret Manager, encryption.
+6. **Databases**: Firestore, Cloud SQL, Cloud Spanner, Datastore.
+7. **DevOps**: Cloud Build, Cloud Deploy, artifact management, monitoring.
+8. **Compliance**: Meeting regulatory requirements, audit logging.
+9. **Cost Optimization (FinOps)**: Budget monitoring, CUDs, identifying cost anomalies, and optimizing resource usage.
+10. **Observability**: Cloud Logging, Cloud Monitoring, Cloud Trace.
 
 **Skills at Mastery Level**:
 
 - Google Cloud Platform architecture and design
+- Storage Lifecycle Management (Standard, Nearline, Coldline, Archive)
+- AI & ML Pipelines (Vertex AI, Vision API, Cloud Functions)
 - Compute options (App Engine, Cloud Run, GKE, Compute Engine)
 - Database options (Firestore, Cloud SQL, Spanner, BigQuery)
 - Networking (VPC, load balancing, CDN, hybrid connectivity)

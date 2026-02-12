@@ -277,7 +277,7 @@ class _AdminDelegationScreenState extends State<AdminDelegationScreen> {
           ),
           const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.left(12),
+            padding: const EdgeInsets.only(left: 12),
             child: Column(
               children: permissions
                   .map(

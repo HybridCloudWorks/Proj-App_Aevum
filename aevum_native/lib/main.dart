@@ -27,6 +27,11 @@ import 'package:aevum_native/screens/onboarding_journey_screen.dart';
 import 'package:aevum_native/screens/heritage_search_screen.dart';
 import 'package:aevum_native/screens/restricted_profile_screen.dart';
 import 'package:aevum_native/screens/media_detail_screen.dart';
+import 'package:aevum_native/screens/dev_menu_screen.dart';
+import 'package:aevum_native/screens/intro_page_screen.dart';
+import 'package:aevum_native/screens/auth_screen.dart';
+import 'package:aevum_native/screens/profile_screen.dart';
+import 'package:aevum_native/screens/dashboard_screen.dart';
 
 void main() {
   runApp(const AevumApp());
@@ -46,8 +51,12 @@ class AevumApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF0B1121),
         useMaterial3: true,
       ),
-      home: const HeritageMapScreen(),
+      home: const IntroPageScreen(),
       routes: {
+        '/auth': (context) => const AuthScreen(),
+        '/dev-menu': (context) => const DevMenuScreen(),
+        '/profile-main': (context) => const ProfileScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
         '/restoration': (context) => const RestorationScreen(),
         '/memories': (context) => const MemberMemoriesScreen(),
         '/invite': (context) => const InviteMemberScreen(),

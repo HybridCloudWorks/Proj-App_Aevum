@@ -675,7 +675,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _securityToggle(
-            Icons.face_unlock,
+            Icons.face_retouching_natural,
             "Biometric Lock",
             "FaceID Required",
           ),
@@ -796,7 +796,7 @@ class AdminInfrastructureControlScreen extends StatelessWidget {
   Widget _logLine(String time, String msg, Color color) {
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.fira_code(fontSize: 10),
+        style: GoogleFonts.firaCode(fontSize: 10),
         children: [
           TextSpan(
             text: "$time  ",

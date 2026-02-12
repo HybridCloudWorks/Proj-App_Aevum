@@ -142,7 +142,7 @@ class AdminPrivacySecurityScreen extends StatelessWidget {
                 value: val,
                 onChanged: (v) {},
                 activeColor: const Color(0xFF1173d4),
-                scale: 0.8,
+                /* scale removed */
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uuid/uuid.dart';
 
 class HeritageUploadScreen extends StatefulWidget {
   const HeritageUploadScreen({super.key});
@@ -113,13 +114,13 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
 
   Widget _buildHeader() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.between,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Memory Upload Center',
+              'Upload Center',
               style: GoogleFonts.plusJakartaSans(
                 color: Colors.white,
                 fontSize: 24,
@@ -129,7 +130,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
             ),
             const SizedBox(height: 4),
             Text(
-              'Archive your family\'s history',
+              'Digitize your legacy',
               style: GoogleFonts.plusJakartaSans(
                 color: Colors.white60,
                 fontSize: 14,
@@ -184,7 +185,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Drop memories here',
+                  'Upload Photos',
                   style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontSize: 16,
@@ -237,18 +238,18 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.between,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       const Icon(
-                        Icons.biometry_rounded,
+                        Icons.fingerprint,
                         color: Color(0xFF0EA5E9),
                         size: 18,
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'ANCESTRAL DNA SCAN',
+                        'AI PROCESSING',
                         style: GoogleFonts.plusJakartaSans(
                           color: const Color(0xFF0EA5E9),
                           fontSize: 10,
@@ -312,7 +313,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
               ),
               const SizedBox(height: 16),
               Text(
-                'Detecting lineage markers...',
+                'Analyzing image features...',
                 style: GoogleFonts.plusJakartaSans(
                   color: Colors.white70,
                   fontSize: 12,
@@ -389,7 +390,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PROJECT BRANCH',
+          'TARGET BRANCH',
           style: GoogleFonts.plusJakartaSans(
             color: Colors.white38,
             fontSize: 10,
@@ -406,7 +407,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
             border: Border.all(color: const Color(0xFF1173D4).withOpacity(0.2)),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
@@ -460,7 +461,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: _handleUpload,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -469,7 +470,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
           ),
         ),
         child: Text(
-          'COMMIT TO VAULT',
+          'START PROCESSING',
           style: GoogleFonts.plusJakartaSans(
             color: Colors.white,
             fontSize: 16,
@@ -477,6 +478,41 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
             letterSpacing: 1.0,
           ),
         ),
+      ),
+    );
+  }
+
+  void _handleUpload() {
+    // 1. Generate UUID for the file
+    // Note: detailed implementation is in services/storage_service.dart
+    final String uuid = const Uuid().v4();
+    final DateTime now = DateTime.now();
+
+    // 2. Construct Categorized Storage Path
+    // Logic: users/{userId}/{year}/{month}/{category}/{uuid}.tiff (Preservation Quality)
+    final String storagePath =
+        'uploads/mock_user_123/${now.year}/${now.month}/family_photos/$uuid.tiff';
+
+    // 3. Show Feedback (Simulating Service Call)
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Starting Upload Pipeline...'),
+            Text(
+              'ID: $uuid',
+              style: const TextStyle(fontSize: 10, color: Colors.white70),
+            ),
+            Text(
+              'Path: $storagePath',
+              style: const TextStyle(fontSize: 10, color: Colors.white70),
+            ),
+          ],
+        ),
+        backgroundColor: const Color(0xFF1173D4),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -502,7 +538,7 @@ class _HeritageUploadScreenState extends State<HeritageUploadScreen>
                 _buildNavItem(Icons.home_outlined, 'Home', false),
                 _buildNavItem(Icons.map_outlined, 'Map', true),
                 _buildNavItem(Icons.folder_open_outlined, 'Vault', false),
-                _buildNavItem(Icons.family_history_outlined, 'Tree', false),
+                _buildNavItem(Icons.account_tree_outlined, 'Tree', false),
               ],
             ),
           ),

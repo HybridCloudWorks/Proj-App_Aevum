@@ -1,30 +1,32 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:aevum_native/screens/intro_page_screen.dart';
 import 'package:aevum_native/main.dart';
+import 'dart:io';
+
+// Simple MockHttpOverrides that does nothing but allow tests to run
+class MockHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    HttpOverrides.global = MockHttpOverrides();
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('IntroPageScreen smoke test', (WidgetTester tester) async {
+    // Test IntroPageScreen directly to avoid main app complexity
+    await tester.pumpWidget(
+      const MaterialApp(home: IntroPageScreen(skipTimer: true)),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify logo and text exist
+    expect(find.byIcon(Icons.history_edu), findsOneWidget);
+    expect(find.text("Aevum"), findsOneWidget);
   });
 }

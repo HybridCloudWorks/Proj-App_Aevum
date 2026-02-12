@@ -1,0 +1,91 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The Python encoding of Python scripts is generally not helpful
+# but it doesn't hurt.
+__pycache__/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will create this folder for local configuration
+.navigation/
+
+# Android/Lint related
+**/android/**/build/
+**/android/local.properties
+**/android/generated_patchable_src_res_path_file
+**/android/key.properties
+**/android/bundle
+**/android/gradlew
+**/android/gradlew.bat
+
+# iOS/Xcode related
+**/ios/Pods/
+**/ios/Runner/**/Assets.xcassets/AppIcon.appiconset/
+**/ios/Runner.xcworkspace/
+**/ios/Runner.xcodeproj/
+**/ios/DerivedData/
+**/ios/Flutter/Config/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/flutter_params
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/App.framework/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/build/
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/CMakeCache.txt
+**/windows/CMakeFiles/
+**/windows/CMakeGeneration.txt
+**/windows/CMakeSettings.json
+**/windows/build/
+
+# Linux related
+**/linux/flutter/ephemeral/
+
+# macOS related
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/Generated.xcconfig
+**/macos/Flutter/flutter_export_environment.sh
+
+# User-specific stuff
+.project
+.settings/
+.vscode/
+
+# Logs
+test_output.txt
+test_output_2.txt
+test_output_3.txt
+test_output_4.txt

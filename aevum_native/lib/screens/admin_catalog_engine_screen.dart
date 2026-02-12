@@ -676,7 +676,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 "SYSTEM LOG",
-                style: GoogleFonts.fira_code(
+                style: GoogleFonts.firaCode(
                   fontSize: 9,
                   fontWeight: FontWeight.bold,
                   color: Colors.white24,
@@ -720,7 +720,7 @@ class AdminCatalogEngineScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: RichText(
         text: TextSpan(
-          style: GoogleFonts.fira_code(fontSize: 10, height: 1.5),
+          style: GoogleFonts.firaCode(fontSize: 10, height: 1.5),
           children: [
             TextSpan(
               text: "$time ",

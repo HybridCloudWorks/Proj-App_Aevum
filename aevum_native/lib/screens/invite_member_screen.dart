@@ -172,7 +172,7 @@ class InviteMemberScreen extends StatelessWidget {
             border: Border.all(color: Colors.white10, width: 4),
             image: const DecorationImage(
               image: NetworkImage(
-                "https://lh3.googleusercontent.com/aida-public/AB6AXuCypW0HCtYaKHH0MjMWX5XSsEKnu7uoyRGpXiybm9VCSMSScwMkgC9ez5DGxTI5aZ9R8qtdmEhpP57FWjs1FEoF71D4bCGguhT8QavCYCK0Hq6QmPi5gBbq-toXZJYB2YAyY3ACa7I9D_xT4aNPKnATilfv4r2mIsfkVXaKiuzT4E6wh8xuMRQ2gs1XjSq71o-iw17bRamMPrWJPA1F8-lYYaF3HAZYx3KtIUk3CtH-NetUq8Av_FjlDt-4jo7Pxw5GiiDB9tT_y0w",
+                "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=200",
               ),
               fit: BoxFit.cover,
             ),
@@ -255,7 +255,7 @@ class InviteMemberScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(Icons.family_history, color: Colors.white38, size: 20),
+              const Icon(Icons.group_add, color: Colors.white38, size: 20),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(

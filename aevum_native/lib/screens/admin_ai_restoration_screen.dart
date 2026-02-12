@@ -151,7 +151,7 @@ class _AdminAIRestorationScreenState extends State<AdminAIRestorationScreen> {
                 ),
                 child: Text(
                   "ISO 400 • f/2.8",
-                  style: GoogleFonts.fira_code(
+                  style: GoogleFonts.firaCode(
                     fontSize: 10,
                     color: Colors.white70,
                     fontWeight: FontWeight.bold,

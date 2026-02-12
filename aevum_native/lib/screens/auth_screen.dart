@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 
-class AuthScreen extends StatelessWidget {
+class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool _autoLogin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +95,9 @@ class AuthScreen extends StatelessWidget {
             children: [
               _buildHeader(),
               const SizedBox(height: 32),
-              _buildFaceIDButton(),
+              _buildFaceIDButton(context),
+              const SizedBox(height: 16),
+              _buildLoginSettings(),
               const SizedBox(height: 24),
               _buildDivider(),
               const SizedBox(height: 24),
@@ -143,9 +152,31 @@ class AuthScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFaceIDButton() {
+  Widget _buildLoginSettings() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Checkbox(
+          value: _autoLogin,
+          onChanged: (val) {
+            setState(() {
+              _autoLogin = val ?? false;
+            });
+          },
+          activeColor: const Color(0xFF5A5CF2),
+          side: const BorderSide(color: Colors.white54),
+        ),
+        Text(
+          "Auto-login & Skip Splash",
+          style: GoogleFonts.inter(color: Colors.white70, fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFaceIDButton(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.pushReplacementNamed(context, '/dashboard'),
       child: Container(
         height: 120,
         width: double.infinity,

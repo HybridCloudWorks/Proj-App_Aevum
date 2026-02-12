@@ -95,7 +95,7 @@ class HeritageMessengerScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Family Messenger',
@@ -157,9 +157,9 @@ class HeritageMessengerScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, mb: 16),
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'FAMILY BRANCHES',
@@ -257,7 +257,7 @@ class HeritageMessengerScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 width: 40,
@@ -398,7 +398,7 @@ class HeritageMessengerScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, mb: 16),
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 16),
           child: Text(
             'RECENT CHATS',
             style: GoogleFonts.plusJakartaSans(
@@ -511,7 +511,7 @@ class HeritageMessengerScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [

@@ -13,9 +13,16 @@ class AdminAIEngineScreen extends StatelessWidget {
         elevation: 0,
         leading: Container(
           margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            shape: BoxShape.circle,
+          ),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 16),
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 16,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -74,7 +81,11 @@ class AdminAIEngineScreen extends StatelessWidget {
               color: const Color(0xFF1173d4).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.auto_awesome, color: Color(0xFF1173d4), size: 40),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: Color(0xFF1173d4),
+              size: 40,
+            ),
           ),
           const SizedBox(height: 24),
           Text(
@@ -103,7 +114,9 @@ class AdminAIEngineScreen extends StatelessWidget {
             child: LinearProgressIndicator(
               value: 0.4,
               backgroundColor: Colors.white.withOpacity(0.05),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1173d4)),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF1173d4),
+              ),
               minHeight: 10,
             ),
           ),
@@ -113,11 +126,19 @@ class AdminAIEngineScreen extends StatelessWidget {
             children: [
               Text(
                 "Processing Batch 2/5",
-                style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white38),
+                style: GoogleFonts.manrope(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white38,
+                ),
               ),
               Text(
                 "~12 mins remaining",
-                style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white38),
+                style: GoogleFonts.manrope(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white38,
+                ),
               ),
             ],
           ),
@@ -194,7 +215,10 @@ class AdminAIEngineScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       "1942 • Colorization & Upscaling",
-                      style: GoogleFonts.manrope(fontSize: 11, color: Colors.white38),
+                      style: GoogleFonts.manrope(
+                        fontSize: 11,
+                        color: Colors.white38,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -202,12 +226,19 @@ class AdminAIEngineScreen extends StatelessWidget {
                         const SizedBox(
                           width: 10,
                           height: 10,
-                          child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white38)),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation(Colors.white38),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           "Processing texture details...",
-                          style: GoogleFonts.manrope(fontSize: 10, color: Colors.white38, fontStyle: FontStyle.italic),
+                          style: GoogleFonts.manrope(
+                            fontSize: 10,
+                            color: Colors.white38,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ],
                     ),
@@ -239,16 +270,32 @@ class AdminAIEngineScreen extends StatelessWidget {
             ),
             Text(
               "View All",
-              style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF1173d4)),
+              style: GoogleFonts.manrope(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1173d4),
+              ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        _queueItem("Arthur's Portrait", "Waiting for available slot", "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100"),
+        _queueItem(
+          "Arthur's Portrait",
+          "Waiting for available slot",
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+        ),
         const SizedBox(height: 12),
-        _queueItem("Summer of '69", "Waiting for available slot", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100"),
+        _queueItem(
+          "Summer of '69",
+          "Waiting for available slot",
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+        ),
         const SizedBox(height: 12),
-        _queueItem("Graduation Day", "Waiting for available slot", "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100"),
+        _queueItem(
+          "Graduation Day",
+          "Waiting for available slot",
+          "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100",
+        ),
       ],
     );
   }
@@ -273,9 +320,19 @@ class AdminAIEngineScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: GoogleFonts.manrope(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-                Text(subtitle, style: GoogleFonts.manrope(fontSize: 11, color: Colors.white24)),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.manrope(
+                    fontSize: 11,
+                    color: Colors.white24,
+                  ),
+                ),
               ],
             ),
           ),
@@ -289,7 +346,11 @@ class AdminAIEngineScreen extends StatelessWidget {
               children: [
                 Text(
                   "Prioritize",
-                  style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white70),
+                  style: GoogleFonts.manrope(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white70,
+                  ),
                 ),
                 const SizedBox(width: 4),
                 const Icon(Icons.arrow_upward, color: Colors.white70, size: 12),
@@ -303,17 +364,21 @@ class AdminAIEngineScreen extends StatelessWidget {
 
   Widget _buildWaitingInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF7C3AED).withOpacity(0.05),
-        borderRadius: BorderRadius.circular(32),
+        color: const Color(0xFF6366F1).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFF7C3AED).withOpacity(0.1)),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline, color: Color(0xFF7C3AED), size: 20),
+              const Icon(
+                Icons.info_outline,
+                color: Color(0xFF7C3AED),
+                size: 20,
+              ),
               const SizedBox(width: 12),
               Text(
                 "Why is there a wait?",
@@ -347,16 +412,23 @@ class AdminAIEngineScreen extends StatelessWidget {
         color: const Color(0xFF1173d4),
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
-          BoxShadow(color: const Color(0xFF1173d4).withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(
+            color: const Color(0xFF1173d4).withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
         ],
-      ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           const Icon(Icons.home_filled, color: Colors.white38, size: 28),
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
             child: const Icon(Icons.bolt, color: Color(0xFF1173d4), size: 28),
           ),
           const Icon(Icons.person_outline, color: Colors.white38, size: 28),
