@@ -37,8 +37,8 @@
   /* Glass Card - Light */
   .glass-card {
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
@@ -46,16 +46,16 @@
   /* Glass Card - Dark */
   .glass-card-darker {
     background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   /* Glass Panel - Auth style */
   .glass-panel {
     background: rgba(16, 17, 34, 0.45);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   }
@@ -94,16 +94,6 @@
 
   .bento-item:active {
     transform: scale(0.98);
-  }
-
-  /* No Scrollbar */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
   }
 
   /* Button Primary */

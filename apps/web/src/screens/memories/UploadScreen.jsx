@@ -72,7 +72,7 @@ function UploadScreen() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto px-6 pb-24 no-scrollbar z-10 relative h-[calc(100vh-160px)]">
+      <main className="flex-1 overflow-y-auto px-6 pb-24 scrollbar-hide z-10 relative h-[calc(100vh-160px)]">
         {/* Upload Area */}
         <section className="mb-8">
           <div

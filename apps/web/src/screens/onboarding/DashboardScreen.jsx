@@ -8,13 +8,24 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
+import {
+  subscribeToFamilies,
+  subscribeToMemories,
+  subscribeToAITasks,
+  updateAITaskStatus,
+  createMockAITask,
+  subscribeToFamilyMembers,
+} from "@lib/firestore";
 import { signOut } from "@lib/auth";
+import BottomNav from "@/components/BottomNav";
 
 function DashboardScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
+  const [members, setMembers] = useState([]);
   const [memories, setMemories] = useState([]);
+
+  const [aiTasks, setAiTasks] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -22,13 +33,31 @@ function DashboardScreen() {
     // Subscribe to user's families
     const unsubFamilies = subscribeToFamilies(user.uid, setFamilies);
 
-    // If user has families, subscribe to memories of the first one
-    // TODO: Implement family selection
+    // Subscribe to AI tasks
+    const unsubTasks = subscribeToAITasks(user.uid, setAiTasks);
+
+    let unsubMembers = () => {};
+    let unsubMemories = () => {};
+    if (families.length > 0) {
+      unsubMembers = subscribeToFamilyMembers(families[0].id, setMembers);
+      unsubMemories = subscribeToMemories(families[0].id, setMemories);
+    }
 
     return () => {
       unsubFamilies();
+      unsubTasks();
+      unsubMembers();
+      unsubMemories();
     };
-  }, [user]);
+  }, [user, families]);
+
+  const handleStartRestore = async (taskId) => {
+    if (taskId) {
+      await updateAITaskStatus(taskId, "running");
+    } else {
+      await createMockAITask(user.uid);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -75,7 +104,7 @@ function DashboardScreen() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 flex-1 px-4 pb-24 overflow-y-auto no-scrollbar">
+      <main className="relative z-10 flex-1 px-4 pb-24 overflow-y-auto scrollbar-hide">
         {/* Family Tree Card */}
         <div className="w-full h-56 glass-card rounded-3xl mb-4 relative overflow-hidden group">
           <div
@@ -167,7 +196,7 @@ function DashboardScreen() {
             </div>
             <div className="z-10">
               <div className="text-3xl font-bold text-white mb-1">
-                {families.length > 0 ? "142" : "0"}
+                {members.length}
               </div>
               <p className="text-xs text-gray-400">Members added</p>
             </div>
@@ -179,7 +208,7 @@ function DashboardScreen() {
                 />
               </div>
               <p className="text-[10px] text-green-300 font-medium">
-                +12 this month
+                +{members.length} this month
               </p>
             </div>
           </div>
@@ -199,26 +228,38 @@ function DashboardScreen() {
               </span>
             </div>
             <div className="space-y-2 z-10">
-              <div className="flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/5">
-                <div className="w-8 h-8 rounded-lg bg-gray-600 overflow-hidden flex-shrink-0">
-                  <div className="w-full h-full bg-gray-500 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-gray-400 text-sm">
-                      photo
-                    </span>
+              {aiTasks.length > 0 ? (
+                <div className="flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/5">
+                  <div className="w-8 h-8 rounded-lg bg-gray-600 overflow-hidden flex-shrink-0">
+                    <img
+                      src={aiTasks[0].imageUrl}
+                      alt="Task"
+                      className="w-full h-full object-cover opacity-80"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">
+                      {aiTasks[0].title}
+                    </p>
+                    <p className="text-[10px] text-purple-300">
+                      {aiTasks[0].type}
+                    </p>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium truncate">Grandpa '54</p>
-                  <p className="text-[10px] text-purple-300">Enhance color</p>
-                </div>
-              </div>
+              ) : (
+                <p className="text-center text-[10px] text-gray-500 italic py-2">
+                  No pending tasks
+                </p>
+              )}
             </div>
-            <Link
-              to="/ai"
+            <button
+              onClick={() =>
+                handleStartRestore(aiTasks.length > 0 ? aiTasks[0].id : null)
+              }
               className="mt-2 w-full py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 rounded-xl text-xs font-medium text-purple-100 transition-colors text-center block"
             >
-              Start Restore
-            </Link>
+              {aiTasks.length > 0 ? "Start Restore" : "Create Task"}
+            </button>
           </div>
 
           {/* Recent Memories */}
@@ -239,29 +280,60 @@ function DashboardScreen() {
                 View All
               </Link>
             </div>
-            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
-              {/* Memory placeholders */}
-              {[
-                { year: "1985", title: "Summer Wedding" },
-                { year: "1992", title: "First Grade" },
-              ].map((memory, i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 w-32 group cursor-pointer"
-                >
-                  <div className="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10 bg-gradient-to-br from-gray-700 to-gray-800">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-2 left-2">
-                      <p className="text-xs font-bold text-white">
-                        {memory.year}
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
+              {memories.length > 0
+                ? memories.map((memory) => (
+                    <div
+                      key={memory.id}
+                      className="flex-shrink-0 w-32 group cursor-pointer"
+                    >
+                      <div className="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10 bg-gray-800">
+                        {memory.imageUrl ? (
+                          <img
+                            src={memory.imageUrl}
+                            alt={memory.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-2 left-2">
+                          <p className="text-xs font-bold text-white">
+                            {memory.year ||
+                              new Date(
+                                memory.createdAt?.seconds * 1000,
+                              ).getFullYear()}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs font-medium text-gray-300 truncate pl-1">
+                        {memory.title}
                       </p>
                     </div>
-                  </div>
-                  <p className="text-xs font-medium text-gray-300 truncate pl-1">
-                    {memory.title}
-                  </p>
-                </div>
-              ))}
+                  ))
+                : /* Fallback placeholders if no real memories yet */
+                  [
+                    { year: "1985", title: "Summer Wedding" },
+                    { year: "1992", title: "First Grade" },
+                  ].map((memory, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 w-32 group cursor-pointer"
+                    >
+                      <div className="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10 bg-gradient-to-br from-gray-700 to-gray-800">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-2 left-2">
+                          <p className="text-xs font-bold text-white">
+                            {memory.year}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs font-medium text-gray-300 truncate pl-1">
+                        {memory.title}
+                      </p>
+                    </div>
+                  ))}
 
               {/* Add New */}
               <Link
@@ -311,51 +383,7 @@ function DashboardScreen() {
         <div className="h-8" />
       </main>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md z-50">
-        <div className="glass-card-darker rounded-2xl p-1.5 flex justify-between items-center shadow-2xl">
-          <Link
-            to="/dashboard"
-            className="flex-1 flex flex-col items-center justify-center py-2 text-primary"
-          >
-            <span className="material-symbols-outlined text-[26px] filled">
-              grid_view
-            </span>
-          </Link>
-          <Link
-            to="/family-tree"
-            className="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-[26px]">
-              family_history
-            </span>
-          </Link>
-          <div className="relative -top-6">
-            <Link
-              to="/memories"
-              className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 border-4 border-gray-900 text-white hover:scale-105 transition-transform"
-            >
-              <span className="material-symbols-outlined text-3xl">add</span>
-            </Link>
-          </div>
-          <Link
-            to="/heritage-map"
-            className="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-[26px]">
-              search
-            </span>
-          </Link>
-          <Link
-            to="/settings"
-            className="flex-1 flex flex-col items-center justify-center py-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-[26px]">
-              settings
-            </span>
-          </Link>
-        </div>
-      </div>
+      <BottomNav />
     </div>
   );
 }

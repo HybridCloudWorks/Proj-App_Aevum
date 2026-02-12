@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
 import 'package:aevum_native/widgets/heritage_bottom_nav.dart';
 import 'package:aevum_native/widgets/heritage_top_nav.dart';
+import 'package:aevum_native/services/database_service.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -74,7 +75,9 @@ class DashboardScreen extends StatelessWidget {
           child: _blurBlob(const Color(0xFFEC4899).withValues(alpha: 0.2), 250),
         ),
         // Overlay
-        Positioned.fill(child: Container(color: Colors.black.withValues(alpha: 0.1))),
+        Positioned.fill(
+          child: Container(color: Colors.black.withValues(alpha: 0.1)),
+        ),
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
@@ -160,7 +163,9 @@ class DashboardScreen extends StatelessWidget {
                           color: const Color(0xFF1173D4).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: const Color(0xFF1173D4).withValues(alpha: 0.3),
+                            color: const Color(
+                              0xFF1173D4,
+                            ).withValues(alpha: 0.3),
                           ),
                         ),
                         child: Text(
@@ -279,281 +284,354 @@ class DashboardScreen extends StatelessWidget {
           children: [
             // Growth Card
             Expanded(
-              child: Container(
-                height: 176, // h-44
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: -16,
-                      right: -16,
-                      child: Container(
-                        width: 96,
-                        height: 96,
-                        decoration: BoxDecoration(
-                          color: Colors.green.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Container(color: Colors.transparent),
-                        ),
+              child: StreamBuilder<int>(
+                stream: DatabaseService().getMemberCountStream(),
+                builder: (context, snapshot) {
+                  final count = snapshot.data ?? 0;
+                  return Container(
+                    height: 176, // h-44
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.spa,
-                              color: Colors.greenAccent,
-                              size: 20,
+                        Positioned(
+                          top: -16,
+                          right: -16,
+                          child: Container(
+                            width: 96,
+                            height: 96,
+                            decoration: BoxDecoration(
+                              color: Colors.green.withValues(alpha: 0.2),
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "GROWTH",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[200],
-                                letterSpacing: 0.5,
-                              ),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                              child: Container(color: Colors.transparent),
                             ),
-                          ],
+                          ),
                         ),
-                        const SizedBox(height: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "142",
-                              style: GoogleFonts.publicSans(
-                                fontSize: 36,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: -1.0,
-                                height: 1,
-                              ),
-                            ),
-                            Text(
-                              "Members added",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Progress
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 6,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: FractionallySizedBox(
-                                alignment: Alignment.centerLeft,
-                                widthFactor: 0.75,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.greenAccent,
-                                    borderRadius: BorderRadius.circular(10),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.spa,
+                                  color: Colors.greenAccent,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "GROWTH",
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[200],
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "+12 this month",
-                              style: GoogleFonts.montserrat(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.greenAccent,
-                                letterSpacing: 0.5,
-                              ),
+                            const SizedBox(height: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  count.toString(),
+                                  style: GoogleFonts.publicSans(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                    letterSpacing: -1.0,
+                                    height: 1,
+                                  ),
+                                ),
+                                Text(
+                                  "Members added",
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[400],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // Progress
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 6,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: (count / 50).clamp(0.05, 1.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.greenAccent,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "+$count this month",
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.greenAccent,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 16),
             // AI Tasks Card
             Expanded(
-              child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/vault-health'),
-                child: Container(
-                  height: 176, // h-44
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: -16,
-                        left: -16,
-                        child: Container(
-                          width: 96,
-                          height: 96,
-                          decoration: BoxDecoration(
-                            color: Colors.purple.withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                            child: Container(color: Colors.transparent),
-                          ),
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: DatabaseService().getAITasksStream(),
+                builder: (context, snapshot) {
+                  final tasks = snapshot.data ?? [];
+                  final task = tasks.isNotEmpty ? tasks.first : null;
+
+                  return GestureDetector(
+                    onTap: () {
+                      if (tasks.isEmpty) {
+                        DatabaseService().createMockTask();
+                      } else {
+                        Navigator.pushNamed(context, '/vault-health');
+                      }
+                    },
+                    child: Container(
+                      height: 176, // h-44
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
                         ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Stack(
                         children: [
-                          Row(
+                          Positioned(
+                            bottom: -16,
+                            left: -16,
+                            child: Container(
+                              width: 96,
+                              height: 96,
+                              decoration: BoxDecoration(
+                                color: Colors.purple.withValues(alpha: 0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 20,
+                                  sigmaY: 20,
+                                ),
+                                child: Container(color: Colors.transparent),
+                              ),
+                            ),
+                          ),
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Icon(
-                                    Icons.auto_fix_high,
-                                    color: Colors.purpleAccent,
-                                    size: 20,
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.auto_fix_high,
+                                        color: Colors.purpleAccent,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        "AI TASKS",
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[200],
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "AI TASKS",
-                                    style: GoogleFonts.montserrat(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey[200],
-                                      letterSpacing: 0.5,
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: tasks.isEmpty
+                                          ? Colors.grey[600]
+                                          : Colors.red[500],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      tasks.length.toString(),
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.red[500],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  "3",
+                              // Task Item
+                              if (task != null)
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.05,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[600],
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          child: Image.network(
+                                            task['imageUrl'] ?? "",
+                                            fit: BoxFit.cover,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.8,
+                                            ),
+                                            colorBlendMode: BlendMode.modulate,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              task['title'] ?? "Unknown",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              task['type'] ?? "Processing",
+                                              style: GoogleFonts.montserrat(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.purple[200],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Text(
+                                  "No pending tasks",
                                   style: GoogleFonts.montserrat(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: Colors.white38,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              // Button
+                              GestureDetector(
+                                onTap: task != null
+                                    ? () {
+                                        DatabaseService().updateTaskStatus(
+                                          task['id'],
+                                          "running",
+                                        );
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Restoration started...",
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    : () => DatabaseService().createMockTask(),
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.purple.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      task != null
+                                          ? "START RESTORE"
+                                          : "CREATE TASK",
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.purple[100],
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          // Task Item
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.05),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.05),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[600],
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      "https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4",
-                                      fit: BoxFit.cover,
-                                      color: Colors.white.withValues(alpha: 0.8),
-                                      colorBlendMode: BlendMode.modulate,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Grandpa '54",
-                                        style: GoogleFonts.montserrat(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        "Enhance color",
-                                        style: GoogleFonts.montserrat(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.purple[200],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Button
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.purple.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.purple.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "START RESTORE",
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.purple[100],
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -925,7 +1003,10 @@ class DashboardScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.8),
+                    ],
                   ),
                 ),
               ),
@@ -1140,5 +1221,3 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 }
-
-

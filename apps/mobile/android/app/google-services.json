@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "835327793772",
+    "project_id": "aevum-heritage",
+    "storage_bucket": "aevum-heritage.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835327793772:android:8e8b24de6da198ff6e1649",
+        "android_client_info": {
+          "package_name": "app.aevum.aevum_native"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGMCAFvCZnBIbuwGG4D9fk3C-jHPSDngs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

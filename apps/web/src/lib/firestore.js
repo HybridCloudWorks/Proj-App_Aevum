@@ -35,6 +35,7 @@ const COLLECTIONS = {
   MEMBERS: "members",
   MEMORIES: "memories",
   HERITAGE: "heritage",
+  AI_TASKS: "ai_tasks",
 };
 
 // ==========================================
@@ -368,6 +369,104 @@ export function subscribeToFamilyMembers(familyId, callback) {
   });
 }
 
+// ==========================================
+// AI Task Operations
+// ==========================================
+
+/**
+ * Subscribe to user's AI tasks
+ */
+export function subscribeToAITasks(userId, callback) {
+  const tasksQuery = query(
+    collection(db, COLLECTIONS.AI_TASKS),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc"),
+  );
+
+  return onSnapshot(tasksQuery, (snapshot) => {
+    const tasks = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(tasks);
+  });
+}
+
+/**
+ * Update AI task status
+ */
+export async function updateAITaskStatus(taskId, status) {
+  try {
+    const taskRef = doc(db, COLLECTIONS.AI_TASKS, taskId);
+    await updateDoc(taskRef, {
+      status,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating AI task:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Request AI Media Analysis (Face detection, storytelling)
+ */
+export async function requestMediaAnalysis(memoryId) {
+  try {
+    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
+    await updateDoc(memoryRef, {
+      aiStatus: "pending",
+      status: "processed", // Required by backend ai-analyzer
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error requesting AI analysis:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Request AI Photo Restoration
+ */
+export async function requestPhotoRestoration(memoryId, params) {
+  try {
+    const memoryRef = doc(db, COLLECTIONS.MEMORIES, memoryId);
+    await updateDoc(memoryRef, {
+      aiStatus: "restoration_pending",
+      restorationParams: params,
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error requesting photo restoration:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Create mock AI task
+ */
+export async function createMockAITask(userId) {
+  try {
+    const taskRef = doc(collection(db, COLLECTIONS.AI_TASKS));
+    await setDoc(taskRef, {
+      userId,
+      title: "Grandpa '54",
+      type: "Enhance color",
+      status: "pending",
+      imageUrl:
+        "https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4",
+      createdAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating mock task:", error);
+    return { success: false, error: error.message };
+  }
+}
+
 export default {
   getUserProfile,
   updateUserProfile,
@@ -384,4 +483,9 @@ export default {
   updateFamilyMember,
   deleteFamilyMember,
   subscribeToFamilyMembers,
+  subscribeToAITasks,
+  updateAITaskStatus,
+  createMockAITask,
+  requestMediaAnalysis,
+  requestPhotoRestoration,
 };

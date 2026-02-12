@@ -8,11 +8,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { subscribeToFamilies } from "@lib/firestore";
+import { subscribeToFamilies, subscribeToFamilyMembers } from "@lib/firestore";
+import BottomNav from "@/components/BottomNav";
 
 function FamilyTreeScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
+  const [members, setMembers] = useState([]);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -24,6 +26,12 @@ function FamilyTreeScreen() {
     return () => unsub();
   }, [user]);
 
+  useEffect(() => {
+    if (families.length === 0) return;
+    const unsub = subscribeToFamilyMembers(families[0].id, setMembers);
+    return () => unsub();
+  }, [families]);
+
   const handleZoomIn = () => setScale((s) => Math.min(s + 0.2, 2));
   const handleZoomOut = () => setScale((s) => Math.max(s - 0.2, 0.5));
   const handleCenter = () => {
@@ -31,26 +39,54 @@ function FamilyTreeScreen() {
     setPosition({ x: 0, y: 0 });
   };
 
-  // Sample tree data (replace with Firestore data)
+  // Enhanced Graph-based Relationship Mapping
+  // This helper finds a relative by checking specific relationship paths
+  // e.g. "Father of User", "Spouse of Mother", etc.
+  const getMember = (roleOrRelationship) => {
+    // 1. Direct role match
+    let found = members.find(
+      (m) =>
+        m.role === roleOrRelationship || m.relationship === roleOrRelationship,
+    );
+    if (found) return found;
+
+    // 2. Fallback to inferred relationships (for more complex trees)
+    // In a real graph, we'd search fatherId, motherId, etc.
+    if (roleOrRelationship === "Grandfather") {
+      const father = members.find((m) => m.role === "Father");
+      if (father && father.fatherId)
+        return members.find((m) => m.id === father.fatherId);
+    }
+
+    return null;
+  };
+
   const treeData = {
-    greatGrandma: {
+    greatGrandma: getMember("Great Grandma") || {
       name: "Great Grandma",
       years: "1920 - 1998",
       hasMemory: true,
     },
-    grandpaJohn: {
+    grandpaJohn: getMember("Grandfather") || {
       name: "Grandpa John",
       years: "1945 - 2018",
       hasMemory: true,
       badge: "New Story",
     },
-    grandmaMary: { name: "Grandma Mary", years: "1948 - Present" },
-    father: {
+    grandmaMary: getMember("Grandmother") || {
+      name: "Grandma Mary",
+      years: "1948 - Present",
+    },
+    father: getMember("Father") || {
       name: "Michael Johnson",
       years: "1970 - Present",
       role: "Father",
     },
-    mother: { name: "Sarah Johnson", years: "1972 - Present", role: "Mother" },
+    mother: getMember("Mother") || {
+      name: "Sarah Johnson",
+      years: "1972 - Present",
+      role: "Mother",
+    },
     user: {
       name: user?.displayName || "You",
       years: "1995 - Present",
@@ -111,7 +147,7 @@ function FamilyTreeScreen() {
 
         {/* Scrollable Tree Container */}
         <div
-          className="w-full h-full overflow-auto no-scrollbar flex flex-col items-center justify-center py-20 px-4"
+          className="w-full h-full overflow-auto scrollbar-hide flex flex-col items-center justify-center py-20 px-4"
           style={{
             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
           }}
@@ -254,54 +290,7 @@ function FamilyTreeScreen() {
         </button>
       </div>
 
-      {/* Bottom Navigation */}
-      <nav className="glass-panel border-t-0 rounded-t-3xl pb-safe z-40 mx-2 mb-2 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center justify-around px-2 py-3">
-          <Link
-            to="/family-tree"
-            className="flex flex-col items-center gap-1 p-2 min-w-[64px] text-primary relative"
-          >
-            <div className="absolute -top-1 w-8 h-1 bg-primary rounded-b-full shadow-[0_0_10px_#1173d4]" />
-            <span className="material-symbols-outlined text-2xl filled">
-              account_tree
-            </span>
-            <span className="text-[10px] font-medium">Tree</span>
-          </Link>
-          <Link
-            to="/memories"
-            className="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-2xl">
-              photo_library
-            </span>
-            <span className="text-[10px] font-medium">Memories</span>
-          </Link>
-          <Link
-            to="/heritage-map"
-            className="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-2xl">search</span>
-            <span className="text-[10px] font-medium">Search</span>
-          </Link>
-          <Link
-            to="/settings"
-            className="flex flex-col items-center gap-1 p-2 min-w-[64px] text-slate-400 hover:text-white transition-colors"
-          >
-            <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-500">
-              <img
-                className="w-full h-full object-cover"
-                alt="Profile"
-                src={
-                  user?.photoURL ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.displayName || "U")}&background=5a5cf2&color=fff&size=24`
-                }
-              />
-            </div>
-            <span className="text-[10px] font-medium">Profile</span>
-          </Link>
-        </div>
-        <div className="h-1 w-full" />
-      </nav>
+      <BottomNav />
     </div>
   );
 }
@@ -333,11 +322,19 @@ function MemberCard({ member, size = "small", glowing = false }) {
       <div
         className={`${photoSize[size]} rounded-full bg-slate-700 mb-3 overflow-hidden border-2 border-white/20 shadow-lg group-hover:border-primary/50 transition-colors`}
       >
-        <div className="w-full h-full bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center">
-          <span className="material-symbols-outlined text-slate-400 text-2xl">
-            person
-          </span>
-        </div>
+        {member.photoURL ? (
+          <img
+            src={member.photoURL}
+            alt={member.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center">
+            <span className="material-symbols-outlined text-slate-400 text-2xl">
+              person
+            </span>
+          </div>
+        )}
       </div>
       <p
         className={`${size === "large" ? "text-base" : "text-sm"} font-bold text-center text-white truncate w-full`}

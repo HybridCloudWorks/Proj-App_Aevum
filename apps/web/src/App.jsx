@@ -32,7 +32,16 @@ const HeritageMapScreen = lazy(
 const AIFeaturesScreen = lazy(
   () => import("@screens/ai-features/AIFeaturesScreen"),
 );
+const IdentityMatcherScreen = lazy(
+  () => import("@screens/ai-features/IdentityMatcherScreen"),
+);
 const IdentityScreen = lazy(() => import("@screens/identity/IdentityScreen"));
+const MessengerHubScreen = lazy(
+  () => import("@screens/messaging/MessengerHubScreen"),
+);
+const RestorationScreen = lazy(
+  () => import("@screens/memories/RestorationScreen"),
+);
 const SettingsScreen = lazy(() => import("@screens/settings/SettingsScreen"));
 const AdminScreen = lazy(() => import("@screens/admin/AdminScreen"));
 
@@ -106,6 +115,30 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AIFeaturesScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ai/identity-matcher"
+              element={
+                <ProtectedRoute>
+                  <IdentityMatcherScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ai/restoration"
+              element={
+                <ProtectedRoute>
+                  <RestorationScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MessengerHubScreen />
                 </ProtectedRoute>
               }
             />

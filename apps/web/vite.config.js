@@ -82,11 +82,6 @@ export default defineConfig({
     modules: {
       localsConvention: "camelCase",
     },
-
-    // PostCSS plugins
-    postcss: {
-      plugins: [],
-    },
   },
 
   // Environment variables prefix

@@ -114,6 +114,6 @@ I'll then:
 
 ## Post-Migration & Logic TODOs 📝
 
-- [ ] Connect the UI components to actual backend data streams (e.g., Firebase real-time sync status).
-- [ ] Implement the "Confirm & Merge Branch" logic in the Semantic Discovery screen.
-- [ ] Finalize the "Start Restore" action for AI tasks on the dashboard.
+- [x] Connect the UI components to actual backend data streams (e.g., Firebase real-time sync status).
+- [x] Implement the "Confirm & Merge Branch" logic in the Semantic Discovery screen.
+- [x] Finalize the "Start Restore" action for AI tasks on the dashboard.

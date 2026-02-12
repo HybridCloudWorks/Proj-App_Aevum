@@ -3,9 +3,52 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
 import 'package:aevum_native/widgets/heritage_top_nav.dart';
 import 'package:aevum_native/widgets/heritage_bottom_nav.dart';
+import 'package:aevum_native/services/database_service.dart';
 
 class SemanticDiscoveryScreen extends StatelessWidget {
   const SemanticDiscoveryScreen({super.key});
+
+  void _handleMerge(BuildContext context) async {
+    final db = DatabaseService();
+
+    try {
+      // Show loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Merging branch to family tree..."),
+          duration: Duration(seconds: 1),
+        ),
+      );
+
+      await db.mergeBranch(
+        name: "Eleanor Vance",
+        relation: "Great-Grandmother",
+        birthYear: "1892",
+        deathYear: "1968",
+        photoUrl:
+            "https://lh3.googleusercontent.com/aida-public/AB6AXuB5VBZhM5VzXhfu9SvegoT9Pv4b9Fa6pvmZbzfCN90nf3Z-qIcBALR5R2sTODFd3s4N5wkPzKF0dQH8OKfxmkjbyzQ0PUsw3Uk5XPy2tWBN1c2Jj0MexMFQnuquwYFIoj-6cY3407_XOdLvufiH7UzhsAyh66OZCvI_HRuUfR0RmeVYs8N1h7VIw_006yzmqL3kayWER4--oKCJJmhLGsF0f3JM7v6TtC7bF09hXSvzjO19yX8u2p-wcj0bsG7qw35DQpg3hinhxaE",
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Color(0xFF22C55E),
+            content: Text("Successfully merged Eleanor Vance to tree!"),
+          ),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text("Error merging branch: ${e.toString()}"),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -577,7 +620,7 @@ class SemanticDiscoveryScreen extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {},
+                onTap: () => _handleMerge(context),
                 borderRadius: BorderRadius.circular(20),
                 child: Center(
                   child: Row(
@@ -606,7 +649,9 @@ class SemanticDiscoveryScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _secondaryButton("Ignore", () {})),
+              Expanded(
+                child: _secondaryButton("Ignore", () => Navigator.pop(context)),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: _secondaryButton(
@@ -678,5 +723,3 @@ class _GridPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-

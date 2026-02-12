@@ -1,300 +1,183 @@
 /**
- * Memories Screen
+ * Aevum Member Memories Screen (Feed)
  *
- * Converted from Stitch: member_memories_1/code.html
- * AI photo restoration with before/after comparison and enhancement controls.
+ * Migrated from Stitch screen: 72a1ca49f3894dc7bf419d937d2c4d96
+ * Displays personal memories, bento-style featured moments, and quick actions.
  */
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
+import BottomNav from "@/components/BottomNav";
+import "./MemoriesScreen.css";
 
 function MemoriesScreen() {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [colorize, setColorize] = useState(true);
-  const [sharpen, setSharpen] = useState(true);
-  const [repair, setRepair] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [families, setFamilies] = useState([]);
+  const [memories, setMemories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSliderChange = (e) => {
-    setSliderPosition(e.target.value);
-  };
+  // 1. Get user's families
+  useEffect(() => {
+    if (!user) return;
+    const unsub = subscribeToFamilies(user.uid, setFamilies);
+    return () => unsub();
+  }, [user]);
 
-  const handleSave = () => {
-    setIsProcessing(true);
-    setTimeout(() => setIsProcessing(false), 2000);
-  };
+  // 2. Subscribe to memories for the first family
+  useEffect(() => {
+    if (families.length === 0) return;
+    const activeFamilyId = families[0].id;
+    const unsub = subscribeToMemories(activeFamilyId, (data) => {
+      setMemories(data);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, [families]);
+
+  // Use sample if empty for demo purposes, otherwise show real ones
+  const featuredMemories =
+    memories.length > 0
+      ? memories
+      : [
+          {
+            id: "sample-1",
+            title: "The Wedding Portrait",
+            location: "London",
+            year: "1924",
+            imageUrl:
+              "https://images.unsplash.com/photo-1542037104857-ffbb0b9155fb?w=800&q=80",
+          },
+          {
+            id: "sample-2",
+            imageUrl:
+              "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80",
+          },
+          {
+            id: "sample-3",
+            imageUrl:
+              "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80",
+          },
+        ];
 
   return (
-    <div className="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-gray-50 dark:bg-[#0B1121]">
-      {/* Header */}
-      <div className="sticky top-0 z-40 bg-white/70 dark:bg-[#0B1121]/70 backdrop-blur-xl border-b border-white/20 dark:border-white/5 px-6 py-4 pt-12 flex items-center justify-between">
-        <Link
-          to="/dashboard"
-          className="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-        >
-          <span className="material-symbols-outlined text-slate-900 dark:text-white">
-            arrow_back_ios_new
-          </span>
-        </Link>
-        <div className="text-center">
-          <h1 className="font-bold text-lg tracking-tight dark:text-white">
-            Aevum
-          </h1>
-          <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-            AI Restoration
-          </p>
-        </div>
-        <button className="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-          <span className="material-symbols-outlined text-slate-900 dark:text-white">
-            ios_share
-          </span>
-        </button>
-      </div>
+    <div className="memories-feed-container pb-24">
+      <div className="mesh-bg"></div>
 
-      {/* Content */}
-      <div className="flex-1 px-5 py-6 space-y-6 pb-32">
-        {/* Before/After Comparison */}
-        <div className="relative group">
-          <div className="relative h-[400px] rounded-3xl overflow-hidden shadow-2xl shadow-indigo-500/20 dark:shadow-indigo-900/20">
-            {/* Before Image (Full) */}
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800')`,
-                filter: "grayscale(100%) contrast(1.2) sepia(0.3)",
-              }}
-            >
-              <span className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold border border-white/10">
-                Before
-              </span>
-            </div>
-
-            {/* After Image (Clipped) */}
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=800')`,
-                clipPath: `inset(0 ${100 - sliderPosition}% 0 0)`,
-                borderRight: "2px solid rgba(255, 255, 255, 0.8)",
-              }}
-            >
-              <span className="absolute top-4 right-4 bg-indigo-600/90 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                After
-              </span>
-            </div>
-
-            {/* Slider Handle */}
-            <div
-              className="absolute top-0 bottom-0 w-[2px] bg-white z-20"
-              style={{ left: `${sliderPosition}%` }}
-            >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg text-indigo-500">
-                <span className="material-symbols-outlined text-xl">
-                  compare_arrows
-                </span>
-              </div>
-            </div>
-
-            {/* Invisible Range Input */}
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={sliderPosition}
-              onChange={handleSliderChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
-            />
-          </div>
-
-          <div className="flex justify-between mt-3 px-2">
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Original
-            </p>
-            <p className="text-xs font-bold text-indigo-500">Enhanced Result</p>
-          </div>
-        </div>
-
-        {/* Section Header */}
-        <div className="flex items-center gap-2 mt-8">
-          <span className="material-symbols-outlined text-indigo-500 text-xl">
-            tune
-          </span>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-            Restoration Controls
-          </h2>
-        </div>
-
-        {/* Control Cards Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Colorize */}
-          <ControlCard
-            icon="palette"
-            iconColor="indigo"
-            title="Colorize"
-            description="Add natural colors to B&W photos"
-            checked={colorize}
-            onChange={() => setColorize(!colorize)}
-          />
-
-          {/* Sharpen */}
-          <ControlCard
-            icon="shutter_speed"
-            iconColor="blue"
-            title="Sharpen"
-            description="Enhance details and remove blur"
-            checked={sharpen}
-            onChange={() => setSharpen(!sharpen)}
-          />
-
-          {/* Repair Scratches (Full Width) */}
-          <div className="col-span-2 glass-card p-4 rounded-3xl flex items-center justify-between relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
-                <span className="material-symbols-outlined text-2xl">
-                  healing
-                </span>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white">
-                  Repair Scratches
-                </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Fix tears, dust and damage
-                </p>
-              </div>
-            </div>
-            <Toggle
-              checked={repair}
-              onChange={() => setRepair(!repair)}
-              color="emerald"
-            />
-          </div>
-        </div>
-
-        {/* Save Button */}
+      {/* Sticky Glass Header */}
+      <header className="glass-header sticky top-12 z-50 px-6 py-4 flex items-center gap-4 mx-4 rounded-3xl border border-white/10">
         <button
-          onClick={handleSave}
-          disabled={isProcessing}
-          className="w-full mt-6 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-4 px-6 rounded-2xl font-bold shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-70"
+          onClick={() => navigate(-1)}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-white"
         >
-          {isProcessing ? (
-            <span className="material-symbols-outlined animate-spin text-xl">
-              sync
-            </span>
-          ) : (
-            <span className="material-symbols-outlined text-xl">download</span>
-          )}
-          <span>{isProcessing ? "Processing..." : "Save Enhanced Photo"}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <div className="flex items-center gap-3">
+          <img
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop"
+            className="w-10 h-10 rounded-full border border-indigo-500/50"
+            alt="Arthur James Sterling"
+          />
+          <div className="text-left">
+            <h1 className="font-semibold text-sm text-white">
+              Arthur James Sterling
+            </h1>
+            <p className="text-[10px] text-white/50 uppercase tracking-widest font-bold">
+              1892 — 1964
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main className="px-6 mt-6 space-y-6">
+        {/* Quick Action Bento Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bento-card p-5 flex flex-col justify-between aspect-square">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <span className="material-symbols-outlined">add</span>
+            </div>
+            <h2 className="font-semibold text-sm text-white">Add Memory</h2>
+          </div>
+          <div
+            className="bento-card p-5 flex flex-col justify-between aspect-square cursor-pointer"
+            onClick={() => navigate("/ai/restoration")}
+          >
+            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+              <span className="material-symbols-outlined">auto_fix_high</span>
+            </div>
+            <h2 className="font-semibold text-sm text-white">AI Restore</h2>
+          </div>
+        </div>
+
+        {/* Memories Bento Grid */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-white/40">
+              Featured Moments
+            </h3>
+            <button className="text-[10px] font-bold text-indigo-400">
+              View All
+            </button>
+          </div>
+
+          <div className="photo-grid">
+            {featuredMemories.map((memory, index) => (
+              <div
+                key={memory.id}
+                className={`bento-card ${index === 0 ? "featured-moment" : "aspect-square-card"} overflow-hidden relative`}
+                style={{
+                  backgroundImage: `url('${memory.imageUrl}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {index === 0 && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4 text-left">
+                      <p className="text-[10px] font-bold text-white/60">
+                        {memory.location}
+                        {memory.year ? `, ${memory.year}` : ""}
+                      </p>
+                      <h4 className="font-semibold text-sm text-white">
+                        {memory.title}
+                      </h4>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      {/* Floating Action Button */}
+      <div className="fixed bottom-28 left-1/2 -translate-x-1/2 flex items-center gap-3">
+        <button className="fab-glass h-14 px-6 rounded-full flex items-center gap-3 active:scale-95 transition-transform text-white">
+          <span className="material-symbols-outlined text-indigo-400">
+            bolt
+          </span>
+          <span className="text-sm font-semibold">Magic Tagging</span>
         </button>
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 w-full max-w-md pb-safe z-50 pointer-events-none">
-        <div className="mx-4 mb-4 rounded-3xl glass-panel shadow-2xl backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-white/40 dark:border-white/10 pointer-events-auto">
-          <div className="flex justify-around items-center h-16 px-2">
-            <Link
-              to="/memories"
-              className="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-            >
-              <span className="material-symbols-outlined text-[22px]">
-                photo_library
-              </span>
-            </Link>
-            <Link
-              to="/family-tree"
-              className="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-            >
-              <span className="material-symbols-outlined text-[22px]">
-                account_tree
-              </span>
-            </Link>
-            <button className="flex flex-col items-center gap-1 w-14 group">
-              <div className="p-1.5 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 shadow-sm">
-                <span className="material-symbols-outlined filled text-[24px]">
-                  auto_fix_high
-                </span>
-              </div>
-            </button>
-            <Link
-              to="/settings"
-              className="flex flex-col items-center gap-1 w-14 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-            >
-              <span className="material-symbols-outlined text-[22px]">
-                person
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <BottomNav />
     </div>
-  );
-}
-
-// Control Card Component
-function ControlCard({
-  icon,
-  iconColor,
-  title,
-  description,
-  checked,
-  onChange,
-}) {
-  const colorClasses = {
-    indigo: {
-      bg: "bg-indigo-100 dark:bg-indigo-900/40",
-      text: "text-indigo-600 dark:text-indigo-400",
-      gradient:
-        "from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20",
-    },
-    blue: {
-      bg: "bg-blue-100 dark:bg-blue-900/40",
-      text: "text-blue-600 dark:text-blue-400",
-      gradient:
-        "from-blue-500/10 to-cyan-500/10 dark:from-blue-500/20 dark:to-cyan-500/20",
-    },
-  };
-
-  const colors = colorClasses[iconColor] || colorClasses.indigo;
-
-  return (
-    <div className="glass-card p-4 rounded-3xl flex flex-col justify-between h-40 relative overflow-hidden group">
-      <div
-        className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-0 group-hover:opacity-100 transition-opacity`}
-      />
-      <div className="relative z-10 flex justify-between items-start">
-        <div className={`p-2.5 rounded-xl ${colors.bg} ${colors.text}`}>
-          <span className="material-symbols-outlined text-2xl">{icon}</span>
-        </div>
-        <Toggle checked={checked} onChange={onChange} color={iconColor} />
-      </div>
-      <div className="relative z-10">
-        <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
-        <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-1">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// Toggle Component
-function Toggle({ checked, onChange, color = "indigo" }) {
-  const colorClasses = {
-    indigo: "bg-indigo-500",
-    blue: "bg-blue-500",
-    emerald: "bg-emerald-500",
-  };
-
-  return (
-    <button
-      onClick={onChange}
-      className={`relative w-10 h-5 rounded-full transition-colors ${checked ? colorClasses[color] : "bg-gray-300 dark:bg-gray-600"}`}
-    >
-      <div
-        className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${checked ? "right-0.5" : "left-0.5"}`}
-      />
-    </button>
   );
 }
 

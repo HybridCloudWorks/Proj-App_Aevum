@@ -38,7 +38,11 @@ import 'package:aevum_native/screens/semantic_discovery_screen.dart';
 import 'package:aevum_native/screens/vault_sync_health_screen.dart';
 import 'package:aevum_native/screens/cloud_redundancy_screen.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const AevumApp());
 }
 
@@ -107,5 +111,3 @@ class AevumApp extends StatelessWidget {
     );
   }
 }
-
-

@@ -1,187 +1,29 @@
-/**
- * Welcome Screen Styles
- * Based on Aevum/Kinship Stitch theme:
- * - Dark background (#000000)
- * - Manrope font
- * - Primary accent #1173d4
- */
-
-.welcome-screen {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-background);
-  padding: var(--space-6);
-}
-
-.welcome-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 390px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* Hero Section */
-.welcome-hero {
-  text-align: center;
-  margin-bottom: var(--space-12);
-}
-
-.welcome-logo {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto var(--space-6);
+.welcome-screen-container {
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-elevated);
-  border-radius: var(--radius-xl);
-  font-size: 2.5rem;
+  padding: 1rem;
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)),
+    url("https://images.unsplash.com/photo-1511895426328-dc8714191300?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80");
+  background-size: cover;
+  background-position: center;
 }
 
-.welcome-title {
-  font-size: var(--text-4xl);
-  font-weight: var(--font-bold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-2);
+.brand-font {
+  font-family: "Playfair Display", serif;
 }
 
-.welcome-tagline {
-  font-size: var(--text-lg);
-  color: var(--color-text-secondary);
-  margin: 0;
+.glass-container {
+  background: rgba(28, 28, 30, 0.7);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Auth Form */
-.welcome-auth {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.input-group label {
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  color: var(--color-text-secondary);
-}
-
-.input-group input {
-  padding: var(--space-4);
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  font-family: var(--font-family);
-  font-size: var(--text-base);
-  color: var(--color-text-primary);
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.input-group input::placeholder {
-  color: var(--color-text-tertiary);
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-muted);
-}
-
-.forgot-password {
-  align-self: flex-end;
-  font-size: var(--text-sm);
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-.forgot-password:hover {
-  color: var(--color-primary-hover);
-}
-
-/* Primary Button */
-.btn-primary {
-  padding: var(--space-4);
-  background: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-lg);
-  font-family: var(--font-family);
-  font-size: var(--text-base);
-  font-weight: var(--font-semibold);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    transform var(--transition-fast);
-  margin-top: var(--space-4);
-}
-
-.btn-primary:hover {
-  background: var(--color-primary-hover);
-}
-
-.btn-primary:active {
-  background: var(--color-primary-active);
-  transform: scale(0.98);
-}
-
-/* Signup Prompt */
-.signup-prompt {
-  text-align: center;
-  margin-top: auto;
-  padding-top: var(--space-8);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-}
-
-.signup-link {
-  color: var(--color-primary);
-  font-weight: var(--font-semibold);
-}
-
-.signup-link:hover {
-  color: var(--color-primary-hover);
-}
-
-/* Loading Screen */
-.loading-screen {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-background);
-  color: var(--color-text-secondary);
-  gap: var(--space-4);
-}
-
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--color-surface-elevated);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.input-field {
+  background: rgba(44, 44, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
