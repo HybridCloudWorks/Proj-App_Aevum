@@ -7,7 +7,7 @@ export default {
       colors: {
         // Primary colors from Stitch designs
         primary: {
-          DEFAULT: "#5a5cf2",
+          DEFAULT: "#1173d4",
           50: "#eef2ff",
           100: "#e0e7ff",
           200: "#c7d2fe",
@@ -47,14 +47,24 @@ export default {
           900: "#5b21b6",
         },
         // Glass effects
-        "glass-border": "rgba(255, 255, 255, 0.15)",
-        "glass-surface": "rgba(255, 255, 255, 0.1)",
+        "glass-border": "rgba(255, 255, 255, 0.08)",
+        "glass-surface": "rgba(255, 255, 255, 0.05)",
         // Dark backgrounds
-        "background-dark": "#101122",
-        "background-light": "#f6f6f8",
+        "background-dark": "#101922",
+        "background-light": "#f6f7f8",
+        "card-glass": "rgba(255, 255, 255, 0.04)",
+        "card-border": "rgba(255, 255, 255, 0.08)",
+        gold: "#d4af37",
+        success: "#22c55e",
+        danger: "#ef4444",
       },
       fontFamily: {
-        display: ["Manrope", "sans-serif"],
+        display: [
+          "Space Grotesk",
+          "Plus Jakarta Sans",
+          "Manrope",
+          "sans-serif",
+        ],
         body: ["Inter", "sans-serif"],
         serif: ["Playfair Display", "serif"],
       },

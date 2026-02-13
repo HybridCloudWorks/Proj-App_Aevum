@@ -1,0 +1,18 @@
+@layer utilities {
+  .glass-panel {
+    @apply bg-card-glass border border-card-border backdrop-blur-xl;
+  }
+  .glass-panel-active {
+    background: rgba(17, 115, 212, 0.08);
+    border: 1px solid rgba(17, 115, 212, 0.4);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

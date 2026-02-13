@@ -1,357 +1,221 @@
-/**
- * AI Identity Matcher Screen
- *
- * Converted from Stitch: Precision AI Face Matcher - Aevum
- * Uses AI to identify faces in historical photos and suggest matches in the tree.
- */
-
-import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import {
-  subscribeToFamilies,
-  subscribeToFamilyMembers,
-  updateFamilyMember,
-} from "@lib/firestore";
+import "./IdentityMatcherScreen.css";
 
 function IdentityMatcherScreen() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [families, setFamilies] = useState([]);
-  const [members, setMembers] = useState([]);
-  const [selectedMatch, setSelectedMatch] = useState(null); // The ID of the suggested member
-  const [isAnalyzing, setIsAnalyzing] = useState(true);
-
-  // Simulation state for detected faces in the current photo
-  const [detectedFaces] = useState([
-    {
-      id: 1,
-      name: "Grandpa Joe",
-      confidence: 98,
-      top: "32%",
-      left: "48%",
-      width: "14%",
-      height: "18%",
-    },
-    {
-      id: 2,
-      name: "Uncle Bob",
-      confidence: 45,
-      top: "36%",
-      left: "22%",
-      width: "10%",
-      height: "14%",
-    },
-    {
-      id: 3,
-      name: "Unknown",
-      confidence: 78,
-      top: "29%",
-      left: "72%",
-      width: "12%",
-      height: "16%",
-    },
-  ]);
-  const [activeFaceId, setActiveFaceId] = useState(1);
-
-  useEffect(() => {
-    if (!user) return;
-    const unsub = subscribeToFamilies(user.uid, setFamilies);
-    return () => unsub();
-  }, [user]);
-
-  useEffect(() => {
-    if (families.length === 0) return;
-    const unsub = subscribeToFamilyMembers(families[0].id, (newMembers) => {
-      setMembers(newMembers);
-      // Auto-select the best match if available
-      if (newMembers.length > 0 && !selectedMatch) {
-        setSelectedMatch(newMembers[0].id);
-      }
-    });
-    return () => unsub();
-  }, [families]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsAnalyzing(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const activeFace = detectedFaces.find((f) => f.id === activeFaceId);
-
-  const handleConfirm = async () => {
-    if (!selectedMatch) return;
-
-    if (selectedMatch === "ai-group-1") {
-      // Create a new "Potential" member in the tree
-      if (families.length > 0) {
-        console.log("Creating new potential relative from AI cluster...");
-        // In a real scenario, we'd call addFamilyMember with role: 'Potential Relative' or similar
-        alert(
-          "New Cluster Confirmed! This person has been added to your tree as a 'Potential Relative' for you to identify later.",
-        );
-      }
-    } else {
-      const member = members.find((m) => m.id === selectedMatch);
-      console.log(
-        "Confirming match for face:",
-        activeFaceId,
-        "with member:",
-        member?.name,
-      );
-      alert(`Match confirmed! ${member?.name} has been tagged in this photo.`);
-    }
-
-    navigate("/family-tree");
-  };
 
   return (
-    <div className="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display antialiased overflow-x-hidden">
+    <div className="bg-background-dark text-slate-200 min-h-screen flex flex-col font-display antialiased overflow-x-hidden selection:bg-primary/30">
+      <div className="h-12 w-full"></div>
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+      <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-background-dark/80 backdrop-blur-lg">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center justify-center w-10 h-10 rounded-full text-slate-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+          className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors"
         >
-          <span className="material-symbols-outlined">arrow_back</span>
+          <span className="material-symbols-outlined text-[24px]">
+            arrow_back
+          </span>
         </button>
-        <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
-          Identify Faces
-        </h1>
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors"
-        >
+        <h1 className="text-[17px] font-bold tracking-tight">Identify Faces</h1>
+        <button className="text-[15px] font-semibold text-slate-400 hover:text-primary transition-colors">
           Skip
         </button>
       </header>
-
-      <main className="flex-1 flex flex-col gap-4 p-4 pb-24 max-w-md mx-auto w-full overflow-y-auto">
-        {/* Main Photo with Face Markers */}
-        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden glass-panel group shadow-2xl">
+      <main className="flex-1 flex flex-col gap-6 px-6 pb-12 max-w-md mx-auto w-full">
+        {/* Main Photo with detection box */}
+        <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden glass-panel group shadow-2xl ring-1 ring-white/10">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuC31RpQX57UnykwreUCc1soshAuPgixpGwElecNvQXJSif9R6dIbPPm0zmW6RHa7tjxEgZtuSVpi3k2_i1U5keZSMfcKSoN63rF_cmlAs4G6EciEafIpZyLQqrzMwKGBmucasxYidpGUFHoDgS_YjYEDpWZzRUl3QLJ3gaNFw8-T2Ey2fboKwpq3-4GLm_vuhp7DZEHLbAN---O1iWdAKzJkHVHEp_pYQ7H-gYYgBoj5mcHx-Vo76VwBxdADbZ-gQk6LFwU29mfDRs')`,
+              backgroundImage:
+                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC31RpQX57UnykwreUCc1soshAuPgixpGwElecNvQXJSif9R6dIbPPm0zmW6RHa7tjxEgZtuSVpi3k2_i1U5keZSMfcKSoN63rF_cmlAs4G6EciEafIpZyLQqrzMwKGBmucasxYidpGUFHoDgS_YjYEDpWZzRUl3QLJ3gaNFw8-T2Ey2fboKwpq3-4GLm_vuhp7DZEHLbAN---O1iWdAKzJkHVHEp_pYQ7H-gYYgBoj5mcHx-Vo76VwBxdADbZ-gQk6LFwU29mfDRs')",
             }}
           >
-            <div className="absolute inset-0 bg-black/20"></div>
+            <div className="absolute inset-0 bg-black/10"></div>
           </div>
-
-          {!isAnalyzing &&
-            detectedFaces.map((face) => (
-              <div
-                key={face.id}
-                onClick={() => setActiveFaceId(face.id)}
-                className={`absolute border rounded-sm transition-all cursor-pointer z-20 ${
-                  activeFaceId === face.id
-                    ? "border-primary/50 bg-primary/10 shadow-[0_0_20px_rgba(17,115,212,0.4)] scan-corners"
-                    : "border-white/30 hover:border-white/60 opacity-60 hover:opacity-100"
-                }`}
-                style={{
-                  top: face.top,
-                  left: face.left,
-                  width: face.width,
-                  height: face.height,
-                }}
-              >
-                {activeFaceId === face.id && (
-                  <>
-                    <div className="absolute inset-0 scan-corners-inner"></div>
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap shadow-lg">
-                      Selected
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-
-          {isAnalyzing && (
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center z-50">
-              <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4"></div>
-              <p className="text-white text-sm font-bold tracking-widest animate-pulse">
-                ANALYZING FACES
-              </p>
+          {/* Active Detection Box */}
+          <div className="absolute top-[30%] left-[43%] w-[22%] h-[28%] border-[2.5px] border-primary rounded-2xl shadow-[0_0_25px_rgba(17,115,212,0.4)] z-20">
+            <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-extrabold px-3 py-1 rounded-full whitespace-nowrap shadow-lg tracking-wider uppercase">
+              Selected
             </div>
-          )}
-
-          <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white/80 text-[10px] px-2 py-1 rounded-md font-medium flex items-center gap-1 border border-white/10">
-            <span className="material-symbols-outlined text-[12px]">
-              calendar_today
-            </span>{" "}
-            1964
+          </div>
+          {/* Inactive Detection Boxes */}
+          <div className="absolute top-[35%] left-[20%] w-[16%] h-[20%] border border-white/50 rounded-xl z-10 backdrop-blur-[1px]"></div>
+          <div className="absolute top-[28%] left-[70%] w-[18%] h-[22%] border border-white/50 rounded-xl z-10 backdrop-blur-[1px]"></div>
+          {/* Date Badge */}
+          <div className="absolute bottom-4 left-4 flex gap-2">
+            <div className="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[14px] text-white/70">
+                calendar_today
+              </span>
+              <span className="text-[11px] font-bold text-white/90 uppercase tracking-widest">
+                1964
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="px-1 pt-2">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">
-            Is this{" "}
-            <span className="text-primary">
-              {activeFaceId === 3
-                ? "Unknown?"
-                : activeFace?.name || "Detecting..."}
-            </span>
-            ?
+        {/* Question Header */}
+        <div className="space-y-1">
+          <h2 className="text-[28px] font-extrabold text-white leading-tight tracking-tight">
+            Is this <span className="text-primary">Grandpa Joe</span>?
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-[14px] text-slate-400 font-medium">
             Found in "Summer Vacation 1964"
           </p>
         </div>
 
-        {/* Suggested Matches Scroll */}
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide snap-x">
-          {/* Real Matches from Tree */}
-          {members.map((member) => (
-            <div
-              key={member.id}
-              onClick={() => setSelectedMatch(member.id)}
-              className={`snap-center shrink-0 flex flex-col gap-3 p-4 rounded-2xl min-w-[140px] cursor-pointer relative overflow-hidden transition-all ${
-                selectedMatch === member.id
-                  ? "glass-panel-active scale-105"
-                  : "glass-panel opacity-70 grayscale hover:grayscale-0 hover:opacity-100"
-              }`}
-            >
-              {selectedMatch === member.id && (
-                <div className="absolute top-2 right-2 flex items-center justify-center w-5 h-5 bg-primary rounded-full z-10">
-                  <span className="material-symbols-outlined text-white text-[14px]">
-                    check
-                  </span>
-                </div>
-              )}
-              <div
-                className={`w-14 h-14 rounded-full bg-cover bg-center border-2 mx-auto ${selectedMatch === member.id ? "border-primary shadow-lg" : "border-white/10"}`}
-                style={{
-                  backgroundImage: `url('${member.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name || "")}&background=random`}')`,
-                }}
-              ></div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[100px] mx-auto">
-                  {member.name}
-                </p>
-                <p className="text-xs font-semibold text-primary mt-1">
-                  98% Match
-                </p>
-              </div>
+        {/* Suggestion Slider */}
+        <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide snap-x">
+          {/* Match 1 (Primary) */}
+          <div className="snap-center shrink-0 flex flex-col gap-4 p-5 rounded-3xl glass-panel-active min-w-[150px] relative border-primary/40">
+            <div className="absolute top-3 right-3 flex items-center justify-center w-6 h-6 bg-primary rounded-full shadow-lg">
+              <span className="material-symbols-outlined text-white text-[16px] font-bold">
+                check
+              </span>
             </div>
-          ))}
-
-          {/* AI Grouping / "Unidentified" Matches (75%+) */}
-          {activeFaceId === 3 && (
             <div
-              onClick={() => setSelectedMatch("ai-group-1")}
-              className={`snap-center shrink-0 flex flex-col gap-3 p-4 rounded-2xl min-w-[140px] cursor-pointer relative overflow-hidden transition-all ${
-                selectedMatch === "ai-group-1"
-                  ? "glass-panel-active scale-105"
-                  : "glass-panel"
-              }`}
-            >
-              <div className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mx-auto border-2 border-dashed border-primary/30 relative">
-                <span className="material-symbols-outlined text-2xl">
-                  person
+              className="w-16 h-16 rounded-full bg-cover bg-center border-2 border-primary shadow-[0_0_15px_rgba(17,115,212,0.3)] mx-auto"
+              style={{
+                backgroundImage:
+                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQG7P7lNixOixWvE-uS3QVuXaZo73C1_JToDK4GOiaD53rADv7ZLGMfrfENeu5KKJCtFWoy0hiyQ6EPq4uOX6mu5eybJK8NXPVc1S_p77UXJ-z_2gk2HcIfj4MVG3AEW9ZqXROc5W3YnRZfLSo_YzzVJrA4D8XJqZzG_HQBr78F8alwK74qJkLeiVrNMAJb9jR2mPq3m1RN-L92BvA2qgUFYsht_QfWe8Crbu1KqY9H0gWRT9v1A9GpVzo9epCGr_ECpIFR7gs3kk')",
+              }}
+            ></div>
+            <div className="text-center">
+              <p className="text-sm font-bold text-white tracking-wide">
+                Grandpa Joe
+              </p>
+              <div className="mt-1.5 inline-flex bg-primary/20 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-extrabold text-primary tracking-tight">
+                  98% MATCH
                 </span>
-                <div className="absolute -bottom-1 -right-1 bg-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
-                  ?
-                </div>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-slate-900 dark:text-white">
-                  New Cluster
-                </p>
-                <p className="text-xs font-semibold text-primary mt-1">
-                  82% Confidence
-                </p>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Add New Person */}
-          <div className="snap-center shrink-0 flex flex-col items-center justify-center gap-2 p-4 rounded-2xl glass-panel min-w-[140px] cursor-pointer hover:bg-white/5 transition-colors border-dashed border-slate-300 dark:border-slate-700">
-            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500">
-              <span className="material-symbols-outlined">add</span>
+          {/* Match 2 */}
+          <div className="snap-center shrink-0 flex flex-col gap-4 p-5 rounded-3xl glass-panel min-w-[150px] cursor-pointer hover:bg-white/5 transition-all">
+            <div
+              className="w-16 h-16 rounded-full bg-cover bg-center border border-white/10 opacity-60 mx-auto grayscale"
+              style={{
+                backgroundImage:
+                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBd-l6-9V3Ex2vMHKhRjeppS1TU2PWOD27Ok4JlbnfgpLrHhEp1NjFJpIgghXZfZW1RzYUnwfZMpThAHHQ5ePpwHVZy31S5xeTL2wrj4fOZbhU8aTT4HC4TJ_66d7Cw0jUv-YnvyThMPWmHuvHhCOLD8h67Zk8k5KaHttOXqEtPTllTUWMbp17pwIcd6v6LLmDTqQ1uudhu7r8Alhv3-6rqRScb32F-CNV9FIBvdadhlDnNMyME3QePtPLJaIAV3V0MYfqyrfQd2as')",
+              }}
+            ></div>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-slate-300">Uncle Bob</p>
+              <p className="text-[11px] font-bold text-slate-500 mt-1 uppercase tracking-tighter">
+                45% Match
+              </p>
             </div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              New Person
-            </p>
+          </div>
+
+          {/* Add New */}
+          <div className="snap-center shrink-0 flex flex-col items-center justify-center gap-3 p-5 rounded-3xl glass-panel min-w-[150px] border-dashed border-white/20 hover:bg-white/5 transition-all">
+            <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+              <span className="material-symbols-outlined text-[32px]">add</span>
+            </div>
+            <p className="text-sm font-semibold text-slate-400">New Person</p>
           </div>
         </div>
 
-        {/* Context Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="glass-panel p-4 rounded-2xl flex flex-col gap-3">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="material-symbols-outlined text-primary text-[18px]">
-                face
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="glass-panel p-5 rounded-3xl flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[20px]">
+                groups
               </span>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500">
                 AI Grouping
               </h3>
             </div>
-            <p className="text-sm text-slate-800 dark:text-slate-200 font-medium leading-tight">
-              Seen in{" "}
-              <span className="text-primary font-bold">12 other photos</span>
+            <p className="text-[13px] text-white font-semibold leading-snug">
+              Seen in <span className="text-primary">12 other photos</span>
             </p>
-            <div className="flex -space-x-3 overflow-hidden py-1">
-              <div className="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-slate-300"></div>
-              <div className="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-slate-400"></div>
-              <div className="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-slate-500"></div>
-              <div className="w-10 h-10 rounded-full border-2 border-white dark:border-[#1e2329] bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-400">
+            <div className="flex -space-x-3 mt-1">
+              <div
+                className="w-10 h-10 rounded-full border-2 border-background-dark bg-cover bg-center ring-1 ring-white/5"
+                style={{
+                  backgroundImage:
+                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEt93VvmPatuIdcvBAtnOsxhF60XyfQD21bTbIw0x_Pvx0GJV0L7SRZagvjhdUzqKVhqByw2c7d1RmaD5rfaPprFioXhjUnjLXnHP75wfR8ubwbnlSBUViwOW2PMgRFlFGQg62Y7FCcDQWdKgt1VBjA08nQnNj0oXk7WA8xs8DBGuNVoSKEE6Gi6uQGdWyg36MOk8D5RrgYktOxUhddQs3yM475s1oJhS0gf6I3OR147mUDZT68u5KNJCSlFDtmQfC74_D4f7eseU')",
+                }}
+              ></div>
+              <div
+                className="w-10 h-10 rounded-full border-2 border-background-dark bg-cover bg-center ring-1 ring-white/5"
+                style={{
+                  backgroundImage:
+                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBf7xm8Z9piMx_mY5YoM2D0l6Bg3LC8L-t3BGxfhtL9dDdRvUI32SnovMSetReN1ZTOnZC2P-JKAvVU7rmoOQDUZtq_6EGx3X8OSsRMYW7a_cWJcF8IkIsKg8fvVoFlf-Qz4LWmGoJaBnusZQxXp_vfqNWZoiXlDSK2yVJB7rCPQAewLSUHiwTGV4vCcyWicr6hwa7w8uJN-JGVQUsU9Um-nwt8v8LhQ5kFcGkRNENBZ76K90zTVYjtqq2uYva7gMD4jNBiqP4UVVI')",
+                }}
+              ></div>
+              <div
+                className="w-10 h-10 rounded-full border-2 border-background-dark bg-cover bg-center ring-1 ring-white/5"
+                style={{
+                  backgroundImage:
+                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvdZlAcdH-arBCQtllaYrgDaWwGGMRaMBu2q7Hc0-eUbz1eNmDdGj-oudRxM68nv_-ji303R8fmdTNpFErADfWJOvpQhrfwYAakGRy8j_dK9J7tY5j2gPsL7EeObEZWPepIRZSQ-Dcl-6wocNcFCmMpRmswVVinw0XyUomhavnm5IrVSyvCLMZnfRHQ2CTAqioFkjSI4H7X39tqnGCL2hVWz0L0IqD2hxNvkIlgUtAw1Ga6n9-ddBQA4dofF4ZvLq7PIsSA3Jg8O8')",
+                }}
+              ></div>
+              <div className="w-10 h-10 rounded-full border-2 border-background-dark bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 ring-1 ring-white/5">
                 +9
               </div>
             </div>
           </div>
-          <div className="glass-panel p-4 rounded-2xl flex flex-col justify-between">
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                Family Tree
-              </h3>
-              <p className="text-sm text-slate-800 dark:text-slate-200">
+          <div className="glass-panel p-5 rounded-3xl flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">
+                  account_tree
+                </span>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500">
+                  Family Tree
+                </h3>
+              </div>
+              <p className="text-[13px] text-white font-semibold">
                 Suggested from{" "}
-                <span className="font-semibold text-slate-900 dark:text-white">
+                <span className="text-primary underline decoration-primary/30 underline-offset-4">
                   Paternal Line
                 </span>
               </p>
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
-              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <span className="material-symbols-outlined text-[16px]">
-                  share_location
-                </span>
-                <span>Detroit, MI</span>
-              </div>
+            <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[16px] text-slate-500">
+                location_on
+              </span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
+                Detroit, MI
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Persistent Bottom Actions */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-white/5 z-50">
-          <div className="max-w-md mx-auto flex flex-col gap-3">
-            <button
-              onClick={handleConfirm}
-              className="w-full h-14 bg-primary hover:bg-blue-600 active:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all transform active:scale-[0.98]"
-            >
-              <span className="material-symbols-outlined">person_check</span>
-              Confirm Match
+        {/* Action Buttons */}
+        <div className="mt-auto space-y-4 pt-4">
+          <button className="w-full h-16 bg-primary hover:bg-primary/90 active:scale-[0.98] transition-all text-white rounded-2xl font-bold text-[17px] shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
+            <span className="material-symbols-outlined text-[24px]">
+              face_retouching_natural
+            </span>
+            Confirm Match
+          </button>
+          <div className="grid grid-cols-2 gap-4">
+            <button className="h-14 glass-panel hover:bg-white/10 transition-colors text-slate-300 rounded-2xl font-bold text-[14px] flex items-center justify-center gap-2 tracking-wide">
+              <span className="material-symbols-outlined text-[20px]">
+                person_off
+              </span>
+              Not a Person
             </button>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="h-12 glass-panel hover:bg-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors"
-              >
-                <span className="material-symbols-outlined text-[18px]">
-                  person_off
-                </span>
-                Not a Person
-              </button>
-              <button className="h-12 glass-panel hover:bg-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors">
-                <span className="material-symbols-outlined text-[18px]">
-                  edit
-                </span>
-                Edit Selection
-              </button>
-            </div>
+            <button className="h-14 glass-panel hover:bg-white/10 transition-colors text-slate-300 rounded-2xl font-bold text-[14px] flex items-center justify-center gap-2 tracking-wide">
+              <span className="material-symbols-outlined text-[20px]">
+                edit_note
+              </span>
+              Edit Selection
+            </button>
           </div>
         </div>
       </main>
+      <div className="h-8 w-full flex justify-center items-end pb-2">
+        <div className="w-32 h-1.5 bg-white/20 rounded-full"></div>
+      </div>
     </div>
   );
 }

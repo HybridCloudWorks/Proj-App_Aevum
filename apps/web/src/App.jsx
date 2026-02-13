@@ -33,6 +33,15 @@ const HeritageMapScreen = lazy(
 const AIFeaturesScreen = lazy(
   () => import("@screens/ai-features/AIFeaturesScreen"),
 );
+const ExplorerScreen = lazy(() => import("@screens/explorer/ExplorerScreen"));
+const FamilyStoryScreen = lazy(
+  () => import("@screens/stories/FamilyStoryScreen"),
+);
+const VaultScreen = lazy(() => import("@screens/vault/VaultScreen"));
+const LegacyPlanningScreen = lazy(
+  () => import("@screens/legacy/LegacyPlanningScreen"),
+);
+
 const IdentityMatcherScreen = lazy(
   () => import("@screens/ai-features/IdentityMatcherScreen"),
 );
@@ -72,6 +81,79 @@ function App() {
             <Route path="/" element={<WelcomeScreen />} />
             <Route path="/welcome" element={<WelcomeScreen />} />
             <Route path="/auth" element={<AuthScreen />} />
+
+            {/* Main Application Routes */}
+            <Route
+              path="/memories"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <MemoriesScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/explorer"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <ExplorerScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/vault"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <VaultScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/legacy"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <LegacyPlanningScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/story/:id"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <FamilyStoryScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            {/* Temporary route to see the story without ID for demo */}
+            <Route
+              path="/story/sample-id"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <FamilyStoryScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <MessengerHubScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protected routes - Require authentication */}
             <Route
