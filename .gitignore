@@ -9,3 +9,11 @@ firestore-debug.log
 ui-debug.log
 firebase-debug.log
 .DS_Store
+
+# FVM Version Cache
+.fvm/
+
+# Flutter generated files
+apps/mobile/linux/flutter/generated_*
+apps/mobile/macos/Flutter/GeneratedPluginRegistrant.swift
+apps/mobile/windows/flutter/generated_*

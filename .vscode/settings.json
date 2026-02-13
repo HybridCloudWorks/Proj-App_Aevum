@@ -12,5 +12,6 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.41.0"
 }
