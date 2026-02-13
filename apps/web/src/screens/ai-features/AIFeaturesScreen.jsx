@@ -37,6 +37,30 @@ function AIFeaturesScreen() {
       path: "/ai/chronicles",
       color: "orange",
     },
+    {
+      id: "resource-manager",
+      title: "AI Resource Manager",
+      desc: "Manage enhancement queues and processing power.",
+      icon: "memory",
+      path: "/ai/resource-manager",
+      color: "cyan",
+    },
+    {
+      id: "spatial-gallery",
+      title: "Spatial Memory Gallery",
+      desc: "Immersive 3D gallery for VisionOS (Prototype).",
+      icon: "photo_library",
+      path: "/memories/spatial-gallery",
+      color: "indigo",
+    },
+    {
+      id: "spatial-tree",
+      title: "Spatial Heritage Tree",
+      desc: "Interactive genealogy visualization (Prototype).",
+      icon: "schema",
+      path: "/family-tree/spatial",
+      color: "emerald",
+    },
   ];
 
   return (

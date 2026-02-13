@@ -1,15 +1,15 @@
 /* Glassmorphism Utility */
 .glass-panel {
   background: var(--glass-bg, rgba(30, 41, 59, 0.4));
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
 }
 
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
 }

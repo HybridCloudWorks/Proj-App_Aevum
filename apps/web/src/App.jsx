@@ -14,6 +14,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout";
+import { InfrastructureProvider } from "@/contexts/InfrastructureContext";
 
 // Lazy-loaded screen components (Code splitting per FED best practices)
 const ScreenGallery = lazy(() => import("@screens/ScreenGallery"));
@@ -45,17 +46,75 @@ const LegacyPlanningScreen = lazy(
 const IdentityMatcherScreen = lazy(
   () => import("@screens/ai-features/IdentityMatcherScreen"),
 );
+const SemanticDiscoveryScreen = lazy(
+  () => import("@screens/ai-features/SemanticDiscoveryScreen"),
+);
 const IdentityScreen = lazy(() => import("@screens/identity/IdentityScreen"));
 const MessengerHubScreen = lazy(
   () => import("@screens/messaging/MessengerHubScreen"),
 );
+const BranchAccessScreen = lazy(
+  () => import("@screens/messaging/collaboration/BranchAccessScreen"),
+);
+const BranchCollaborationScreen = lazy(
+  () => import("@screens/messaging/collaboration/BranchCollaborationScreen"),
+);
+
 const RestorationScreen = lazy(
   () => import("@screens/memories/RestorationScreen"),
 );
+const IdentityTaggingScreen = lazy(
+  () => import("@screens/ai-features/IdentityTaggingScreen"),
+);
+const ApprovalHubScreen = lazy(
+  () => import("@screens/approval/ApprovalHubScreen"),
+);
 const SettingsScreen = lazy(() => import("@screens/settings/SettingsScreen"));
+const AdminDelegationScreen = lazy(
+  () => import("@screens/settings/delegation/AdminDelegationScreen"),
+);
+const LegacyHandoverScreen = lazy(
+  () => import("@screens/settings/legacy/LegacyHandoverScreen"),
+);
 const AdminScreen = lazy(() => import("@screens/admin/AdminScreen"));
 const FileConflictScreen = lazy(
   () => import("@screens/memories/FileConflictScreen"),
+);
+
+const VaultHealthScreen = lazy(
+  () => import("@screens/settings/infrastructure/VaultHealthScreen"),
+);
+const CloudRedundancyScreen = lazy(
+  () => import("@screens/settings/infrastructure/CloudRedundancyScreen"),
+);
+const StorageArchitectureScreen = lazy(
+  () => import("@screens/settings/infrastructure/StorageArchitectureScreen"),
+);
+const CatalogEngineScreen = lazy(
+  () => import("@screens/settings/infrastructure/CatalogEngineScreen"),
+);
+const InfrastructureControlScreen = lazy(
+  () => import("@screens/settings/infrastructure/InfrastructureControlScreen"),
+);
+
+const PrivacyRulesScreen = lazy(
+  () => import("@screens/settings/privacy/PrivacyRulesScreen"),
+);
+const PrivacySecurityScreen = lazy(
+  () => import("@screens/settings/privacy/PrivacySecurityScreen"),
+);
+const RestrictedProfileScreen = lazy(
+  () => import("@screens/settings/privacy/RestrictedProfileScreen"),
+);
+
+const SpatialMemoryGallery = lazy(
+  () => import("@screens/memories/SpatialMemoryGallery"),
+);
+const SpatialHeritageTree = lazy(
+  () => import("@screens/family-tree/SpatialHeritageTree"),
+);
+const AIResourceManager = lazy(
+  () => import("@screens/ai-features/AIResourceManager"),
 );
 
 // Loading fallback component
@@ -71,223 +130,364 @@ function LoadingFallback() {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Screen Gallery - Browse all Stitch screens */}
-            <Route path="/gallery" element={<ScreenGallery />} />
+      <InfrastructureProvider>
+        <BrowserRouter>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              {/* Screen Gallery - Browse all Stitch screens */}
+              <Route path="/gallery" element={<ScreenGallery />} />
 
-            {/* Public routes */}
-            <Route path="/" element={<WelcomeScreen />} />
-            <Route path="/welcome" element={<WelcomeScreen />} />
-            <Route path="/auth" element={<AuthScreen />} />
+              {/* Public routes */}
+              <Route path="/" element={<WelcomeScreen />} />
+              <Route path="/welcome" element={<WelcomeScreen />} />
+              <Route path="/auth" element={<AuthScreen />} />
 
-            {/* Main Application Routes */}
-            <Route
-              path="/memories"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <MemoriesScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/explorer"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <ExplorerScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/vault"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <VaultScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/legacy"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <LegacyPlanningScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/story/:id"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <FamilyStoryScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            {/* Temporary route to see the story without ID for demo */}
-            <Route
-              path="/story/sample-id"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <FamilyStoryScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/messages"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <MessengerHubScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
+              {/* Main Application Routes */}
+              <Route
+                path="/memories"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <MemoriesScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/explorer"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <ExplorerScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/vault"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <VaultScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/legacy"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <LegacyPlanningScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/story/:id"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <FamilyStoryScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              {/* Temporary route to see the story without ID for demo */}
+              <Route
+                path="/story/sample-id"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <FamilyStoryScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/messages"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <MessengerHubScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Protected routes - Require authentication */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <DashboardScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/family-tree"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <FamilyTreeScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/memories"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <MemoriesScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/upload"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <UploadScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/upload/conflict"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <FileConflictScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/heritage-map"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <HeritageMapScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ai"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <AIFeaturesScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ai/identity-matcher"
-              element={
-                <ProtectedRoute>
-                  <IdentityMatcherScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ai/restoration"
-              element={
-                <ProtectedRoute>
-                  <RestorationScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/messages"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <MessengerHubScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <IdentityScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <SettingsScreen />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected routes - Require authentication */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <DashboardScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/family-tree"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <FamilyTreeScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/memories"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <MemoriesScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/upload"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <UploadScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/upload/conflict"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <FileConflictScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/heritage-map"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <HeritageMapScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <AIFeaturesScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai/identity-matcher"
+                element={
+                  <ProtectedRoute>
+                    <IdentityMatcherScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai/discovery"
+                element={
+                  <ProtectedRoute>
+                    <SemanticDiscoveryScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai/restoration"
+                element={
+                  <ProtectedRoute>
+                    <RestorationScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai/identity-tagging"
+                element={
+                  <ProtectedRoute>
+                    <IdentityTaggingScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/approval-hub"
+                element={
+                  <ProtectedRoute>
+                    <ApprovalHubScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/messages/access/:id"
+                element={
+                  <ProtectedRoute>
+                    <BranchAccessScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/messages/collab/:id"
+                element={
+                  <ProtectedRoute>
+                    <BranchCollaborationScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <IdentityScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <SettingsScreen />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/delegation"
+                element={
+                  <ProtectedRoute>
+                    <AdminDelegationScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/legacy-handover"
+                element={
+                  <ProtectedRoute>
+                    <LegacyHandoverScreen />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Admin routes */}
-            <Route
-              path="/admin/*"
-              element={
-                <ProtectedRoute>
-                  <AdminScreen />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/settings/infrastructure"
+                element={
+                  <ProtectedRoute>
+                    <InfrastructureControlScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/vault-health"
+                element={
+                  <ProtectedRoute>
+                    <VaultHealthScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/redundancy"
+                element={
+                  <ProtectedRoute>
+                    <CloudRedundancyScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/storage-architecture"
+                element={
+                  <ProtectedRoute>
+                    <StorageArchitectureScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/catalog-engine"
+                element={
+                  <ProtectedRoute>
+                    <CatalogEngineScreen />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+              {/* Privacy Routes */}
+              <Route
+                path="/settings/privacy-rules"
+                element={
+                  <ProtectedRoute>
+                    <PrivacyRulesScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/privacy-security"
+                element={
+                  <ProtectedRoute>
+                    <PrivacySecurityScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings/restricted-profile/:userId"
+                element={
+                  <ProtectedRoute>
+                    <RestrictedProfileScreen />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Spatial Features */}
+              <Route
+                path="/memories/spatial-gallery"
+                element={
+                  <ProtectedRoute>
+                    <SpatialMemoryGallery />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/family-tree/spatial"
+                element={
+                  <ProtectedRoute>
+                    <SpatialHeritageTree />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai/resource-manager"
+                element={
+                  <ProtectedRoute>
+                    <AIResourceManager />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin routes */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute>
+                    <AdminScreen />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </InfrastructureProvider>
     </AuthProvider>
   );
 }

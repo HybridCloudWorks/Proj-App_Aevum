@@ -47,13 +47,4 @@
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem;
   }
-
-  /* Scrollbar hider specifically for horizontal scrolling */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }

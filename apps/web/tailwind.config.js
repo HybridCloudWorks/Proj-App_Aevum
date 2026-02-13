@@ -34,38 +34,61 @@ export default {
           900: "#042340",
         },
         accent: {
-          DEFAULT: "#8b5cf6",
-          50: "#faf5ff",
-          100: "#f3e8ff",
-          200: "#e9d5ff",
-          300: "#d8b4fe",
-          400: "#c084fc",
-          500: "#a855f7",
-          600: "#8b5cf6",
-          700: "#7c3aed",
-          800: "#6d28d9",
-          900: "#5b21b6",
+          DEFAULT: "#0ea5e9", // Updated to match new designs (cyan-blue)
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+          900: "#0c4a6e",
         },
         // Glass effects
         "glass-border": "rgba(255, 255, 255, 0.08)",
-        "glass-surface": "rgba(255, 255, 255, 0.05)",
+        "glass-surface": "rgba(23, 29, 37, 0.7)",
+        "glass-surface-light": "rgba(255, 251, 247, 0.7)", // Warm light glass
+
         // Dark backgrounds
         "background-dark": "#101922",
-        "background-light": "#f6f7f8",
+        "background-light": "#FFFBF7", // Warm Cream (Summer Garden)
+
+        // Peach/Warm Palette (Light Mode Primary)
+        peach: {
+          50: "#FFF8F3",
+          100: "#FFEBDD",
+          200: "#FFD6BB",
+          300: "#FFBA94",
+          400: "#FF9966",
+          500: "#FF7D3F", // Primary Brand for Light Mode
+          600: "#E65D20",
+          700: "#BF4315",
+          800: "#993311",
+          900: "#7A2A0F",
+        },
+
         "card-glass": "rgba(255, 255, 255, 0.04)",
         "card-border": "rgba(255, 255, 255, 0.08)",
+        "card-glass-light": "rgba(255, 255, 255, 0.6)",
+        "card-border-light": "rgba(231, 229, 228, 0.6)",
+
         gold: "#d4af37",
         success: "#22c55e",
         danger: "#ef4444",
+        "tier-full": "#10b981",
+        "tier-limited": "#f59e0b",
+        locked: "#64748b",
       },
       fontFamily: {
         display: [
-          "Space Grotesk",
           "Plus Jakarta Sans",
+          "Space Grotesk",
           "Manrope",
           "sans-serif",
         ],
-        body: ["Inter", "sans-serif"],
+        body: ["Plus Jakarta Sans", "Inter", "sans-serif"],
         serif: ["Playfair Display", "serif"],
       },
       borderRadius: {

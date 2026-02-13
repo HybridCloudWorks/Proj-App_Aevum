@@ -19,13 +19,13 @@
   }
 
   body {
-    @apply bg-background-dark text-white;
+    @apply bg-background-light text-slate-800 dark:bg-background-dark dark:text-white transition-colors duration-300;
     min-height: 100dvh;
     overscroll-behavior-y: none;
   }
 
   ::selection {
-    @apply bg-primary text-white;
+    @apply bg-peach-500 text-white dark:bg-primary;
   }
 }
 
@@ -34,30 +34,25 @@
    ========================================== */
 
 @layer components {
-  /* Glass Card - Light */
+  /* Glass Card - Adaptive */
   .glass-card {
-    background: rgba(255, 255, 255, 0.1);
+    @apply bg-white/60 dark:bg-white/5 border border-stone-200 dark:border-white/10 shadow-lg;
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   }
 
-  /* Glass Card - Dark */
+  /* Glass Card - Darker/Solid */
   .glass-card-darker {
-    background: rgba(0, 0, 0, 0.2);
+    @apply bg-white/80 dark:bg-black/40 border border-stone-200 dark:border-white/10;
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Glass Panel - Auth style */
+  /* Glass Panel - Auth/Sidebar style */
   .glass-panel {
-    background: rgba(16, 17, 34, 0.45);
+    @apply bg-glass-surface-light dark:bg-glass-surface border border-white/20 dark:border-white/10 shadow-xl;
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   }
 
   /* Mesh Background */
@@ -142,5 +137,11 @@
   /* Filled Material Icons */
   .material-symbols-outlined.filled {
     font-variation-settings: "FILL" 1;
+  }
+
+  /* Scrollbar Hide Utility - Using tailwind-scrollbar-hide plugin */
+  .scrollbar-hide,
+  .no-scrollbar {
+    @apply scrollbar-hide;
   }
 }

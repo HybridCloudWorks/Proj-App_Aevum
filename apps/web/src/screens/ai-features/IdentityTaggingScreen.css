@@ -1,0 +1,8 @@
+@layer utilities {
+  .snap-center {
+    scroll-snap-align: center;
+  }
+  .snap-x {
+    scroll-snap-type: x mandatory;
+  }
+}

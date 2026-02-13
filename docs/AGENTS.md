@@ -15,6 +15,36 @@
 
 The system implements Notion as the **single source of truth** for secrets management, with automated distribution to GitHub Actions and Firebase Secret Manager.
 
+### 1.3 Identity & Approval Architecture
+
+#### Identity Tagging & AI Scanning
+
+The identity system operates on three distinct triggers to balance cost and utility:
+
+1.  **Single Upload**: Immediate synchronous scan upon user upload.
+    - _Trigger_: `storage.object.finalize`
+    - _Action_: Rapid face detection & embedding generation.
+2.  **Bulk Upload**: Asynchronous batch processing.
+    - _Trigger_: Upload session completion or robust `storage.object.finalize` debouncing.
+    - _Action_: Queue-based processing to avoid rate limits; grouped notifications.
+3.  **Periodic Scanning**: Scheduled background jobs.
+    - _Trigger_: Cloud Scheduler (e.g., nightly).
+    - _Action_: Re-scan existing "Unknown" tagged faces against new "Known" embeddings to find matches missed previously.
+    - _Optimization_: Use **Vector Storage** (e.g., Pinecone, Qdrant, or Firestore Vector Search) to store face embeddings. This drastically reduces cost by querying embeddings rather than re-processing images.
+
+#### Tagging System
+
+- **Goal**: Useful, non-offensive tagging.
+- **Constraint**: No auto-tagging of sensitive/offensive labels. User confirmation required for all AI suggestions.
+
+#### Approval Hub & Notifications
+
+- **Flow**: Non-admin user invites/connections -> "Pending" state -> Admin "Approval Hub".
+- **Notification Channel**:
+  - System Notification (in-app Notification Center).
+  - Instant Message (Messenger Hub) if user is Online.
+  - Email (fallback).
+
 ## 2. VALIDATED COMPONENTS
 
 ### 2.1 Notion Integration (Source of Truth)
