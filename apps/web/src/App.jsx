@@ -45,6 +45,9 @@ const RestorationScreen = lazy(
 );
 const SettingsScreen = lazy(() => import("@screens/settings/SettingsScreen"));
 const AdminScreen = lazy(() => import("@screens/admin/AdminScreen"));
+const FileConflictScreen = lazy(
+  () => import("@screens/memories/FileConflictScreen"),
+);
 
 // Loading fallback component
 function LoadingFallback() {
@@ -107,6 +110,16 @@ function App() {
                 <ProtectedRoute>
                   <MainLayout>
                     <UploadScreen />
+                  </MainLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/upload/conflict"
+              element={
+                <ProtectedRoute>
+                  <MainLayout>
+                    <FileConflictScreen />
                   </MainLayout>
                 </ProtectedRoute>
               }

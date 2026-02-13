@@ -6,11 +6,12 @@
  */
 
 import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { uploadPhoto } from "@lib/storage";
 
 function UploadScreen() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -35,6 +36,21 @@ function UploadScreen() {
       if (progress >= 100) {
         progress = 100;
         clearInterval(interval);
+
+        // Simulate a random conflict detection (e.g. 30% chance)
+        if (Math.random() < 0.3) {
+          setTimeout(() => {
+            alert(
+              "Duplicate file detected! Redirecting to conflict resolver...",
+            );
+            navigate("/upload/conflict", {
+              state: {
+                fileName: fileName,
+                conflictTime: "Just now",
+              },
+            });
+          }, 500);
+        }
       }
       setProcessing((prev) =>
         prev.map((p) => (p.file === fileName ? { ...p, progress } : p)),

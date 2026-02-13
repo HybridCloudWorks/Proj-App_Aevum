@@ -1,0 +1,71 @@
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card-selected {
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.glass-badge {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.diff-highlight-old {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  text-decoration: line-through;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.diff-highlight-new {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.ambient-glow {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(239, 68, 68, 0.1) 0%,
+    rgba(139, 92, 246, 0.05) 50%,
+    transparent 70%
+  );
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+input[type="radio"]:checked + div .radio-indicator {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+input[type="radio"]:checked + div .radio-indicator::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
