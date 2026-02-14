@@ -15,6 +15,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import MainLayout from "@/layouts/MainLayout";
 import { InfrastructureProvider } from "@/contexts/InfrastructureContext";
+import { ROUTES } from "@/lib/routes";
 
 // Lazy-loaded screen components (Code splitting per FED best practices)
 const ScreenGallery = lazy(() => import("@screens/ScreenGallery"));
@@ -135,16 +136,16 @@ function App() {
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               {/* Screen Gallery - Browse all Stitch screens */}
-              <Route path="/gallery" element={<ScreenGallery />} />
+              <Route path={ROUTES.GALLERY} element={<ScreenGallery />} />
 
               {/* Public routes */}
-              <Route path="/" element={<WelcomeScreen />} />
-              <Route path="/welcome" element={<WelcomeScreen />} />
-              <Route path="/auth" element={<AuthScreen />} />
+              <Route path={ROUTES.HOME} element={<WelcomeScreen />} />
+              <Route path={ROUTES.WELCOME} element={<WelcomeScreen />} />
+              <Route path={ROUTES.AUTH} element={<AuthScreen />} />
 
               {/* Main Application Routes */}
               <Route
-                path="/memories"
+                path={ROUTES.MEMORIES}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -154,7 +155,7 @@ function App() {
                 }
               />
               <Route
-                path="/explorer"
+                path={ROUTES.EXPLORER}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -164,7 +165,7 @@ function App() {
                 }
               />
               <Route
-                path="/vault"
+                path={ROUTES.VAULT}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -174,7 +175,7 @@ function App() {
                 }
               />
               <Route
-                path="/legacy"
+                path={ROUTES.LEGACY}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -184,7 +185,7 @@ function App() {
                 }
               />
               <Route
-                path="/story/:id"
+                path={ROUTES.STORY_DETAILS}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -195,7 +196,7 @@ function App() {
               />
               {/* Temporary route to see the story without ID for demo */}
               <Route
-                path="/story/sample-id"
+                path={ROUTES.STORY_SAMPLE}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -205,7 +206,7 @@ function App() {
                 }
               />
               <Route
-                path="/messages"
+                path={ROUTES.MESSAGES}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -217,7 +218,7 @@ function App() {
 
               {/* Protected routes - Require authentication */}
               <Route
-                path="/dashboard"
+                path={ROUTES.DASHBOARD}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -227,7 +228,7 @@ function App() {
                 }
               />
               <Route
-                path="/family-tree"
+                path={ROUTES.FAMILY_TREE}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -236,18 +237,10 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* Duplicate MEMORIES route removed, it was already handled above */}
+
               <Route
-                path="/memories"
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <MemoriesScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/upload"
+                path={ROUTES.UPLOAD}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -257,7 +250,7 @@ function App() {
                 }
               />
               <Route
-                path="/upload/conflict"
+                path={ROUTES.UPLOAD_CONFLICT}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -267,7 +260,7 @@ function App() {
                 }
               />
               <Route
-                path="/heritage-map"
+                path={ROUTES.HERITAGE_MAP}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -277,7 +270,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai"
+                path={ROUTES.AI_HUB}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -287,7 +280,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai/identity-matcher"
+                path={ROUTES.AI_IDENTITY_MATCHER}
                 element={
                   <ProtectedRoute>
                     <IdentityMatcherScreen />
@@ -295,7 +288,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai/discovery"
+                path={ROUTES.AI_DISCOVERY}
                 element={
                   <ProtectedRoute>
                     <SemanticDiscoveryScreen />
@@ -303,7 +296,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai/restoration"
+                path={ROUTES.AI_RESTORATION}
                 element={
                   <ProtectedRoute>
                     <RestorationScreen />
@@ -311,7 +304,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai/identity-tagging"
+                path={ROUTES.AI_IDENTITY_TAGGING}
                 element={
                   <ProtectedRoute>
                     <IdentityTaggingScreen />
@@ -319,7 +312,7 @@ function App() {
                 }
               />
               <Route
-                path="/approval-hub"
+                path={ROUTES.APPROVAL_HUB}
                 element={
                   <ProtectedRoute>
                     <ApprovalHubScreen />
@@ -327,7 +320,7 @@ function App() {
                 }
               />
               <Route
-                path="/messages/access/:id"
+                path={ROUTES.MESSAGES_ACCESS}
                 element={
                   <ProtectedRoute>
                     <BranchAccessScreen />
@@ -335,7 +328,7 @@ function App() {
                 }
               />
               <Route
-                path="/messages/collab/:id"
+                path={ROUTES.MESSAGES_COLLAB}
                 element={
                   <ProtectedRoute>
                     <BranchCollaborationScreen />
@@ -343,7 +336,7 @@ function App() {
                 }
               />
               <Route
-                path="/profile"
+                path={ROUTES.PROFILE}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -353,7 +346,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path={ROUTES.SETTINGS}
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -363,7 +356,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/delegation"
+                path={ROUTES.SETTINGS_DELEGATION}
                 element={
                   <ProtectedRoute>
                     <AdminDelegationScreen />
@@ -371,7 +364,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/legacy-handover"
+                path={ROUTES.SETTINGS_LEGACY_HANDOVER}
                 element={
                   <ProtectedRoute>
                     <LegacyHandoverScreen />
@@ -380,7 +373,7 @@ function App() {
               />
 
               <Route
-                path="/settings/infrastructure"
+                path={ROUTES.SETTINGS_INFRASTRUCTURE}
                 element={
                   <ProtectedRoute>
                     <InfrastructureControlScreen />
@@ -388,7 +381,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/vault-health"
+                path={ROUTES.SETTINGS_VAULT_HEALTH}
                 element={
                   <ProtectedRoute>
                     <VaultHealthScreen />
@@ -396,7 +389,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/redundancy"
+                path={ROUTES.SETTINGS_REDUNDANCY}
                 element={
                   <ProtectedRoute>
                     <CloudRedundancyScreen />
@@ -404,7 +397,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/storage-architecture"
+                path={ROUTES.SETTINGS_STORAGE_ARCHITECTURE}
                 element={
                   <ProtectedRoute>
                     <StorageArchitectureScreen />
@@ -412,7 +405,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/catalog-engine"
+                path={ROUTES.SETTINGS_CATALOG_ENGINE}
                 element={
                   <ProtectedRoute>
                     <CatalogEngineScreen />
@@ -422,7 +415,7 @@ function App() {
 
               {/* Privacy Routes */}
               <Route
-                path="/settings/privacy-rules"
+                path={ROUTES.SETTINGS_PRIVACY_RULES}
                 element={
                   <ProtectedRoute>
                     <PrivacyRulesScreen />
@@ -430,7 +423,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/privacy-security"
+                path={ROUTES.SETTINGS_PRIVACY_SECURITY}
                 element={
                   <ProtectedRoute>
                     <PrivacySecurityScreen />
@@ -438,7 +431,7 @@ function App() {
                 }
               />
               <Route
-                path="/settings/restricted-profile/:userId"
+                path={ROUTES.SETTINGS_RESTRICTED_PROFILE}
                 element={
                   <ProtectedRoute>
                     <RestrictedProfileScreen />
@@ -448,7 +441,7 @@ function App() {
 
               {/* Spatial Features */}
               <Route
-                path="/memories/spatial-gallery"
+                path={ROUTES.SPATIAL_GALLERY}
                 element={
                   <ProtectedRoute>
                     <SpatialMemoryGallery />
@@ -456,7 +449,7 @@ function App() {
                 }
               />
               <Route
-                path="/family-tree/spatial"
+                path={ROUTES.SPATIAL_HERITAGE_TREE}
                 element={
                   <ProtectedRoute>
                     <SpatialHeritageTree />
@@ -464,7 +457,7 @@ function App() {
                 }
               />
               <Route
-                path="/ai/resource-manager"
+                path={ROUTES.AI_RESOURCE_MANAGER}
                 element={
                   <ProtectedRoute>
                     <AIResourceManager />
@@ -474,7 +467,7 @@ function App() {
 
               {/* Admin routes */}
               <Route
-                path="/admin/*"
+                path={ROUTES.ADMIN_ROOT}
                 element={
                   <ProtectedRoute>
                     <AdminScreen />
@@ -483,7 +476,7 @@ function App() {
               />
 
               {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
