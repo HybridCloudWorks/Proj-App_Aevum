@@ -1,10 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import "./ApprovalHubScreen.css";
 
 function ApprovalHubScreen() {
-  const navigate = useNavigate();
-
   return (
     <div className="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative mesh-gradient">
       <header className="pt-12 px-6 pb-4 flex justify-between items-center z-20 relative">

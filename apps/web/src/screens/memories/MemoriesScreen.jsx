@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
 import "./MemoriesScreen.css";
@@ -16,7 +16,6 @@ function MemoriesScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
   const [memories, setMemories] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   // 1. Get user's families
   useEffect(() => {
@@ -31,7 +30,6 @@ function MemoriesScreen() {
     const activeFamilyId = families[0].id;
     const unsub = subscribeToMemories(activeFamilyId, (data) => {
       setMemories(data);
-      setLoading(false);
     });
     return () => unsub();
   }, [families]);

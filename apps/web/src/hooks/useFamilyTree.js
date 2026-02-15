@@ -45,7 +45,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, currentFamily]);
 
   // Subscribe to current family's members
   useEffect(() => {

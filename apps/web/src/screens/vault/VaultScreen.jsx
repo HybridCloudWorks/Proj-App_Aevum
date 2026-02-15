@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "./VaultScreen.css";
 
 function VaultScreen() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div className="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative mesh-gradient">

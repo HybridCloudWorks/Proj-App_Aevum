@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const InfrastructureContext = createContext();
 
@@ -9,19 +9,19 @@ export const InfrastructureProvider = ({ children }) => {
   const [offlineMode, setOfflineMode] = useState(true);
   const [highSpeedSync, setHighSpeedSync] = useState(false);
   const [vaultUsage, setVaultUsage] = useState(12.4); // GB
-  const [vaultCapacity, setVaultCapacity] = useState(2000); // 2TB in GB
+  const [vaultCapacity] = useState(2000); // 2TB in GB
   const [photosSynced, setPhotosSynced] = useState(1204);
-  const [totalPhotos, setTotalPhotos] = useState(1450);
+  const [totalPhotos] = useState(1450);
 
   // Redundancy Settings
   const [zeroKnowledge, setZeroKnowledge] = useState(true);
   const [recoveryKey, setRecoveryKey] = useState("8X92-ZK4M-P92L-XXXX");
-  const [redundancyVerified, setRedundancyVerified] = useState(true);
+  const [redundancyVerified] = useState(true);
 
   // Catalog Engine
-  const [indexingStatus, setIndexingStatus] = useState("Active");
+  const [indexingStatus] = useState("Active");
   const [itemsIndexed, setItemsIndexed] = useState(14203);
-  const [throughput, setThroughput] = useState(45); // MB/s
+  const [throughput] = useState(45); // MB/s
 
   // Simulate sync progress
   useEffect(() => {
