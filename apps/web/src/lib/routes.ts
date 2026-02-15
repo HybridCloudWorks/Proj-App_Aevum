@@ -5,62 +5,62 @@
 
 export const ROUTES = {
   // Public Routes
-  GALLERY: '/gallery',
-  HOME: '/',
-  WELCOME: '/welcome',
-  AUTH: '/auth',
+  GALLERY: "/gallery",
+  HOME: "/",
+  WELCOME: "/welcome",
+  AUTH: "/auth",
 
   // Core Features
-  DASHBOARD: '/dashboard',
-  FAMILY_TREE: '/family-tree',
-  MEMORIES: '/memories',
-  EXPLORER: '/explorer',
-  VAULT: '/vault',
-  LEGACY: '/legacy',
-  HERITAGE_MAP: '/heritage-map',
-  PROFILE: '/profile',
-  SETTINGS: '/settings',
+  DASHBOARD: "/dashboard",
+  FAMILY_TREE: "/family-tree",
+  MEMORIES: "/memories",
+  EXPLORER: "/explorer",
+  VAULT: "/vault",
+  LEGACY: "/legacy",
+  HERITAGE_MAP: "/heritage-map",
+  PROFILE: "/profile",
+  SETTINGS: "/settings",
 
   // Stories
-  STORY_DETAILS: '/story/:id',
-  STORY_SAMPLE: '/story/sample-id',
+  STORY_DETAILS: "/story/:id",
+  STORY_SAMPLE: "/story/sample-id",
 
   // Upload
-  UPLOAD: '/upload',
-  UPLOAD_CONFLICT: '/upload/conflict',
+  UPLOAD: "/upload",
+  UPLOAD_CONFLICT: "/upload/conflict",
 
   // Messaging
-  MESSAGES: '/messages',
-  MESSAGES_ACCESS: '/messages/access/:id',
-  MESSAGES_COLLAB: '/messages/collab/:id',
+  MESSAGES: "/messages",
+  MESSAGES_ACCESS: "/messages/access/:id",
+  MESSAGES_COLLAB: "/messages/collab/:id",
 
   // AI Features
-  AI_HUB: '/ai',
-  AI_IDENTITY_MATCHER: '/ai/identity-matcher',
-  AI_DISCOVERY: '/ai/discovery',
-  AI_RESTORATION: '/ai/restoration',
-  AI_IDENTITY_TAGGING: '/ai/identity-tagging',
-  AI_RESOURCE_MANAGER: '/ai/resource-manager',
-  APPROVAL_HUB: '/approval-hub',
+  AI_HUB: "/ai",
+  AI_IDENTITY_MATCHER: "/ai/identity-matcher",
+  AI_DISCOVERY: "/ai/discovery",
+  AI_RESTORATION: "/ai/restoration",
+  AI_IDENTITY_TAGGING: "/ai/identity-tagging",
+  AI_RESOURCE_MANAGER: "/ai/resource-manager",
+  APPROVAL_HUB: "/approval-hub",
 
   // Settings Sub-pages
-  SETTINGS_DELEGATION: '/settings/delegation',
-  SETTINGS_LEGACY_HANDOVER: '/settings/legacy-handover',
-  SETTINGS_INFRASTRUCTURE: '/settings/infrastructure',
-  SETTINGS_VAULT_HEALTH: '/settings/vault-health',
-  SETTINGS_REDUNDANCY: '/settings/redundancy',
-  SETTINGS_STORAGE_ARCHITECTURE: '/settings/storage-architecture',
-  SETTINGS_CATALOG_ENGINE: '/settings/catalog-engine',
-  SETTINGS_PRIVACY_RULES: '/settings/privacy-rules',
-  SETTINGS_PRIVACY_SECURITY: '/settings/privacy-security',
-  SETTINGS_RESTRICTED_PROFILE: '/settings/restricted-profile/:userId',
+  SETTINGS_DELEGATION: "/settings/delegation",
+  SETTINGS_LEGACY_HANDOVER: "/settings/legacy-handover",
+  SETTINGS_INFRASTRUCTURE: "/settings/infrastructure",
+  SETTINGS_VAULT_HEALTH: "/settings/vault-health",
+  SETTINGS_REDUNDANCY: "/settings/redundancy",
+  SETTINGS_STORAGE_ARCHITECTURE: "/settings/storage-architecture",
+  SETTINGS_CATALOG_ENGINE: "/settings/catalog-engine",
+  SETTINGS_PRIVACY_RULES: "/settings/privacy-rules",
+  SETTINGS_PRIVACY_SECURITY: "/settings/privacy-security",
+  SETTINGS_RESTRICTED_PROFILE: "/settings/restricted-profile/:userId",
 
   // Spatial Features
-  SPATIAL_GALLERY: '/memories/spatial-gallery',
-  SPATIAL_HERITAGE_TREE: '/family-tree/spatial',
+  SPATIAL_GALLERY: "/memories/spatial-gallery",
+  SPATIAL_HERITAGE_TREE: "/family-tree/spatial",
 
   // Admin
-  ADMIN_ROOT: '/admin/*',
+  ADMIN_ROOT: "/admin/*",
 };
 
 /**
@@ -123,5 +123,5 @@ export const ROUTE_CONFIG = {
   [ROUTES.SPATIAL_HERITAGE_TREE]: { protected: true, layout: false },
 
   // Admin
-  [ROUTES.ADMIN_ROOT]: { protected: true, layout: false, role: 'admin' },
+  [ROUTES.ADMIN_ROOT]: { protected: true, layout: false, role: "admin" },
 };
