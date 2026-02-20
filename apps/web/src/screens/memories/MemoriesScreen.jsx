@@ -27,14 +27,15 @@ function MemoriesScreen() {
 
   // 2. Subscribe to memories for the first family
   useEffect(() => {
-    if (families.length === 0) return;
-    const activeFamilyId = families[0].id;
+    const activeFamilyId = families[0]?.id;
+    if (!activeFamilyId) return;
+
     const unsub = subscribeToMemories(activeFamilyId, (data) => {
       setMemories(data);
       setLoading(false);
     });
     return () => unsub();
-  }, [families]);
+  }, [families[0]?.id]);
 
   // Use sample if empty for demo purposes, otherwise show real ones
   const featuredMemories =
