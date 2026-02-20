@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:aevum_native/models/family_member.dart';
+import 'package:aevum_native/mocks/family_member_mocks.dart';
 import 'dart:ui';
 import 'package:aevum_native/widgets/smart_navigation_wrapper.dart';
 import 'package:aevum_native/widgets/heritage_top_nav.dart';
