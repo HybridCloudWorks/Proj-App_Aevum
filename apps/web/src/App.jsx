@@ -17,7 +17,9 @@ import MainLayout from "@/layouts/MainLayout";
 import { InfrastructureProvider } from "@/contexts/InfrastructureContext";
 
 // Lazy-loaded screen components (Code splitting per FED best practices)
-const ScreenGallery = lazy(() => import("@screens/ScreenGallery"));
+const ScreenGallery = import.meta.env.DEV
+  ? lazy(() => import("@screens/ScreenGallery"))
+  : () => null;
 const WelcomeScreen = lazy(() => import("@screens/onboarding/WelcomeScreen"));
 const AuthScreen = lazy(() => import("@screens/auth/AuthScreen"));
 const DashboardScreen = lazy(
@@ -134,8 +136,10 @@ function App() {
         <BrowserRouter>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
-              {/* Screen Gallery - Browse all Stitch screens */}
-              <Route path="/gallery" element={<ScreenGallery />} />
+              {/* Screen Gallery - Browse all Stitch screens (Dev only) */}
+              {import.meta.env.DEV && (
+                <Route path="/gallery" element={<ScreenGallery />} />
+              )}
 
               {/* Public routes */}
               <Route path="/" element={<WelcomeScreen />} />
