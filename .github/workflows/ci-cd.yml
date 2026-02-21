@@ -152,6 +152,7 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: build
     permissions:
+      contents: read
       pull-requests: write
     steps:
       - name: Checkout
