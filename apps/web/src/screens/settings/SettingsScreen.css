@@ -1,11 +1,11 @@
-  .settings-card {
-    background: rgba(30, 41, 59, 0.4);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.2s ease;
-  }
-  .settings-card:active {
-    background: rgba(30, 41, 59, 0.6);
-    transform: scale(0.98);
-  }
+.settings-card {
+  background: rgba(30, 41, 59, 0.4);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+.settings-card:active {
+  background: rgba(30, 41, 59, 0.6);
+  transform: scale(0.98);
+}

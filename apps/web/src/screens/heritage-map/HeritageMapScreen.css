@@ -1,48 +1,48 @@
-  .glass-panel {
-    @apply bg-glass-surface backdrop-blur-xl border border-glass-border;
-  }
-  .glass-card {
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
-    @apply backdrop-blur-md border border-white/10 shadow-xl;
-  }
-  .mesh-gradient {
-    background-color: #05090f;
-    background-image:
-      radial-gradient(at 0% 0%, hsla(220, 60%, 15%, 1) 0, transparent 50%),
-      radial-gradient(at 50% 0%, hsla(210, 40%, 10%, 1) 0, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(200, 50%, 12%, 1) 0, transparent 50%);
-  }
-  .map-container {
-    background: radial-gradient(circle at center, #1a2a44 0%, #05090f 100%);
-    position: relative;
-    overflow: hidden;
-  }
-  .world-map-placeholder {
-    background-image: url("data:image/svg+xml,%3Csvg width='1000' height='500' viewBox='0 0 1000 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150,100 Q200,50 300,80 T500,120 T700,90 T900,150' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Cpath d='M50,250 Q150,200 350,280 T650,220 T950,300' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Ccircle cx='200' cy='150' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='450' cy='320' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='780' cy='180' r='2' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E");
-    background-size: cover;
-    opacity: 0.4;
-  }
-  .glowing-orb {
-    @apply relative flex items-center justify-center;
-  }
-  .glowing-orb::before {
-    content: "";
-    @apply absolute w-16 h-16 rounded-full bg-primary/20 blur-xl animate-pulse;
-  }
-  .glowing-orb::after {
-    content: "";
-    @apply absolute w-10 h-10 rounded-full border border-primary/50;
-    box-shadow: 0 0 15px rgba(17, 115, 212, 0.4);
-  }
-  .orb-photo {
-    @apply w-10 h-10 rounded-full border-2 border-white object-cover z-10;
-  }
-  .bento-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 1rem;
-  }
+.glass-panel {
+  @apply bg-glass-surface backdrop-blur-xl border border-glass-border;
+}
+.glass-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  @apply backdrop-blur-md border border-white/10 shadow-xl;
+}
+.mesh-gradient {
+  background-color: #05090f;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(220, 60%, 15%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(210, 40%, 10%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(200, 50%, 12%, 1) 0, transparent 50%);
+}
+.map-container {
+  background: radial-gradient(circle at center, #1a2a44 0%, #05090f 100%);
+  position: relative;
+  overflow: hidden;
+}
+.world-map-placeholder {
+  background-image: url("data:image/svg+xml,%3Csvg width='1000' height='500' viewBox='0 0 1000 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150,100 Q200,50 300,80 T500,120 T700,90 T900,150' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Cpath d='M50,250 Q150,200 350,280 T650,220 T950,300' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/%3E%3Ccircle cx='200' cy='150' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='450' cy='320' r='2' fill='rgba(255,255,255,0.1)'/%3E%3Ccircle cx='780' cy='180' r='2' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E");
+  background-size: cover;
+  opacity: 0.4;
+}
+.glowing-orb {
+  @apply relative flex items-center justify-center;
+}
+.glowing-orb::before {
+  content: "";
+  @apply absolute w-16 h-16 rounded-full bg-primary/20 blur-xl animate-pulse;
+}
+.glowing-orb::after {
+  content: "";
+  @apply absolute w-10 h-10 rounded-full border border-primary/50;
+  box-shadow: 0 0 15px rgba(17, 115, 212, 0.4);
+}
+.orb-photo {
+  @apply w-10 h-10 rounded-full border-2 border-white object-cover z-10;
+}
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
