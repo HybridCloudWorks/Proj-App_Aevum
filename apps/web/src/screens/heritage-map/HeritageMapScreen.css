@@ -1,4 +1,3 @@
-@layer utilities {
   .glass-panel {
     @apply bg-glass-surface backdrop-blur-xl border border-glass-border;
   }
@@ -47,4 +46,3 @@
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem;
   }
-}

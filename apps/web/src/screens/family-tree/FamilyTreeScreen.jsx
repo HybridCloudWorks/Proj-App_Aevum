@@ -93,7 +93,7 @@ function FamilyTreeScreen() {
     },
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = () => {
     setIsDragging(true);
   };
 

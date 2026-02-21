@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import "./LegacyPlanningScreen.css";
 
 function LegacyPlanningScreen() {
-  const navigate = useNavigate();
-
   return (
     <div className="font-display bg-background-dark text-white overflow-hidden h-screen w-full relative mesh-gradient">
       {/* Header */}
@@ -120,7 +118,7 @@ function LegacyPlanningScreen() {
               <div className="flex items-center">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
-                    class="sr-only peer"
+                    className="sr-only peer"
                     type="checkbox"
                     value=""
                     defaultChecked

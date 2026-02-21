@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import '../widgets/glass_card.dart';
+import '../widgets/heritage_bottom_nav.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -7,275 +9,103 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F151B), Color(0xFF17202B)],
+      backgroundColor: const Color(0xFF0F172A),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 200,
+            floating: false,
+            pinned: true,
+            backgroundColor: const Color(0xFF0F172A),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blueAccent, Color(0xFF0F172A)],
+                  ),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
+                      ),
+                      SizedBox(height: 16),
+                      Text("Eleanor Pena",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
+                      Text("Family Administrator",
+                          style: TextStyle(color: Colors.white70)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 32),
-                _buildProfileCard(),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildSection("Account", [
+                  _menuItem(context, Icons.person, "Personal Info", () {}),
+                  _menuItem(context, Icons.security, "Privacy & Security", () {}),
+                ]),
                 const SizedBox(height: 24),
-                _buildStatsGrid(),
-                const SizedBox(height: 32),
-                _buildSectionHeader("Archives & Memories"),
-                const SizedBox(height: 16),
-                _buildArchiveList(context),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Identity Profile",
-              style: GoogleFonts.publicSans(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Heritage DNA & Lineage",
-              style: GoogleFonts.publicSans(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(Icons.settings, color: Colors.white),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileCard() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
-              ),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 2,
-              ),
-            ),
-            child: const Center(
-              child: Icon(Icons.person, size: 40, color: Colors.white),
-            ),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Alex Sterling",
-                  style: GoogleFonts.publicSans(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Primary Custodian",
-                  style: GoogleFonts.publicSans(
-                    color: const Color(0xFF6366F1),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+                _buildSection("Family Features", [
+                  _menuItem(context, Icons.auto_stories, "Chronicles",
+                      () => context.push('/ai-chronicles')),
+                  _menuItem(context, Icons.photo_library, "Memories",
+                      () => context.push('/memories')),
+                  _menuItem(context, Icons.map, "Heritage Map",
+                      () => context.push('/map')),
+                  _menuItem(context, Icons.restore, "Restoration Lab",
+                      () => context.push('/restoration')),
+                ]),
+                const SizedBox(height: 24),
+                _buildSection("Admin", [
+                  _menuItem(context, Icons.admin_panel_settings, "Dev Menu",
+                      () => context.push('/dev-menu')),
+                  _menuItem(context, Icons.logout, "Log Out", () {}),
+                ]),
+              ]),
             ),
           ),
         ],
       ),
+      bottomNavigationBar: const HeritageBottomNav(selectedIndex: 4),
     );
   }
 
-  Widget _buildStatsGrid() {
-    return Row(
-      children: [
-        _buildStatItem("42", "Ancestors"),
-        const SizedBox(width: 16),
-        _buildStatItem("156", "Memories"),
-        const SizedBox(width: 16),
-        _buildStatItem("12", "Vaults"),
-      ],
-    );
-  }
-
-  Widget _buildStatItem(String value, String label) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.03),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-        ),
-        child: Column(
-          children: [
-            Text(
-              value,
-              style: GoogleFonts.publicSans(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              label,
-              style: GoogleFonts.publicSans(
-                color: Colors.white54,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: GoogleFonts.publicSans(
-        color: Colors.white,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  Widget _buildArchiveList(BuildContext context) {
+  Widget _buildSection(String title, List<Widget> children) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildArchiveItem(
-          Icons.auto_stories,
-          "Chronicles",
-          "4 active stories",
-          onTap: () => Navigator.pushNamed(context, '/ai-chronicles'),
-        ),
+        Text(title,
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        _buildArchiveItem(
-          Icons.photo_library,
-          "Media Vault",
-          "1.2GB stored",
-          onTap: () => Navigator.pushNamed(context, '/memories'),
-        ),
-        const SizedBox(height: 12),
-        _buildArchiveItem(
-          Icons.location_on,
-          "Origin Map",
-          "24 geo-tags",
-          onTap: () => Navigator.pushNamed(context, '/map'),
-        ),
-        const SizedBox(height: 12),
-        _buildArchiveItem(
-          Icons.auto_fix_high,
-          "AI Restoration",
-          "Enhance family photos",
-          onTap: () => Navigator.pushNamed(context, '/restoration'),
+        GlassCard(
+          child: Column(children: children),
         ),
       ],
     );
   }
 
-  Widget _buildArchiveItem(
-    IconData icon,
-    String title,
-    String subtitle, {
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
+  Widget _menuItem(BuildContext context, IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue),
+      title: Text(title, style: const TextStyle(color: Colors.white)),
+      trailing: const Icon(Icons.arrow_forward_ios,
+          color: Colors.white54, size: 16),
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.03),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFF6366F1).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: const Color(0xFF6366F1), size: 20),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white54,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
-          ],
-        ),
-      ),
     );
   }
 }
-
-

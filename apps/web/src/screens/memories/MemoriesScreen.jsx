@@ -6,9 +6,9 @@
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { subscribeToFamilies, subscribeToMemories } from "@lib/firestore";
+import { subscribeToFamilies, subscribeToMediaItems } from "@lib/firestore";
 import "./MemoriesScreen.css";
 
 function MemoriesScreen() {
@@ -16,7 +16,6 @@ function MemoriesScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
   const [memories, setMemories] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   // 1. Get user's families
   useEffect(() => {
@@ -27,12 +26,10 @@ function MemoriesScreen() {
 
   // 2. Subscribe to memories for the first family
   useEffect(() => {
-    const activeFamilyId = families[0]?.id;
-    if (!activeFamilyId) return;
-
-    const unsub = subscribeToMemories(activeFamilyId, (data) => {
+    if (families.length === 0) return;
+    const activeFamilyId = families[0].id;
+    const unsub = subscribeToMediaItems(activeFamilyId, (data) => {
       setMemories(data);
-      setLoading(false);
     });
     return () => unsub();
   }, [families[0]?.id]);

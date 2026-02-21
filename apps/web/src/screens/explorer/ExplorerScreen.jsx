@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./ExplorerScreen.css";
 // import BottomNav from "../../components/BottomNav"; // Assuming we might want to use the app's standard bottom nav, but the design shows a specific one.
 

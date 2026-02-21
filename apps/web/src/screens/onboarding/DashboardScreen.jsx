@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   subscribeToFamilies,
-  subscribeToMemories,
+  subscribeToMediaItems,
   subscribeToAITasks,
   updateAITaskStatus,
   createMockAITask,
@@ -39,7 +39,7 @@ function DashboardScreen() {
     let unsubMemories = () => {};
     if (families.length > 0) {
       unsubMembers = subscribeToFamilyMembers(families[0].id, setMembers);
-      unsubMemories = subscribeToMemories(families[0].id, setMemories);
+      unsubMemories = subscribeToMediaItems(families[0].id, setMemories);
     }
 
     return () => {

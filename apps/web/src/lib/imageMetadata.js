@@ -147,7 +147,7 @@ function parseExifSegment(dataView, offset) {
   const exif = {};
 
   try {
-    const segmentLength = dataView.getUint16(offset + 2);
+    // segmentLength was defined here but never used. Removed to fix lint error.
     const exifOffset = offset + 4;
 
     // Check for "Exif\0\0" header

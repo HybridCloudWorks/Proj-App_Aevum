@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  subscribeToMemories,
+  subscribeToMediaItems,
   createMemory,
   updateMemory,
   deleteMemory,
@@ -41,7 +41,7 @@ export function useMemories(familyId) {
     }
 
     setLoading(true);
-    const unsubscribe = subscribeToMemories(familyId, (data) => {
+    const unsubscribe = subscribeToMediaItems(familyId, (data) => {
       setMemories(data);
       setLoading(false);
     });

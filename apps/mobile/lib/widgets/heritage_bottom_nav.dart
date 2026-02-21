@@ -1,252 +1,133 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'package:go_router/go_router.dart';
 
 class HeritageBottomNav extends StatelessWidget {
-  final int activeIndex;
+  final int selectedIndex;
 
-  const HeritageBottomNav({super.key, this.activeIndex = 0});
+  const HeritageBottomNav({super.key, required this.selectedIndex});
 
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              height: 72,
-              width: 320,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF101922).withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 20,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _bottomNavIcon(
-                    context,
-                    Icons.grid_view_rounded,
-                    '/dashboard',
-                    activeIndex == 0,
-                  ),
-                  _bottomNavIcon(
-                    context,
-                    Icons.map_rounded,
-                    '/map',
-                    activeIndex == 1,
-                  ),
-                  // Center FAB
-                  _buildCenterFAB(context),
-                  _bottomNavIcon(
-                    context,
-                    Icons.account_tree_rounded,
-                    '/tree',
-                    activeIndex == 2,
-                  ),
-                  _bottomNavIcon(
-                    context,
-                    Icons.person_rounded,
-                    '/profile-main',
-                    activeIndex == 3,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  void _onItemTapped(BuildContext context, int index) {
+    if (index == selectedIndex) return;
+
+    final routes = ['/dashboard', '/tree', '/upload', '/memories', '/profile-main'];
+    if (index < routes.length) {
+      if (index != 2) {
+        context.push(routes[index]);
+      } else {
+        _showAddMenu(context);
+      }
+    }
   }
 
-  Widget _buildCenterFAB(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showInvitePopup(context),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 24),
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF1173D4), Color(0xFF00E0FF)],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1173D4).withValues(alpha: 0.4),
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ],
-          border: Border.all(color: const Color(0xFF101922), width: 4),
-        ),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
-      ),
-    );
-  }
-
-  Widget _bottomNavIcon(
-    BuildContext context,
-    IconData icon,
-    String route,
-    bool active,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        if (!active) {
-          Navigator.pushNamed(context, route);
-        }
-      },
-      child: SizedBox(
-        width: 48,
-        height: 48,
-        child: Center(
-          child: Icon(
-            icon,
-            color: active ? const Color(0xFF1173D4) : Colors.grey[600],
-            size: 28,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showInvitePopup(BuildContext context) {
-    // This is a duplicate of DashboardScreen._showInvitePopup
-    // In a real app, this should be a shared widget too
+  void _showAddMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            decoration: BoxDecoration(
-              color: const Color(0xFF101922).withValues(alpha: 0.95),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(32),
+      builder: (context) => Container(
+        height: 250,
+        decoration: const BoxDecoration(
+          color: Color(0xFF1E293B),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
               ),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            const SizedBox(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const Text(
-                  "Extend Your Living History",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _popupActionCard(
+                _actionButton(
                   context,
-                  icon: Icons.person_add,
-                  title: "Family Member",
-                  subtitle: "Invite an individual to your family tree",
-                  color: const Color(0xFF1173D4),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/invite');
+                  Icons.person_add,
+                  "Invite",
+                  Colors.blue,
+                  () {
+                    context.pop();
+                    context.push('/invite');
                   },
                 ),
-                const SizedBox(height: 16),
-                _popupActionCard(
+                _actionButton(
                   context,
-                  icon: Icons.account_tree,
-                  title: "Family Branch",
-                  subtitle: "Create a new ancestral line or branch",
-                  color: Colors.purpleAccent,
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamed(context, '/family-branches');
+                  Icons.upload_file,
+                  "Media",
+                  Colors.purple,
+                  () {
+                    context.pop();
+                    context.push('/upload');
                   },
                 ),
-                const SizedBox(height: 32),
+                _actionButton(
+                  context,
+                  Icons.mic,
+                  "Story",
+                  Colors.orange,
+                  () {
+                    context.pop();
+                    context.push('/family-branches');
+                  },
+                ),
               ],
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _popupActionCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 28),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.white24),
           ],
         ),
       ),
     );
   }
+
+  Widget _actionButton(BuildContext context, IconData icon, String label,
+      Color color, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 32),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(color: Colors.white70)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: selectedIndex,
+      onTap: (index) => _onItemTapped(context, index),
+      backgroundColor: const Color(0xFF0F172A),
+      selectedItemColor: const Color(0xFF1173D4),
+      unselectedItemColor: Colors.white38,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: 'Tree'),
+        BottomNavigationBarItem(
+          icon: CircleAvatar(
+            backgroundColor: Color(0xFF1173D4),
+            radius: 24,
+            child: Icon(Icons.add, color: Colors.white),
+          ),
+          label: 'Add',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.photo_library), label: 'Memories'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+      ],
+    );
+  }
 }
-
-

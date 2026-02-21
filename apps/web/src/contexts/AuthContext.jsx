@@ -6,7 +6,7 @@
  */
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthChange, getCurrentUser } from "../lib/auth";
+import { onAuthChange } from "../lib/auth";
 
 const AuthContext = createContext(null);
 
@@ -17,7 +17,6 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Subscribe to auth state changes
@@ -33,7 +32,6 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
-    error,
     isAuthenticated: !!user,
   };
 

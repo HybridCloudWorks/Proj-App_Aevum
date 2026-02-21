@@ -295,7 +295,7 @@ function UploadScreen() {
         </Link>
       </nav>
 
-      <style jsx>{`
+      <style>{`
         @keyframes scan {
           0% {
             top: 0%;
