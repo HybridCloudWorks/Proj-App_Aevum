@@ -91,4 +91,12 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
+
+  // Vitest configuration
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.js",
+    include: ["src/**/*.{test,spec}.{js,jsx,ts,tsx}"],
+  },
 });

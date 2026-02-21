@@ -18,7 +18,9 @@ import { InfrastructureProvider } from "@/contexts/InfrastructureContext";
 import { ROUTES } from "@/lib/routes";
 
 // Lazy-loaded screen components (Code splitting per FED best practices)
-const ScreenGallery = lazy(() => import("@screens/ScreenGallery"));
+const ScreenGallery = import.meta.env.DEV
+  ? lazy(() => import("@screens/ScreenGallery"))
+  : () => null;
 const WelcomeScreen = lazy(() => import("@screens/onboarding/WelcomeScreen"));
 const AuthScreen = lazy(() => import("@screens/auth/AuthScreen"));
 const DashboardScreen = lazy(

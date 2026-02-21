@@ -32,7 +32,7 @@ function MemoriesScreen() {
       setMemories(data);
     });
     return () => unsub();
-  }, [families]);
+  }, [families[0]?.id]);
 
   // Use sample if empty for demo purposes, otherwise show real ones
   const featuredMemories =
