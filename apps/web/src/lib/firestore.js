@@ -473,4 +473,8 @@ export default {
   createMockAITask,
   requestMediaAnalysis,
   requestPhotoRestoration,
+  // Aliases for consistent naming
+  createMemory: createMediaItem,
+  updateMemory: updateMediaItem,
+  deleteMemory: deleteMediaItem,
 };

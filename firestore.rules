@@ -34,8 +34,13 @@ service cloud.firestore {
     // --- MEDIA ITEMS ---
     match /media_items/{mediaId} {
       allow read, delete: if isOwner(resource);
-      allow create: if isNewOwner();
-      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+      // Ensure 'aiStatus' is only 'pending' or 'restoration_pending' on create, preventing users from forging 'completed' status
+      allow create: if isNewOwner() &&
+        (!("aiStatus" in request.resource.data) ||
+         request.resource.data.aiStatus == "pending" ||
+         request.resource.data.aiStatus == "restoration_pending");
+      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid) &&
+        (!("aiStatus" in request.resource.data) || request.resource.data.aiStatus == resource.data.aiStatus);
     }
 
     // --- AI TASKS ---
