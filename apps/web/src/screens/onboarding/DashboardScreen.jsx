@@ -13,7 +13,7 @@ import {
   subscribeToMediaItems,
   subscribeToAITasks,
   updateAITaskStatus,
-  createMockAITask,
+  createAITask,
   subscribeToFamilyMembers,
 } from "@lib/firestore";
 import { signOut } from "@lib/auth";
@@ -54,7 +54,13 @@ function DashboardScreen() {
     if (taskId) {
       await updateAITaskStatus(taskId, "running");
     } else {
-      await createMockAITask(user.uid);
+      await createAITask(user.uid, {
+        title: "Grandpa '54",
+        type: "Enhance color",
+        status: "pending",
+        imageUrl:
+          "https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4",
+      });
     }
   };
 
