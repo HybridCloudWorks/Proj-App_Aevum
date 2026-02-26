@@ -431,23 +431,20 @@ export async function requestPhotoRestoration(mediaId, params) {
 }
 
 /**
- * Create mock AI task
+ * Create an AI task
  */
-export async function createMockAITask(userId) {
+export async function createAITask(userId, taskData) {
   try {
     const taskRef = doc(collection(db, COLLECTIONS.AI_TASKS));
     await setDoc(taskRef, {
       userId,
-      title: "Grandpa '54",
-      type: "Enhance color",
-      status: "pending",
-      imageUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCst1gIFGnX9hkdMwGTaxY6xjUlP-IAFFAh7ypfOuPKGVthwfRdOj01OQ5TVfUrQz3nmE7f3sWLFcEeZsZFJmMIX1GQYL3xDuFw49ZFBVnhAXd455GgLwYdqEj6VP9zHQjOLdbNqUtH9egfkXyq99VsuzDKq8pMEh8dCfPAv4XR6muac_M4rmeOXxkl_Ao8uGNz3sN9rMJ3IlXfIdezJzFvDSMtysjXO7GXs4B2tLwjld77v9VX3o4-npz_pJY5nIomO-I1vO1tcJ4",
+      ...taskData,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     });
-    return { success: true };
+    return { success: true, id: taskRef.id };
   } catch (error) {
-    console.error("Error creating mock task:", error);
+    console.error("Error creating AI task:", error);
     return { success: false, error: error.message };
   }
 }
@@ -470,7 +467,7 @@ export default {
   subscribeToFamilyMembers,
   subscribeToAITasks,
   updateAITaskStatus,
-  createMockAITask,
+  createAITask,
   requestMediaAnalysis,
   requestPhotoRestoration,
 };
