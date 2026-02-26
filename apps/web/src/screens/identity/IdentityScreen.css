@@ -1,0 +1,39 @@
+/* Identity Screen Specific Styles from Stitch Design */
+
+.identity-screen-wrapper {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Glassmorphism overrides for Identity Screen to match high-fidelity design */
+.identity-screen-wrapper .glass-card {
+    background: rgba(30, 30, 35, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.identity-screen-wrapper .glass-pill {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Timeline specific styles if needed */
+.identity-screen-wrapper .timeline-container {
+    position: relative;
+}
+
+.identity-screen-wrapper .timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+}
