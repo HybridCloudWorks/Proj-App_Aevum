@@ -49,21 +49,42 @@ def process_upload(cloud_event):
 
     print(f"Identified Media UUID: {media_uuid} for User: {user_id}")
 
-    # 2. Generate Optimized WebP Versions
-    # A. Thumbnail (200x200)
-    thumb_io = io.BytesIO()
-    thumb_img = original_image.copy()
-    thumb_img.thumbnail((200, 200))
-    thumb_img.save(thumb_io, format='WEBP', quality=80)
-    thumb_io.seek(0)
+    # Capture original metadata before modification
+    original_width, original_height = original_image.size
 
-    # B. Display (1080p width, dynamic height)
+    # 5. Extract EXIF Data (moved up before resizing)
+    exif_data = {}
+    try:
+        exif = original_image._getexif()
+        if exif:
+            from PIL.ExifTags import TAGS, GPSTAGS
+            for tag, value in exif.items():
+                decoded = TAGS.get(tag, tag)
+                if decoded == "GPSInfo":
+                    gps_data = {}
+                    for t in value:
+                        sub_decoded = GPSTAGS.get(t, t)
+                        gps_data[sub_decoded] = value[t]
+                    exif_data["gps"] = gps_data
+                else:
+                    exif_data[decoded] = str(value)
+    except Exception as e:
+        print(f"Error extracting EXIF: {e}")
+
+    # 2. Generate Optimized WebP Versions
+    # B. Display (1080p width, dynamic height) - Generated first to avoid copies
     display_io = io.BytesIO()
-    display_img = original_image.copy()
-    if display_img.width > 1920:
-        display_img.thumbnail((1920, 1920)) # Maintain aspect ratio
-    display_img.save(display_io, format='WEBP', quality=85)
+    if original_image.width > 1920:
+        original_image.thumbnail((1920, 1920)) # Maintain aspect ratio
+    original_image.save(display_io, format='WEBP', quality=85)
     display_io.seek(0)
+    display_width, display_height = original_image.size
+
+    # A. Thumbnail (200x200) - Generated from the already resized image
+    thumb_io = io.BytesIO()
+    original_image.thumbnail((200, 200))
+    original_image.save(thumb_io, format='WEBP', quality=80)
+    thumb_io.seek(0)
 
     # 3. Upload Optimized Versions to Gallery Bucket
     gallery_bucket_ref = storage_client.bucket(GALLERY_BUCKET)
@@ -93,25 +114,6 @@ def process_upload(cloud_event):
     else:
         print("Failed to copy to Archive bucket.")
         return
-
-    # 5. Extract EXIF Data
-    exif_data = {}
-    try:
-        exif = original_image._getexif()
-        if exif:
-            from PIL.ExifTags import TAGS, GPSTAGS
-            for tag, value in exif.items():
-                decoded = TAGS.get(tag, tag)
-                if decoded == "GPSInfo":
-                    gps_data = {}
-                    for t in value:
-                        sub_decoded = GPSTAGS.get(t, t)
-                        gps_data[sub_decoded] = value[t]
-                    exif_data["gps"] = gps_data
-                else:
-                    exif_data[decoded] = str(value)
-    except Exception as e:
-        print(f"Error extracting EXIF: {e}")
 
     # Helper to convert GPS to decimal
     def get_decimal_from_dms(dms, ref):
@@ -143,8 +145,8 @@ def process_upload(cloud_event):
             'archive': f"gs://{ARCHIVE_BUCKET}/{file_name}"
         },
         'dimensions': {
-            'original': f"{original_image.width}x{original_image.height}",
-            'display': f"{display_img.width}x{display_img.height}"
+            'original': f"{original_width}x{original_height}",
+            'display': f"{display_width}x{display_height}"
         },
         'location': {
             'latitude': lat,
