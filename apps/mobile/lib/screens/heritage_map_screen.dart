@@ -17,6 +17,20 @@ class _HeritageMapScreenState extends State<HeritageMapScreen> {
   // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  late final DraggableScrollableController _sheetController;
+
+  @override
+  void initState() {
+    super.initState();
+    _sheetController = DraggableScrollableController();
+  }
+
+  @override
+  void dispose() {
+    _sheetController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // final User? user = _auth.currentUser;
@@ -342,6 +356,8 @@ class _HeritageMapScreenState extends State<HeritageMapScreen> {
 
   Widget _buildDraggableBottomSheet(BuildContext context) {
     return DraggableScrollableSheet(
+      key: const PageStorageKey('heritage_map_sheet'),
+      controller: _sheetController,
       initialChildSize: 0.12,
       minChildSize: 0.12,
       maxChildSize: 0.55,
