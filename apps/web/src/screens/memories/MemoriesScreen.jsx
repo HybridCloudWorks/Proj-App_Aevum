@@ -137,12 +137,14 @@ function MemoriesScreen() {
               <div
                 key={memory.id}
                 className={`bento-card ${index === 0 ? "featured-moment" : "aspect-square-card"} overflow-hidden relative`}
-                style={{
-                  backgroundImage: `url('${memory.imageUrl}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
               >
+                <img
+                  src={memory.imageUrl}
+                  alt={memory.title || "Memory"}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading={index > 0 ? "lazy" : "eager"}
+                  decoding="async"
+                />
                 {index === 0 && (
                   <>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
