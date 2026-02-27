@@ -70,8 +70,8 @@ export async function uploadPhoto(
       customMetadata,
     });
 
-    // Upload main image
-    const mainResult = await new Promise((resolve) => {
+    // Optimization: Run main upload and thumbnail creation/upload in parallel
+    const mainUploadPromise = new Promise((resolve) => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -93,12 +93,10 @@ export async function uploadPhoto(
       );
     });
 
-    if (!mainResult.success) {
-      return mainResult;
-    }
+    // Handle thumbnail creation and upload promise
+    const thumbnailPromise = (async () => {
+      if (!options.createThumbnail) return null;
 
-    // Upload thumbnail if requested
-    if (options.createThumbnail) {
       try {
         // Optimization: Pass extracted dimensions if available to skip re-reading them
         const thumbBlob = await createThumbnail(
@@ -115,13 +113,29 @@ export async function uploadPhoto(
           contentType: "image/jpeg",
         });
 
-        thumbnailUrl = await getDownloadURL(thumbRef);
-        onProgress(100);
+        return await getDownloadURL(thumbRef);
       } catch (e) {
         console.warn("Thumbnail creation failed:", e);
-        onProgress(100);
+        return null;
       }
+    })();
+
+    // Wait for both operations to complete
+    const [mainResult, thumbUrl] = await Promise.all([
+      mainUploadPromise,
+      thumbnailPromise,
+    ]);
+
+    if (!mainResult.success) {
+      return mainResult;
     }
+
+    if (thumbUrl) {
+      thumbnailUrl = thumbUrl;
+    }
+
+    // Ensure 100% progress when everything is done
+    onProgress(100);
 
     return {
       success: true,
