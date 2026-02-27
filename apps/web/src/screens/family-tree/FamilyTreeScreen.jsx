@@ -5,7 +5,7 @@
  * Interactive family tree with glass cards, pan/zoom, and member management.
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { subscribeToFamilies, subscribeToFamilyMembers } from "@lib/firestore";
@@ -41,57 +41,60 @@ function FamilyTreeScreen() {
   // Enhanced Graph-based Relationship Mapping
   // This helper finds a relative by checking specific relationship paths
   // e.g. "Father of User", "Spouse of Mother", etc.
-  const getMember = (roleOrRelationship) => {
-    // 1. Direct role match
-    let found = members.find(
-      (m) =>
-        m.role === roleOrRelationship || m.relationship === roleOrRelationship,
-    );
-    if (found) return found;
+  const treeData = useMemo(() => {
+    const getMember = (roleOrRelationship) => {
+      // 1. Direct role match
+      let found = members.find(
+        (m) =>
+          m.role === roleOrRelationship ||
+          m.relationship === roleOrRelationship,
+      );
+      if (found) return found;
 
-    // 2. Fallback to inferred relationships (for more complex trees)
-    // In a real graph, we'd search fatherId, motherId, etc.
-    if (roleOrRelationship === "Grandfather") {
-      const father = members.find((m) => m.role === "Father");
-      if (father && father.fatherId)
-        return members.find((m) => m.id === father.fatherId);
-    }
+      // 2. Fallback to inferred relationships (for more complex trees)
+      // In a real graph, we'd search fatherId, motherId, etc.
+      if (roleOrRelationship === "Grandfather") {
+        const father = members.find((m) => m.role === "Father");
+        if (father && father.fatherId)
+          return members.find((m) => m.id === father.fatherId);
+      }
 
-    return null;
-  };
+      return null;
+    };
 
-  const treeData = {
-    greatGrandma: getMember("Great Grandma") || {
-      name: "Great Grandma",
-      years: "1920 - 1998",
-      hasMemory: true,
-    },
-    grandpaJohn: getMember("Grandfather") || {
-      name: "Grandpa John",
-      years: "1945 - 2018",
-      hasMemory: true,
-      badge: "New Story",
-    },
-    grandmaMary: getMember("Grandmother") || {
-      name: "Grandma Mary",
-      years: "1948 - Present",
-    },
-    father: getMember("Father") || {
-      name: "Michael Johnson",
-      years: "1970 - Present",
-      role: "Father",
-    },
-    mother: getMember("Mother") || {
-      name: "Sarah Johnson",
-      years: "1972 - Present",
-      role: "Mother",
-    },
-    user: {
-      name: user?.displayName || "You",
-      years: "1995 - Present",
-      isUser: true,
-    },
-  };
+    return {
+      greatGrandma: getMember("Great Grandma") || {
+        name: "Great Grandma",
+        years: "1920 - 1998",
+        hasMemory: true,
+      },
+      grandpaJohn: getMember("Grandfather") || {
+        name: "Grandpa John",
+        years: "1945 - 2018",
+        hasMemory: true,
+        badge: "New Story",
+      },
+      grandmaMary: getMember("Grandmother") || {
+        name: "Grandma Mary",
+        years: "1948 - Present",
+      },
+      father: getMember("Father") || {
+        name: "Michael Johnson",
+        years: "1970 - Present",
+        role: "Father",
+      },
+      mother: getMember("Mother") || {
+        name: "Sarah Johnson",
+        years: "1972 - Present",
+        role: "Mother",
+      },
+      user: {
+        name: user?.displayName || "You",
+        years: "1995 - Present",
+        isUser: true,
+      },
+    };
+  }, [members, user]);
 
   const handleMouseDown = () => {
     setIsDragging(true);
@@ -338,7 +341,11 @@ function FamilyTreeScreen() {
 }
 
 // Member Card Component
-function MemberCard({ member, size = "small", glowing = false }) {
+const MemberCard = memo(function MemberCard({
+  member,
+  size = "small",
+  glowing = false,
+}) {
   const sizeClasses = {
     small: "w-32 h-44 p-3",
     medium: "w-36 h-48 p-3",
@@ -398,10 +405,10 @@ function MemberCard({ member, size = "small", glowing = false }) {
       )}
     </div>
   );
-}
+});
 
 // Unknown Member Card
-function UnknownMemberCard() {
+const UnknownMemberCard = memo(function UnknownMemberCard() {
   return (
     <div className="w-32 h-44 glass-card bg-white/5 rounded-2xl border-dashed border-white/20 flex flex-col items-center justify-center p-3 relative group hover:bg-white/10 transition-colors cursor-pointer">
       <div className="w-12 h-12 rounded-full bg-white/5 mb-2 flex items-center justify-center text-slate-500 group-hover:text-primary transition-colors border border-white/5">
@@ -415,10 +422,10 @@ function UnknownMemberCard() {
       </button>
     </div>
   );
-}
+});
 
 // User Card (highlighted)
-function UserCard({ member, photoURL }) {
+const UserCard = memo(function UserCard({ member, photoURL }) {
   return (
     <div className="w-60 h-72 glass-card rounded-3xl border-2 border-primary/30 shadow-[0_0_20px_rgba(17,115,212,0.6)] flex flex-col items-center p-0 relative overflow-hidden group">
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent" />
@@ -462,6 +469,6 @@ function UserCard({ member, photoURL }) {
       </div>
     </div>
   );
-}
+});
 
 export default FamilyTreeScreen;
