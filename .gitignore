@@ -17,3 +17,7 @@ firebase-debug.log
 apps/mobile/linux/flutter/generated_*
 apps/mobile/macos/Flutter/GeneratedPluginRegistrant.swift
 apps/mobile/windows/flutter/generated_*
+
+# Coverage artifacts
+coverage/
+apps/web/coverage/
