@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { formatFileSize, getImageQuality } from "./imageMetadata";
+import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { formatFileSize, getImageQuality, createThumbnail } from "./imageMetadata";
 
 describe("formatFileSize", () => {
   it("should format 0 bytes correctly", () => {
@@ -97,5 +97,76 @@ describe("getImageQuality", () => {
   it("should handle zero or near-zero dimensions", () => {
     expect(getImageQuality(0, 0)).toEqual({ label: "Low", color: "red" });
     expect(getImageQuality(1, 1)).toEqual({ label: "Low", color: "red" });
+  });
+});
+
+describe("createThumbnail", () => {
+  // Setup mocks
+  beforeAll(() => {
+    // Mock URL
+    global.URL.createObjectURL = vi.fn(() => "blob:test");
+    global.URL.revokeObjectURL = vi.fn();
+
+    // Mock document and canvas
+    const mockContext = {
+      drawImage: vi.fn(),
+    };
+    const mockCanvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => mockContext),
+      toBlob: vi.fn((cb) => cb("blob-data")),
+    };
+
+    // Check if document exists (jsdom) or mock it
+    if (typeof document === 'undefined') {
+      global.document = {
+        createElement: vi.fn(() => mockCanvas),
+      };
+    } else {
+      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas);
+    }
+
+    // Mock Image
+    global.Image = class {
+      constructor() {
+        this.naturalWidth = 1000;
+        this.naturalHeight = 1000;
+        setTimeout(() => this.onload && this.onload(), 10);
+      }
+    };
+  });
+
+  it("should use createImageBitmap if available", async () => {
+    const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
+    const mockBitmap = {
+      width: 1000,
+      height: 1000,
+      close: vi.fn(),
+    };
+
+    global.createImageBitmap = vi.fn().mockResolvedValue(mockBitmap);
+
+    await createThumbnail(file, 200);
+
+    expect(global.createImageBitmap).toHaveBeenCalled();
+  });
+
+  it("should fallback to Image if createImageBitmap is undefined", async () => {
+    const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
+
+    // Temporarily remove createImageBitmap
+    const originalCreateImageBitmap = global.createImageBitmap;
+    global.createImageBitmap = undefined;
+
+    // Reset mocks
+    global.URL.createObjectURL.mockClear();
+
+    await createThumbnail(file, 200);
+
+    expect(global.URL.createObjectURL).toHaveBeenCalled();
+
+    // Restore
+    global.createImageBitmap = originalCreateImageBitmap;
   });
 });

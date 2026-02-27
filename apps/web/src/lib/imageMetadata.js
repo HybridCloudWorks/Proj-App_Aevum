@@ -249,9 +249,69 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
  * Create a thumbnail from an image file
  * @param {File} file - The image file
  * @param {number} maxSize - Maximum dimension
+ * @param {Object} [dimensions] - Optional known dimensions {width, height} to speed up calculation
  * @returns {Promise<Blob>} Thumbnail blob
  */
-export async function createThumbnail(file, maxSize = 200) {
+export async function createThumbnail(file, maxSize = 200, dimensions = null) {
+  // Optimization: Use createImageBitmap if available (modern browsers)
+  // This is much faster as it avoids DOM overhead and decoding the full image
+  if (typeof createImageBitmap !== "undefined") {
+    try {
+      let width, height;
+
+      if (dimensions) {
+        width = dimensions.width;
+        height = dimensions.height;
+      } else {
+        // If dimensions unknown, get them quickly
+        const bitmap = await createImageBitmap(file);
+        width = bitmap.width;
+        height = bitmap.height;
+        bitmap.close();
+      }
+
+      // Calculate target dimensions
+      let targetWidth = width;
+      let targetHeight = height;
+
+      if (width > height) {
+        if (width > maxSize) {
+          targetHeight = Math.round((height * maxSize) / width);
+          targetWidth = maxSize;
+        }
+      } else {
+        if (height > maxSize) {
+          targetWidth = Math.round((width * maxSize) / height);
+          targetHeight = maxSize;
+        }
+      }
+
+      // Create resized bitmap directly
+      const resizedBitmap = await createImageBitmap(file, {
+        resizeWidth: targetWidth,
+        resizeHeight: targetHeight,
+        resizeQuality: "high",
+      });
+
+      // Draw to canvas to get blob
+      const canvas = document.createElement("canvas");
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const ctx = canvas.getContext("2d");
+      // Explicitly specify target dimensions to handle browsers that ignore resize options
+      ctx.drawImage(resizedBitmap, 0, 0, targetWidth, targetHeight);
+      resizedBitmap.close();
+
+      return new Promise((resolve) =>
+        canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.8),
+      );
+    } catch (e) {
+      console.warn("createImageBitmap failed, falling back to Image:", e);
+      // Fallback to standard method on error
+    }
+  }
+
+  // Fallback: Standard Image object approach
   return new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
