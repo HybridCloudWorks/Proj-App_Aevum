@@ -100,7 +100,14 @@ export async function uploadPhoto(
     // Upload thumbnail if requested
     if (options.createThumbnail) {
       try {
-        const thumbBlob = await createThumbnail(file, 200);
+        // Optimization: Pass extracted dimensions if available to skip re-reading them
+        const thumbBlob = await createThumbnail(
+          file,
+          200,
+          imageMetadata
+            ? { width: imageMetadata.width, height: imageMetadata.height }
+            : null,
+        );
         const thumbPath = `families/${familyId}/thumbnails/${timestamp}_${safeName}`;
         const thumbRef = ref(storage, thumbPath);
 
