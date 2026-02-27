@@ -14,6 +14,21 @@ vi.mock("react-router-dom", async () => {
 });
 
 describe("BottomNav Component", () => {
+  it("renders with correct semantic structure and CSS classes", () => {
+    const { container } = render(
+      <MemoryRouter>
+        <BottomNav />
+      </MemoryRouter>
+    );
+
+    const navElement = container.querySelector("nav");
+    expect(navElement).toBeInTheDocument();
+    expect(navElement).toHaveClass("bottom-nav-fixed");
+
+    const glassContainer = container.querySelector(".bottom-nav-glass");
+    expect(glassContainer).toBeInTheDocument();
+  });
+
   it("renders all five navigation items correctly", () => {
     render(
       <MemoryRouter>
@@ -61,6 +76,23 @@ describe("BottomNav Component", () => {
 
     const treeButton = screen.getByText("Tree").closest("button");
     expect(treeButton).not.toHaveClass("active");
+  });
+
+  it("does not highlight any item when on an unknown route", () => {
+    render(
+      <MemoryRouter initialEntries={["/unknown-route"]}>
+        <BottomNav />
+      </MemoryRouter>
+    );
+
+    const navItems = ["Home", "Tree", "Map", "Vault", "Profile"];
+    navItems.forEach((label) => {
+      const button = screen.getByText(label).closest("button");
+      expect(button).not.toHaveClass("active");
+
+      const icon = button.querySelector(".material-symbols-outlined");
+      expect(icon).not.toHaveClass("filled");
+    });
   });
 
   it("navigates to the correct path when an item is clicked", () => {
