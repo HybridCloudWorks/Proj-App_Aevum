@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:aevum_native/screens/intro_page_screen.dart';
 import 'dart:io';
 
@@ -20,12 +21,34 @@ void main() {
 
   testWidgets('IntroPageScreen smoke test', (WidgetTester tester) async {
     // Test IntroPageScreen directly to avoid main app complexity
-    await tester.pumpWidget(
-      const MaterialApp(home: IntroPageScreen(skipTimer: true)),
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const IntroPageScreen(),
+        ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const Scaffold(body: Text('Auth')),
+        ),
+      ],
     );
 
-    // Verify logo and text exist
-    expect(find.byIcon(Icons.history_edu), findsOneWidget);
-    expect(find.text("Aevum"), findsOneWidget);
+    await tester.pumpWidget(
+      MaterialApp.router(
+        routerConfig: router,
+      ),
+    );
+
+    // Verify logo and text exist initially
+    expect(find.byIcon(Icons.hourglass_empty), findsOneWidget);
+    expect(find.text("AEVUM"), findsOneWidget);
+
+    // Allow the auto-redirect timer to finish so test can cleanly exit
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    // Verify it navigated
+    expect(find.text('Auth'), findsOneWidget);
   });
 }
