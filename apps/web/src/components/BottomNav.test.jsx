@@ -88,6 +88,45 @@ describe("BottomNav Component", () => {
     });
   });
 
+  it("highlights the Home item as active when on /dashboard path", async () => {
+    render(
+      <MemoryRouter initialEntries={["/dashboard"]}>
+        <BottomNav />
+      </MemoryRouter>
+    );
+
+     await waitFor(() => {
+        const homeButton = screen.getByText("Home").closest("button");
+        expect(homeButton).toHaveClass("active");
+     });
+  });
+
+  it("highlights the Map item as active when on /heritage-map path", async () => {
+    render(
+      <MemoryRouter initialEntries={["/heritage-map"]}>
+        <BottomNav />
+      </MemoryRouter>
+    );
+
+     await waitFor(() => {
+        const mapButton = screen.getByText("Map").closest("button");
+        expect(mapButton).toHaveClass("active");
+     });
+  });
+
+  it("highlights the Vault item as active when on /memories path", async () => {
+    render(
+      <MemoryRouter initialEntries={["/memories"]}>
+        <BottomNav />
+      </MemoryRouter>
+    );
+
+     await waitFor(() => {
+        const vaultButton = screen.getByText("Vault").closest("button");
+        expect(vaultButton).toHaveClass("active");
+     });
+  });
+
   it("does not highlight any item when on an unknown route", async () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/unknown-route"]}>
