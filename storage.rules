@@ -29,6 +29,15 @@ service firebase.storage {
       return isAuthenticated() && request.auth.token.admin == true;
     }
     
+    function isFamilyMember(familyId) {
+      return isAuthenticated() &&
+             firestore.get(/databases/(default)/documents/families/$(familyId)) != null &&
+             (
+               request.auth.uid == firestore.get(/databases/(default)/documents/families/$(familyId)).data.ownerId ||
+               request.auth.uid in firestore.get(/databases/(default)/documents/families/$(familyId)).data.members
+             );
+    }
+
     // Validate image file types (with extension check to prevent spoofing)
     function isValidImageType() {
       return request.resource.contentType.matches('image/(jpeg|png|gif|webp|heic)') &&
@@ -90,13 +99,11 @@ service firebase.storage {
     // Family Shared Media
     // ==========================================
     match /families/{familyId}/media/{allPaths=**} {
-      // Authenticated users in the family can read
-      // Note: Family membership validation should happen via Cloud Function
-      // since Storage rules can't query Firestore
-      allow read: if isAuthenticated();
+      // Secure read: restricted to family members
+      allow read: if isFamilyMember(familyId);
       
-      // Authenticated users can upload (Cloud Function validates family membership)
-      allow create: if isAuthenticated() &&
+      // Upload with validation and family membership check
+      allow create: if isFamilyMember(familyId) &&
                        ((isValidImageType() && isUnderImageLimit()) ||
                         (isValidVideoType() && isUnderVideoLimit()) ||
                         (isValidAudioType() && isUnderAudioLimit()));
@@ -104,16 +111,18 @@ service firebase.storage {
       // No direct updates - delete and re-upload
       allow update: if false;
       
-      // Authenticated users can delete (Cloud Function validates ownership)
-      allow delete: if isAuthenticated();
+      // Authenticated users in the family can delete
+      allow delete: if isFamilyMember(familyId);
     }
 
     // ==========================================
     // Memory Attachments
     // ==========================================
     match /memories/{memoryId}/{fileName} {
-      // Read access based on memory visibility (checked via Cloud Function)
-      allow read: if isAuthenticated();
+      // Secure read: restricted to family members by fetching the memory document
+      allow read: if isAuthenticated() &&
+                  firestore.get(/databases/(default)/documents/memories/$(memoryId)) != null &&
+                  isFamilyMember(firestore.get(/databases/(default)/documents/memories/$(memoryId)).data.familyId);
       
       // Upload with validation
       allow create: if isAuthenticated() &&
