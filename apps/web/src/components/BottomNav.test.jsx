@@ -60,36 +60,32 @@ describe("BottomNav Component", () => {
     });
   });
 
-  it("highlights the Tree item as active when on /family-tree path", async () => {
-    render(
-      <MemoryRouter initialEntries={["/family-tree"]}>
-         <BottomNav />
-      </MemoryRouter>
-    );
+  const routesAndLabels = [
+    { path: "/dashboard", label: "Home" },
+    { path: "/family-tree", label: "Tree" },
+    { path: "/heritage-map", label: "Map" },
+    { path: "/memories", label: "Vault" },
+    { path: "/settings", label: "Profile" }
+  ];
 
-    await waitFor(() => {
-        const treeButton = screen.getByText("Tree").closest("button");
-        expect(treeButton).toHaveClass("active");
+  routesAndLabels.forEach(({ path, label }) => {
+    it(`highlights only the ${label} item as active when on ${path} path`, async () => {
+      render(
+        <MemoryRouter initialEntries={[path]}>
+          <BottomNav />
+        </MemoryRouter>
+      );
+
+      await waitFor(() => {
+        const activeElements = screen.getAllByRole("button").filter(btn => btn.classList.contains("active"));
+        expect(activeElements.length).toBe(1);
+        expect(activeElements[0]).toHaveTextContent(label);
+
+        // Also check if the icon gets 'filled'
+        const icon = activeElements[0].querySelector(".material-symbols-outlined");
+        expect(icon).toHaveClass("filled");
+      });
     });
-
-    const homeButton = screen.getByText("Home").closest("button");
-    expect(homeButton).not.toHaveClass("active");
-  });
-
-  it("highlights the Profile item as active when on /settings path", async () => {
-    render(
-      <MemoryRouter initialEntries={["/settings"]}>
-        <BottomNav />
-      </MemoryRouter>
-    );
-
-     await waitFor(() => {
-        const profileButton = screen.getByText("Profile").closest("button");
-        expect(profileButton).toHaveClass("active");
-     });
-
-    const treeButton = screen.getByText("Tree").closest("button");
-    expect(treeButton).not.toHaveClass("active");
   });
 
   it("does not highlight any item when on an unknown route", async () => {
@@ -112,26 +108,9 @@ describe("BottomNav Component", () => {
       </MemoryRouter>
     );
 
-    // Click on Vault
-    fireEvent.click(screen.getByText("Vault"));
-    expect(mockNavigate).toHaveBeenCalledWith("/memories");
-
-    // Click on Map
-    fireEvent.click(screen.getByText("Map"));
-    expect(mockNavigate).toHaveBeenCalledWith("/heritage-map");
-  });
-
-  it("applies 'filled' class to icons of active items", async () => {
-    render(
-      <MemoryRouter initialEntries={["/dashboard"]}>
-        <BottomNav />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-        const homeButton = screen.getByText("Home").closest("button");
-        const homeIcon = homeButton.querySelector(".material-symbols-outlined");
-        expect(homeIcon).toHaveClass("filled");
+    routesAndLabels.forEach(({ path, label }) => {
+      fireEvent.click(screen.getByText(label));
+      expect(mockNavigate).toHaveBeenCalledWith(path);
     });
   });
 });
