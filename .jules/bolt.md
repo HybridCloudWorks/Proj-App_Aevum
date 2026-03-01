@@ -1,0 +1,3 @@
+## 2025-03-01 - Redundant Firestore Subscriptions in React useEffect
+**Learning:** Found a common anti-pattern in React components where multiple unrelated Firestore subscriptions (e.g., user-level data like families and AI tasks vs. family-level data like members and media) were grouped into a single `useEffect` hook. This caused all subscriptions to tear down and re-establish whenever any dependency (like `families` updating) changed, leading to redundant Firestore reads, excessive network requests, and unnecessary component re-renders.
+**Action:** Always split `useEffect` hooks in React based on their distinct dependency lifecycles. Ensure that subscriptions only re-run when their specific required parameters change (e.g., user ID vs. active family ID).
