@@ -26,15 +26,11 @@ function DashboardScreen() {
 
   const [aiTasks, setAiTasks] = useState([]);
 
-  // Optimization: Split subscriptions into separate useEffect hooks
-  // to prevent tearing down all subscriptions when just families update
+  // Subscribe to user's families and AI tasks
   useEffect(() => {
     if (!user) return;
 
-    // Subscribe to user's families
     const unsubFamilies = subscribeToFamilies(user.uid, setFamilies);
-
-    // Subscribe to AI tasks
     const unsubTasks = subscribeToAITasks(user.uid, setAiTasks);
 
     return () => {
@@ -43,19 +39,21 @@ function DashboardScreen() {
     };
   }, [user]);
 
-  // Only re-subscribe to family-specific data when the active family changes
+  // Subscribe to members for the active family
+  const activeFamilyId = families.length > 0 ? families[0].id : null;
+
   useEffect(() => {
-    if (families.length === 0) return;
-
-    const activeFamilyId = families[0].id;
+    if (!activeFamilyId) return;
     const unsubMembers = subscribeToFamilyMembers(activeFamilyId, setMembers);
-    const unsubMemories = subscribeToMediaItems(activeFamilyId, setMemories);
+    return () => unsubMembers();
+  }, [activeFamilyId]);
 
-    return () => {
-      unsubMembers();
-      unsubMemories();
-    };
-  }, [families]);
+  // Subscribe to memories for the active family
+  useEffect(() => {
+    if (!activeFamilyId) return;
+    const unsubMemories = subscribeToMediaItems(activeFamilyId, setMemories);
+    return () => unsubMemories();
+  }, [activeFamilyId]);
 
   const handleStartRestore = async (taskId) => {
     if (taskId) {
