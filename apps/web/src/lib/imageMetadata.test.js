@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
-import { formatFileSize, getImageQuality, createThumbnail } from "./imageMetadata";
+import {
+  formatFileSize,
+  getImageQuality,
+  createThumbnail,
+} from "./imageMetadata";
 
 describe("formatFileSize", () => {
   it("should format 0 bytes correctly", () => {
@@ -119,12 +123,12 @@ describe("createThumbnail", () => {
     };
 
     // Check if document exists (jsdom) or mock it
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       global.document = {
         createElement: vi.fn(() => mockCanvas),
       };
     } else {
-      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas);
+      vi.spyOn(document, "createElement").mockReturnValue(mockCanvas);
     }
 
     // Mock Image

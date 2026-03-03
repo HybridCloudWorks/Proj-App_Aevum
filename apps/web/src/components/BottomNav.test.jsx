@@ -2,9 +2,15 @@
  * @vitest-environment jsdom
  */
 
-import React from 'react';
+import React from "react";
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import BottomNav from "./BottomNav";
 import * as matchers from "@testing-library/jest-dom/matchers";
@@ -31,7 +37,7 @@ describe("BottomNav Component", () => {
     const { container } = render(
       <MemoryRouter>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const navElement = container.querySelector("nav");
@@ -46,7 +52,7 @@ describe("BottomNav Component", () => {
     render(
       <MemoryRouter>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const navItems = ["Home", "Tree", "Map", "Vault", "Profile"];
@@ -65,7 +71,7 @@ describe("BottomNav Component", () => {
     { path: "/family-tree", label: "Tree" },
     { path: "/heritage-map", label: "Map" },
     { path: "/memories", label: "Vault" },
-    { path: "/settings", label: "Profile" }
+    { path: "/settings", label: "Profile" },
   ];
 
   routesAndLabels.forEach(({ path, label }) => {
@@ -73,16 +79,20 @@ describe("BottomNav Component", () => {
       render(
         <MemoryRouter initialEntries={[path]}>
           <BottomNav />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
 
       await waitFor(() => {
-        const activeElements = screen.getAllByRole("button").filter(btn => btn.classList.contains("active"));
+        const activeElements = screen
+          .getAllByRole("button")
+          .filter((btn) => btn.classList.contains("active"));
         expect(activeElements.length).toBe(1);
         expect(activeElements[0]).toHaveTextContent(label);
 
         // Also check if the icon gets 'filled'
-        const icon = activeElements[0].querySelector(".material-symbols-outlined");
+        const icon = activeElements[0].querySelector(
+          ".material-symbols-outlined",
+        );
         expect(icon).toHaveClass("filled");
       });
     });
@@ -92,51 +102,51 @@ describe("BottomNav Component", () => {
     render(
       <MemoryRouter initialEntries={["/dashboard"]}>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-     await waitFor(() => {
-        const homeButton = screen.getByText("Home").closest("button");
-        expect(homeButton).toHaveClass("active");
-     });
+    await waitFor(() => {
+      const homeButton = screen.getByText("Home").closest("button");
+      expect(homeButton).toHaveClass("active");
+    });
   });
 
   it("highlights the Map item as active when on /heritage-map path", async () => {
     render(
       <MemoryRouter initialEntries={["/heritage-map"]}>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-     await waitFor(() => {
-        const mapButton = screen.getByText("Map").closest("button");
-        expect(mapButton).toHaveClass("active");
-     });
+    await waitFor(() => {
+      const mapButton = screen.getByText("Map").closest("button");
+      expect(mapButton).toHaveClass("active");
+    });
   });
 
   it("highlights the Vault item as active when on /memories path", async () => {
     render(
       <MemoryRouter initialEntries={["/memories"]}>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-     await waitFor(() => {
-        const vaultButton = screen.getByText("Vault").closest("button");
-        expect(vaultButton).toHaveClass("active");
-     });
+    await waitFor(() => {
+      const vaultButton = screen.getByText("Vault").closest("button");
+      expect(vaultButton).toHaveClass("active");
+    });
   });
 
   it("does not highlight any item when on an unknown route", async () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/unknown-route"]}>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await waitFor(() => {
-        const activeElements = container.querySelectorAll(".nav-item.active");
-        expect(activeElements.length).toBe(0);
+      const activeElements = container.querySelectorAll(".nav-item.active");
+      expect(activeElements.length).toBe(0);
     });
   });
 
@@ -144,7 +154,7 @@ describe("BottomNav Component", () => {
     render(
       <MemoryRouter>
         <BottomNav />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     routesAndLabels.forEach(({ path, label }) => {

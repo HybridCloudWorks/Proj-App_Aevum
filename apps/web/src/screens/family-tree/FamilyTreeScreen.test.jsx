@@ -34,7 +34,7 @@ describe("FamilyTreeScreen", () => {
     render(
       <MemoryRouter>
         <FamilyTreeScreen />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Check header
@@ -53,7 +53,7 @@ describe("FamilyTreeScreen", () => {
     render(
       <MemoryRouter>
         <FamilyTreeScreen />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const zoomInBtn = screen.getByTitle("Zoom In");

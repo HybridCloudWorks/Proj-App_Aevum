@@ -26,29 +26,34 @@ function DashboardScreen() {
 
   const [aiTasks, setAiTasks] = useState([]);
 
+  // Subscribe to user's families and AI tasks
   useEffect(() => {
     if (!user) return;
 
-    // Subscribe to user's families
     const unsubFamilies = subscribeToFamilies(user.uid, setFamilies);
-
-    // Subscribe to AI tasks
     const unsubTasks = subscribeToAITasks(user.uid, setAiTasks);
-
-    let unsubMembers = () => {};
-    let unsubMemories = () => {};
-    if (families.length > 0) {
-      unsubMembers = subscribeToFamilyMembers(families[0].id, setMembers);
-      unsubMemories = subscribeToMediaItems(families[0].id, setMemories);
-    }
 
     return () => {
       unsubFamilies();
       unsubTasks();
-      unsubMembers();
-      unsubMemories();
     };
-  }, [user, families]);
+  }, [user]);
+
+  // Subscribe to members for the active family
+  const activeFamilyId = families.length > 0 ? families[0].id : null;
+
+  useEffect(() => {
+    if (!activeFamilyId) return;
+    const unsubMembers = subscribeToFamilyMembers(activeFamilyId, setMembers);
+    return () => unsubMembers();
+  }, [activeFamilyId]);
+
+  // Subscribe to memories for the active family
+  useEffect(() => {
+    if (!activeFamilyId) return;
+    const unsubMemories = subscribeToMediaItems(activeFamilyId, setMemories);
+    return () => unsubMemories();
+  }, [activeFamilyId]);
 
   const handleStartRestore = async (taskId) => {
     if (taskId) {
