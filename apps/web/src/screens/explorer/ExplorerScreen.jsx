@@ -184,10 +184,13 @@ function ExplorerScreen() {
           <section className="grid grid-cols-2 gap-4 auto-rows-min">
             {/* Result Card 1: Photo */}
             <div className="glass-card rounded-xl overflow-hidden relative aspect-[3/4] group cursor-pointer">
+              {/* Optimization: Added lazy loading to off-screen images in the results grid to improve initial load time */}
               <img
                 alt="Old vintage family portrait"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWE_IqL41lrLpnj8LNuCfPOh51R3MmX4w-DRGkaiap0qzBhYlyKYmYAcYAPcz05S0HG24B0-H0FaFYzZJvocIY0uJGVlPkiQ29uz9Hxcjyod93h_kAAOw_83qOyoUYTPSlJhxvFxmaEmhmGzdPSniL18MUX66RsVqW9urCKgk0OnZUJqShabZAxwmL47DUuOUwfqeTQr2b-OD70rgQKcW4uIYwLqaAUfF_7M6bwt3a66b5ul5hFegapH8vdn6siIWxhfNRGDvv_Js"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-end">
                 <div className="mb-1 inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full w-fit">
@@ -215,6 +218,8 @@ function ExplorerScreen() {
                   alt="Old handwritten document"
                   className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuA80M32QfNAG2r0yeDhlL_o_TmHFahTen2pKpaPVUdPmppf7-F0hiOndSx9Pf1qWEsO4vEUzbth3rxbzlAZrNEcg4ieuXxZLJmrIFSbjHb5Op-jRfVCO0h_vDlnv0bc62_Bx-YmT0RvEvahxbBRQJqUn4OMavmEvty4vOqW-WRpyp3a9oxZxphjdnP8bW41NuizEjIjpDixLeYCgG6hgeQ0vShJANSacKe-3fc4hNUzmT_Itp6uqlWa-Ecx6Y23xLH5TGO7fiDnMCs"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="absolute top-2 right-2 bg-primary/90 text-white text-[10px] font-bold px-2 py-1 rounded-md backdrop-blur-sm">
@@ -254,6 +259,8 @@ function ExplorerScreen() {
                 alt="Vintage woman portrait"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 filter sepia-[.3] contrast-125"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjd2FPPHYYjMcY2PShy7_Fg6lrwXNXHWRdZFyhO2HN0p8JphCf6R-iursB9egVm0L6v0lvGhlVHy9eXdoBGIXlYJVBcME3tQZst9q9A6aUZdq75hSa8_0anG6fIwG-PUZoJwcTsk0gn8RyPy-fkAGwpM3DdGXYCLW_PBYGfmbLUqkorNEFWSoAjUJHukmFiccPgijs3tKHLLqh8e0VslnBpWiP5fYoIpzfaZdeQjFVsHeLR08AinPqw4K-edOCaCJUd6yOqPlImWA"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-3 flex flex-col justify-end">
                 <h4 className="text-white font-bold text-sm leading-tight">
@@ -269,6 +276,8 @@ function ExplorerScreen() {
                 alt="Map"
                 className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhFNHDbom14qDQ3NxKqdCrFI0YGs9iJvbLImrJySDZOjZykmvvt7x1UK7U7zrl291plaqLA0mSPiTvbnf6Pu3K61IRspubxt0pmNnS-XjriYBDi66knyQERYA5-2rQ30zY5LxElpb32KTBR7_9pTPkk6USHHkXmsW1p7Y98Yk7XUz58OMXjo2lggV0wONLmlMDyQiaa3GhFjRrGiOnloHBeuEvIGkNZzeiG5i7ZKy21ctJCIb0JjhLGCW08YXTN2QHsaM5v0Mskt0"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
               <div className="absolute bottom-3 left-3 right-3">
