@@ -5,7 +5,7 @@
  * Displays personal memories, bento-style featured moments, and quick actions.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { subscribeToFamilies, subscribeToMediaItems } from "@lib/firestore";
@@ -34,9 +34,11 @@ function MemoriesScreen() {
     return () => unsub();
   }, [families[0]?.id]);
 
-  // Use sample if empty for demo purposes, otherwise show real ones
-  const featuredMemories =
-    memories.length > 0
+  // ⚡ Bolt Optimization: Memoize the featuredMemories array to prevent recreating
+  // the fallback array and triggering unnecessary re-renders of the image grid
+  // when other state changes occur.
+  const featuredMemories = useMemo(() => {
+    return memories.length > 0
       ? memories
       : [
           {
@@ -58,6 +60,7 @@ function MemoriesScreen() {
               "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80",
           },
         ];
+  }, [memories]);
 
   return (
     <div className="memories-feed-container pb-24">
