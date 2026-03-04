@@ -7,12 +7,14 @@ import "./ExplorerScreen.css";
  * Aevum - Global Heritage Search
  * Frame 1: Explorer / Search Screen
  */
+
+// ⚡ Bolt Optimization: Define eras outside component to prevent recreation on every render
+const eras = ["1700s", "1800s", "1900s", "2000s"];
+
 function ExplorerScreen() {
   const navigate = useNavigate();
   const [activeEra, setActiveEra] = useState("1800s");
   const [searchQuery, setSearchQuery] = useState("");
-
-  const eras = ["1700s", "1800s", "1900s", "2000s"];
 
   const handleResultClick = (id) => {
     // Navigate to a detail view or story

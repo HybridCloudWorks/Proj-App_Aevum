@@ -10,26 +10,27 @@ import { STITCH_SCREENS, getAllScreens } from "../stitch-screens";
 import StitchViewer from "../components/StitchViewer";
 import "./ScreenGallery.css";
 
+// ⚡ Bolt Optimization: Define categories outside component to prevent recreation on every render
+const categories = [
+  { key: "all", label: "All Screens" },
+  { key: "onboarding", label: "Onboarding" },
+  { key: "auth", label: "Auth" },
+  { key: "familyTree", label: "Family Tree" },
+  { key: "memories", label: "Memories" },
+  { key: "heritageMap", label: "Heritage Map" },
+  { key: "ai", label: "AI Features" },
+  { key: "identity", label: "Identity" },
+  { key: "admin", label: "Admin" },
+  { key: "catalog", label: "Catalog" },
+  { key: "settings", label: "Settings" },
+  { key: "firebase", label: "Firebase" },
+  { key: "design", label: "Design" },
+  { key: "launch", label: "Launch" },
+];
+
 function ScreenGallery() {
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = [
-    { key: "all", label: "All Screens" },
-    { key: "onboarding", label: "Onboarding" },
-    { key: "auth", label: "Auth" },
-    { key: "familyTree", label: "Family Tree" },
-    { key: "memories", label: "Memories" },
-    { key: "heritageMap", label: "Heritage Map" },
-    { key: "ai", label: "AI Features" },
-    { key: "identity", label: "Identity" },
-    { key: "admin", label: "Admin" },
-    { key: "catalog", label: "Catalog" },
-    { key: "settings", label: "Settings" },
-    { key: "firebase", label: "Firebase" },
-    { key: "design", label: "Design" },
-    { key: "launch", label: "Launch" },
-  ];
 
   const getScreensForCategory = (categoryKey) => {
     if (categoryKey === "all") {
