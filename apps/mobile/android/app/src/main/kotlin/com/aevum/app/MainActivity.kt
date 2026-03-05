@@ -1,4 +1,4 @@
-package app.aevum.aevum_native
+package com.aevum.app
 
 import io.flutter.embedding.android.FlutterActivity
 

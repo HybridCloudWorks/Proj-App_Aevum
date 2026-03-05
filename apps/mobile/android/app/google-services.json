@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:835327793772:android:8e8b24de6da198ff6e1649",
         "android_client_info": {
-          "package_name": "app.aevum.aevum_native"
+          "package_name": "com.aevum.app"
         }
       },
       "oauth_client": [],
