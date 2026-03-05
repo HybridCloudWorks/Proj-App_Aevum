@@ -165,10 +165,13 @@ const AIResourceManager = () => {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-gray-700 overflow-hidden relative">
+                    {/* ⚡ Bolt Optimization: Lazy load offscreen queue item thumbnails to conserve bandwidth and reduce initial render time */}
                     <img
                       className="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 transition duration-500"
                       src={item.img}
                       alt={item.title}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div>

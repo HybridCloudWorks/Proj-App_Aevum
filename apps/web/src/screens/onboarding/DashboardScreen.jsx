@@ -299,11 +299,16 @@ function DashboardScreen() {
                     >
                       <div className="w-32 h-40 rounded-2xl overflow-hidden relative mb-2 shadow-lg border border-white/10 bg-gray-800">
                         {memory.imageUrl ? (
-                          <img
-                            src={memory.imageUrl}
-                            alt={memory.title}
-                            className="w-full h-full object-cover"
-                          />
+                          <>
+                            {/* ⚡ Bolt Optimization: Added lazy loading and async decoding to offscreen memories list to reduce initial load time and prevent main thread blocking */}
+                            <img
+                              src={memory.imageUrl}
+                              alt={memory.title}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </>
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800" />
                         )}
