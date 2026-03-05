@@ -64,16 +64,14 @@ def process_upload(cloud_event):
             exif = original_image._getexif()
             if exif:
                 from PIL.ExifTags import TAGS, GPSTAGS
-                for tag, value in exif.items():
-                    decoded = TAGS.get(tag, tag)
-                    if decoded == "GPSInfo":
-                        gps_data = {}
-                        for t in value:
-                            sub_decoded = GPSTAGS.get(t, t)
-                            gps_data[sub_decoded] = value[t]
-                        exif_data["gps"] = gps_data
-                    else:
-                        exif_data[decoded] = str(value)
+                exif_data = {
+                    "gps" if (decoded := TAGS.get(tag, tag)) == "GPSInfo" else decoded: {
+                        GPSTAGS.get(t, t): v for t, v in value.items()
+                    }
+                    if decoded == "GPSInfo"
+                    else str(value)
+                    for tag, value in exif.items()
+                }
         except Exception as e:
             print(f"Error extracting EXIF: {e}")
 
