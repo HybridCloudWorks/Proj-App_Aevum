@@ -38,9 +38,6 @@ function RestorationScreen() {
 
   const handleConfirmYes = () => {
     // Logic: Save restored as primary, move original to cold storage
-    console.log(
-      "Saving restored image. Moving original to Cold Storage (Archive).",
-    );
     alert(
       "Enhancement Saved! The original has been moved to the Archive vault.",
     );
@@ -49,7 +46,6 @@ function RestorationScreen() {
 
   const handleConfirmNo = () => {
     // Logic: Discard result, original remains primary
-    console.log("Discarding restoration result.");
     setShowConfirmation(false);
     alert("Restoration discarded. Original photo kept.");
   };
