@@ -65,8 +65,6 @@ class _SmartNavigationWrapperState extends State<SmartNavigationWrapper> {
                 _isVisible = false;
               });
             }
-          } else if (notification is ScrollEndNotification) {
-            _showNav();
           }
           return false;
         },
@@ -97,5 +95,3 @@ class _SmartNavigationWrapperState extends State<SmartNavigationWrapper> {
     );
   }
 }
-
-
