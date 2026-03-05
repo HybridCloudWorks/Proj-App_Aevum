@@ -52,7 +52,6 @@ export const InfrastructureProvider = ({ children }) => {
 
   const forceBackup = () => {
     // Logic to force backup would go here
-    console.log("Forcing backup...");
   };
 
   const value = {
