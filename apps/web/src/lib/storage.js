@@ -166,22 +166,36 @@ export async function uploadMultiplePhotos(
 ) {
   const results = [];
   const failed = [];
-  let completed = 0;
 
-  for (const file of files) {
+  if (!files || files.length === 0) {
+    return { success: true, results, failed };
+  }
+
+  // Track individual progress for each file
+  const fileArray = Array.from(files);
+  const progressArray = new Array(fileArray.length).fill(0);
+
+  const uploadPromises = fileArray.map(async (file, index) => {
     const result = await uploadPhoto(file, familyId, userId, (progress) => {
-      // Calculate overall progress
-      const overallProgress =
-        ((completed + progress / 100) / files.length) * 100;
+      progressArray[index] = progress;
+      // Calculate overall progress as the average of all individual progresses
+      const totalProgress = progressArray.reduce((acc, curr) => acc + curr, 0);
+      const overallProgress = totalProgress / files.length;
       onProgress(overallProgress);
     });
 
+    return { file: file.name, ...result };
+  });
+
+  const uploadResults = await Promise.all(uploadPromises);
+
+  for (const result of uploadResults) {
     if (result.success) {
-      results.push({ file: file.name, ...result });
+      // The result already contains `file: file.name` from the map above
+      results.push(result);
     } else {
-      failed.push({ file: file.name, error: result.error });
+      failed.push({ file: result.file, error: result.error });
     }
-    completed++;
   }
 
   return {
