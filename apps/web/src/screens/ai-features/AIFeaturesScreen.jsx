@@ -9,59 +9,60 @@
 
 import { useNavigate } from "react-router-dom";
 
+// ⚡ Bolt Optimization: Define aiTools outside component to prevent recreation on every render
+const aiTools = [
+  {
+    id: "matcher",
+    title: "Identity Matcher",
+    desc: "Connect faces in old photos to your family tree nodes.",
+    icon: "face",
+    path: "/ai/identity-matcher",
+    color: "blue",
+  },
+  {
+    id: "restore",
+    title: "AI Restoration",
+    desc: "Enhance, colorize, and repair damaged historical memories.",
+    icon: "auto_fix_high",
+    path: "/ai/restoration",
+    color: "purple",
+  },
+  {
+    id: "chronicles",
+    title: "Family Chronicles",
+    desc: "Generate narrative stories from your family documents.",
+    icon: "auto_stories",
+    path: "/ai/chronicles",
+    color: "orange",
+  },
+  {
+    id: "resource-manager",
+    title: "AI Resource Manager",
+    desc: "Manage enhancement queues and processing power.",
+    icon: "memory",
+    path: "/ai/resource-manager",
+    color: "cyan",
+  },
+  {
+    id: "spatial-gallery",
+    title: "Spatial Memory Gallery",
+    desc: "Immersive 3D gallery for VisionOS (Prototype).",
+    icon: "photo_library",
+    path: "/memories/spatial-gallery",
+    color: "indigo",
+  },
+  {
+    id: "spatial-tree",
+    title: "Spatial Heritage Tree",
+    desc: "Interactive genealogy visualization (Prototype).",
+    icon: "schema",
+    path: "/family-tree/spatial",
+    color: "emerald",
+  },
+];
+
 function AIFeaturesScreen() {
   const navigate = useNavigate();
-
-  const aiTools = [
-    {
-      id: "matcher",
-      title: "Identity Matcher",
-      desc: "Connect faces in old photos to your family tree nodes.",
-      icon: "face",
-      path: "/ai/identity-matcher",
-      color: "blue",
-    },
-    {
-      id: "restore",
-      title: "AI Restoration",
-      desc: "Enhance, colorize, and repair damaged historical memories.",
-      icon: "auto_fix_high",
-      path: "/ai/restoration",
-      color: "purple",
-    },
-    {
-      id: "chronicles",
-      title: "Family Chronicles",
-      desc: "Generate narrative stories from your family documents.",
-      icon: "auto_stories",
-      path: "/ai/chronicles",
-      color: "orange",
-    },
-    {
-      id: "resource-manager",
-      title: "AI Resource Manager",
-      desc: "Manage enhancement queues and processing power.",
-      icon: "memory",
-      path: "/ai/resource-manager",
-      color: "cyan",
-    },
-    {
-      id: "spatial-gallery",
-      title: "Spatial Memory Gallery",
-      desc: "Immersive 3D gallery for VisionOS (Prototype).",
-      icon: "photo_library",
-      path: "/memories/spatial-gallery",
-      color: "indigo",
-    },
-    {
-      id: "spatial-tree",
-      title: "Spatial Heritage Tree",
-      desc: "Interactive genealogy visualization (Prototype).",
-      icon: "schema",
-      path: "/family-tree/spatial",
-      color: "emerald",
-    },
-  ];
 
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen p-6 pb-24 font-display">
