@@ -25,11 +25,15 @@ function FamilyTreeScreen() {
     return () => unsub();
   }, [user]);
 
+  const activeFamilyId = families[0]?.id;
   useEffect(() => {
-    if (families.length === 0) return;
-    const unsub = subscribeToFamilyMembers(families[0].id, setMembers);
+    if (!activeFamilyId) return;
+    const unsub = subscribeToFamilyMembers(activeFamilyId, setMembers);
     return () => unsub();
-  }, [families]);
+  // ⚡ Bolt Optimization: Using activeFamilyId (primitive) as a dependency
+    // instead of the families array prevents redundant teardown and recreation
+    // of the Firestore subscription when the array reference changes.
+  }, [activeFamilyId]);
 
   const handleZoomIn = () => setScale((s) => Math.min(s + 0.2, 2));
   const handleZoomOut = () => setScale((s) => Math.max(s - 0.2, 0.5));
