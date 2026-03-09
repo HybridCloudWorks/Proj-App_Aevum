@@ -2,6 +2,46 @@ import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 import "./IdentityTaggingScreen.css";
 
+// ⚡ Bolt Optimization: Define NEXT_ITEMS outside component to prevent recreation on every render
+const NEXT_ITEMS = [
+  {
+    count: 8,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJVIyA0Lztk5kUR6V7pgT_JvZPVk4TzwqxwS1AOGogPtHF6pY1AhG2Ey7i3wISgu8cNL3tkXX1WN9dkOjSDv9LigYi0E5dfY4snmWpBcdVp0Q22m6u0lUdtpF8Q5V8nrQnrIQ0vZzTJHpk9kYEPxLthFBqyXsi75Cturl5n0x-1XfJPbfDmyzPiPSTVouIHBolS7iqHa-Jpb1RhT5OjnOPML9bS3-Os1M-wzkIKmM3RMITIQfyqVxZbzluKDInm2eIuD0ra_wTMFk",
+  },
+  {
+    count: 5,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC2vqRsXQ7b-79adyFGPz1Qjsq8IvjvniwLDEHaUWj62MWdBOThIN55QaUm2XWtKeDZvJTGKtMYZ4jDUu5dpmFB5uAzjYuZUoi8N25SfCbmYBZitz_PuWWM5LPICUNoc3p6SBGrLomgvNftS_YQ4anW-4pyDGE6mJKcg67HJaDSf8WpIlzybGNjEHJKTKBVr5lYiXeyzIKnjF52WYdVSxUM07kJUAtXQC3fzi62SzoAKiO0DiM23oPf5jlQBsc-vWnk6WhuQpJRFs0",
+  },
+  {
+    count: 3,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDgd9lbSIDtwmL3NnTiAQ5E8LYKo_ReAaSTdhHYBPX3GHhQp9duEnZVT7ymoShbDc_EmnRv5BINEA0ovAqYpNqFPXZtpKNDVYPwOv_YHpeutaABg9WJKLHJOAGZbLQF7y4g19RRW57bZBrcmf5WhkFpwSbDXf2cZHWlGqbZd7Qb2z3F6krLitpDjbKAz5tOEJPsNCFFoE9ASw2F-0mZrOHljt_nGkAhjk6P-DJNR3pUp-Lgnct048Xjkg2Fmd8Hxgc7IddfjvcnuhA",
+  },
+];
+
+// ⚡ Bolt Optimization: Define GALLERY_ITEMS outside component to prevent recreation on every render
+const GALLERY_ITEMS = [
+  {
+    tags: true,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBLJPZoya-57UF9LHyeY02i2XCDXGJOKD0jOTRaSxSzqTNC8QG1tDDAGVfLgLC_53jwPV9rvqY6Mm6Lvc_RnZ9yfAY6t4UNWbKEzFP7MF1qYX9WSG_WFduv-VfybsgdRR7jGRbic8k28RmlTzFaVoqqgDPId-gwB94cEeOMhrxDzUUmBVkGwAoEgb3d0C3LyezcQB_vFH9oloho6j-PZjY0t6OClGUxiD4g8ytqIOpJKMBFPckpXtMEY17bmXXpLBbOXO1Z3zNjAs",
+  },
+  {
+    tags: false,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBtkdYPQYNk7-fzN6fC_XMHe_-itwb97SPm1Myy_gaj8G40HdjtTO5iA8ndf1B5dGnc-wyRPqTlFJUkXsyBLl21KVcYddSf7fRPYRrtyCxt963togRu4cUddLrIENZveUmKxzm1LcJRl_gHPiuHBqhFS3OIS975fRBE8JhVK2qAppuvvxnkBOV6L1CyPA8Gh_rUBzlLvBtVM9NI0ta138eW669h1zz4_WhYBojrD5hfP9kaKlJ0Z4IQy1-H8f-tYwxeVCS3e0xNfSk",
+  },
+  {
+    tags: false,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDz9YC_p9V1LKjhr4RUFau2dvhUc4ynu2l4Y-UCgEhcR0jZf-zCZiW7H_pbaG1gDPi3I0G3I0mLnXmj66csm0MGpavzSL9X_hvJIeD3XO8P_4iyI3anAEaWcfj0dntT0PSCqt0rIfri80DTM4hbJJeW4A0R951UlN31qEuUnjYJ3CxppaSftMFg_tw7rlaaZBPvtdtMiNhmrV3WgUkf8Kt5dL1tMQHKDYX679-8CdzU7OgXydCEHDv-iHRm0b-1kflKHGXm2MUtnuY",
+  },
+  {
+    tags: false,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzr2Jxj6bejbvHjt3_Y2wowBXJdIIa1Njk641HdCPoABdgL0E_uzo_OWgZTGw_k0BkHlUyB4ltVvfbbmvjoHJIzIqucDFq-BqjlBIbptOIjRIXKyZKSlMeHWKDYuWuW3sfGbuiGW1ru4GfpcTqtJROl3VmaReRYhuxzc7mhL0Kbw8k27nws83sdPpGcEtbXvJFt-uVuOYNubztczb8fv0NJXsnoxiR7BrjL2jcAU57IAZozFrP7AeHOScfuvy-UAlIsIqCsnVpdAY",
+  },
+  {
+    tags: false,
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSUK2cxKT9JNqifqRXe0ZpXywU91xXnXV4se52gmq3IMBGZLYfQMgF7bl8SIe_J8Yz19aZaWEqxcHj6WESm_P42V8_ojvo8aKeZ1y2zi-gmhXs52PMd4v4bvakC4OJrlhfjwXMepARSdtnQuc16NGKJzKzao0ZZmS-jHeVPO9AWByOfLjwRVt_TcsaJeaR-64QnyWP_iqBex344SIn2GDPQGsBgAFYnX30PRvNkT0OZnxlTCSnRuodR8lwDQvX5v7uv0rEC1vJlKk",
+  },
+];
+
 function IdentityTaggingScreen() {
   const navigate = useNavigate();
 
@@ -73,20 +113,7 @@ function IdentityTaggingScreen() {
           </div>
 
           {/* Next Items */}
-          {[
-            {
-              count: 8,
-              img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJVIyA0Lztk5kUR6V7pgT_JvZPVk4TzwqxwS1AOGogPtHF6pY1AhG2Ey7i3wISgu8cNL3tkXX1WN9dkOjSDv9LigYi0E5dfY4snmWpBcdVp0Q22m6u0lUdtpF8Q5V8nrQnrIQ0vZzTJHpk9kYEPxLthFBqyXsi75Cturl5n0x-1XfJPbfDmyzPiPSTVouIHBolS7iqHa-Jpb1RhT5OjnOPML9bS3-Os1M-wzkIKmM3RMITIQfyqVxZbzluKDInm2eIuD0ra_wTMFk",
-            },
-            {
-              count: 5,
-              img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC2vqRsXQ7b-79adyFGPz1Qjsq8IvjvniwLDEHaUWj62MWdBOThIN55QaUm2XWtKeDZvJTGKtMYZ4jDUu5dpmFB5uAzjYuZUoi8N25SfCbmYBZitz_PuWWM5LPICUNoc3p6SBGrLomgvNftS_YQ4anW-4pyDGE6mJKcg67HJaDSf8WpIlzybGNjEHJKTKBVr5lYiXeyzIKnjF52WYdVSxUM07kJUAtXQC3fzi62SzoAKiO0DiM23oPf5jlQBsc-vWnk6WhuQpJRFs0",
-            },
-            {
-              count: 3,
-              img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDgd9lbSIDtwmL3NnTiAQ5E8LYKo_ReAaSTdhHYBPX3GHhQp9duEnZVT7ymoShbDc_EmnRv5BINEA0ovAqYpNqFPXZtpKNDVYPwOv_YHpeutaABg9WJKLHJOAGZbLQF7y4g19RRW57bZBrcmf5WhkFpwSbDXf2cZHWlGqbZd7Qb2z3F6krLitpDjbKAz5tOEJPsNCFFoE9ASw2F-0mZrOHljt_nGkAhjk6P-DJNR3pUp-Lgnct048Xjkg2Fmd8Hxgc7IddfjvcnuhA",
-            },
-          ].map((item, index) => (
+          {NEXT_ITEMS.map((item, index) => (
             <div
               key={index}
               className="snap-center shrink-0 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity"
@@ -179,28 +206,7 @@ function IdentityTaggingScreen() {
             </span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {[
-              {
-                tags: true,
-                img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBLJPZoya-57UF9LHyeY02i2XCDXGJOKD0jOTRaSxSzqTNC8QG1tDDAGVfLgLC_53jwPV9rvqY6Mm6Lvc_RnZ9yfAY6t4UNWbKEzFP7MF1qYX9WSG_WFduv-VfybsgdRR7jGRbic8k28RmlTzFaVoqqgDPId-gwB94cEeOMhrxDzUUmBVkGwAoEgb3d0C3LyezcQB_vFH9oloho6j-PZjY0t6OClGUxiD4g8ytqIOpJKMBFPckpXtMEY17bmXXpLBbOXO1Z3zNjAs",
-              },
-              {
-                tags: false,
-                img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBtkdYPQYNk7-fzN6fC_XMHe_-itwb97SPm1Myy_gaj8G40HdjtTO5iA8ndf1B5dGnc-wyRPqTlFJUkXsyBLl21KVcYddSf7fRPYRrtyCxt963togRu4cUddLrIENZveUmKxzm1LcJRl_gHPiuHBqhFS3OIS975fRBE8JhVK2qAppuvvxnkBOV6L1CyPA8Gh_rUBzlLvBtVM9NI0ta138eW669h1zz4_WhYBojrD5hfP9kaKlJ0Z4IQy1-H8f-tYwxeVCS3e0xNfSk",
-              },
-              {
-                tags: false,
-                img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDz9YC_p9V1LKjhr4RUFau2dvhUc4ynu2l4Y-UCgEhcR0jZf-zCZiW7H_pbaG1gDPi3I0G3I0mLnXmj66csm0MGpavzSL9X_hvJIeD3XO8P_4iyI3anAEaWcfj0dntT0PSCqt0rIfri80DTM4hbJJeW4A0R951UlN31qEuUnjYJ3CxppaSftMFg_tw7rlaaZBPvtdtMiNhmrV3WgUkf8Kt5dL1tMQHKDYX679-8CdzU7OgXydCEHDv-iHRm0b-1kflKHGXm2MUtnuY",
-              },
-              {
-                tags: false,
-                img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCzr2Jxj6bejbvHjt3_Y2wowBXJdIIa1Njk641HdCPoABdgL0E_uzo_OWgZTGw_k0BkHlUyB4ltVvfbbmvjoHJIzIqucDFq-BqjlBIbptOIjRIXKyZKSlMeHWKDYuWuW3sfGbuiGW1ru4GfpcTqtJROl3VmaReRYhuxzc7mhL0Kbw8k27nws83sdPpGcEtbXvJFt-uVuOYNubztczb8fv0NJXsnoxiR7BrjL2jcAU57IAZozFrP7AeHOScfuvy-UAlIsIqCsnVpdAY",
-              },
-              {
-                tags: false,
-                img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDSUK2cxKT9JNqifqRXe0ZpXywU91xXnXV4se52gmq3IMBGZLYfQMgF7bl8SIe_J8Yz19aZaWEqxcHj6WESm_P42V8_ojvo8aKeZ1y2zi-gmhXs52PMd4v4bvakC4OJrlhfjwXMepARSdtnQuc16NGKJzKzao0ZZmS-jHeVPO9AWByOfLjwRVt_TcsaJeaR-64QnyWP_iqBex344SIn2GDPQGsBgAFYnX30PRvNkT0OZnxlTCSnRuodR8lwDQvX5v7uv0rEC1vJlKk",
-              },
-            ].map((item, index) => (
+            {GALLERY_ITEMS.map((item, index) => (
               <div
                 key={index}
                 className="aspect-square rounded-lg overflow-hidden relative group cursor-pointer"
