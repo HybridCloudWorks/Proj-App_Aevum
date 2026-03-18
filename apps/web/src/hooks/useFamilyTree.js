@@ -49,7 +49,7 @@ export function useFamilyTree() {
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
@@ -59,7 +59,9 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+    // ⚡ Bolt Optimization: Depend on primitive currentFamily?.id instead of object
+    // currentFamily to prevent redundant resubscriptions when object reference changes
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
