@@ -29,7 +29,7 @@ export function useFamilyTree() {
 
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setFamilies([]);
       setLoading(false);
       return;
@@ -38,18 +38,23 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+    // ⚡ Bolt Optimization: Changed dependencies from [user, currentFamily] to [user?.uid].
+    // By using functional state updates (prev => prev ? prev : data[0]), we no longer
+    // depend on the outer `currentFamily` state, preventing redundant teardowns and
+    // re-subscriptions when the selected family changes. Using `user?.uid` prevents
+    // recreation when the user object reference changes.
+  }, [user?.uid]);
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
@@ -59,7 +64,10 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+    // ⚡ Bolt Optimization: Using currentFamily?.id (primitive) as a dependency
+    // instead of the currentFamily object reference prevents redundant teardowns
+    // and re-subscriptions when the object reference changes but the ID remains the same.
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
