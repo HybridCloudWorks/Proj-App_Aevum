@@ -28,8 +28,10 @@ export function useFamilyTree() {
   const [error, setError] = useState(null);
 
   // Subscribe to user's families
+  // ⚡ Bolt Optimization: Use primitive user?.uid instead of user object reference
+  // to prevent unnecessary re-subscriptions on reference changes.
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setFamilies([]);
       setLoading(false);
       return;
@@ -38,18 +40,22 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        // ⚡ Bolt Optimization: Use functional state update to remove currentFamily
+        // dependency from the effect, preventing redundant Firebase teardowns.
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user?.uid]);
 
   // Subscribe to current family's members
+  // ⚡ Bolt Optimization: Use primitive currentFamily?.id instead of object reference
+  // to prevent redundant re-subscriptions on reference changes.
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
@@ -59,7 +65,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
