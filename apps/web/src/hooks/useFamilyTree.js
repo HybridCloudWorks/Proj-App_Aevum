@@ -38,28 +38,33 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        // ⚡ Bolt Optimization: Use functional state update to prevent redundant
+        // re-subscriptions caused by including currentFamily in the dependency array
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user]);
 
   // Subscribe to current family's members
+  const currentFamilyId = currentFamily?.id;
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamilyId) {
       setMembers([]);
       return;
     }
 
-    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
+    const unsubscribe = subscribeToFamilyMembers(currentFamilyId, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+    // ⚡ Bolt Optimization: Depend on the primitive currentFamilyId rather than
+    // the currentFamily object reference to prevent redundant re-subscriptions
+  }, [currentFamilyId]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
