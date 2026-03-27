@@ -186,7 +186,7 @@ function parseExifSegment(dataView, offset) {
             littleEndian,
           );
           break;
-        case 0x0110: // Model
+        case 0x0110: { // Model
           const model = readExifString(
             dataView,
             entryOffset,
@@ -195,6 +195,7 @@ function parseExifSegment(dataView, offset) {
           );
           exif.camera = exif.camera ? `${exif.camera} ${model}` : model;
           break;
+        }
         case 0x0112: // Orientation
           exif.orientation = dataView.getUint16(entryOffset + 8, littleEndian);
           break;
@@ -234,12 +235,16 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
-    let str = "";
-    for (let i = 0; i < count - 1; i++) {
-      str += String.fromCharCode(dataView.getUint8(stringOffset + i));
-    }
-
-    return str.trim();
+    // ⚡ Bolt: Performance optimization
+    // Avoid O(n) string concatenations by using native TextDecoder for binary-to-string conversion.
+    // We use Math.max(0, count - 1) to exclude the null terminator.
+    const length = Math.max(0, count - 1);
+    const bytes = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      length,
+    );
+    return new TextDecoder().decode(bytes).trim();
   } catch {
     return null;
   }
