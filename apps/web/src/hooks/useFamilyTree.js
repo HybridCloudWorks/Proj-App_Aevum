@@ -29,37 +29,41 @@ export function useFamilyTree() {
 
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setFamilies([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
+    // Optimization: Depending on primitive user.uid and removing currentFamily dependency
+    // by using functional state update to prevent redundant re-subscriptions
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user?.uid]);
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
 
+    // Optimization: Depending on primitive currentFamily.id instead of object reference
+    // to prevent redundant network teardowns on reference changes
     const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
