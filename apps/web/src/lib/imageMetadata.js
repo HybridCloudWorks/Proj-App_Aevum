@@ -234,10 +234,14 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
-    let str = "";
-    for (let i = 0; i < count - 1; i++) {
-      str += String.fromCharCode(dataView.getUint8(stringOffset + i));
-    }
+    // Performance optimization: Use TextDecoder instead of manual string concatenation
+    // This avoids O(n) allocations in a loop and is significantly faster for long strings
+    const bytes = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      count - 1,
+    );
+    const str = new TextDecoder("utf-8").decode(bytes);
 
     return str.trim();
   } catch {
