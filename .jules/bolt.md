@@ -1,3 +1,3 @@
-## 2024-03-20 - Prevent redundant Firestore re-subscriptions
-**Learning:** React components subscribing to real-time data sources (like Firestore or WebSockets) often unnecessarily tear down and recreate their subscriptions when arrays or objects are used directly as `useEffect` dependencies.
-**Action:** When a subscription requires an ID from an array (e.g., `families[0].id`), extract the specific primitive ID into a variable and use *that primitive* as the `useEffect` dependency, rather than the entire array reference.
+## 2025-04-08 - Redundant Firestore Re-subscriptions on Object Reference Changes
+**Learning:** React `useEffect` hooks that subscribe to Firestore data often mistakenly include full object references (like `user` or `currentFamily`) in their dependency arrays. This causes the hook to unnecessarily tear down and recreate the Firestore listener every time any property on the object changes, even if the relevant ID (`uid` or `familyId`) remains identical.
+**Action:** Always extract the primitive ID variables (e.g., `const userId = user?.uid; const currentFamilyId = currentFamily?.id;`) and use those primitives in the `useEffect` dependency arrays. Additionally, avoid placing state variables in the dependency array by utilizing functional state updates (e.g., `setCurrentFamily((prev) => prev ? prev : data[0])`) within the listener callbacks.
