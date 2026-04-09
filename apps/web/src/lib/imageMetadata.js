@@ -219,6 +219,8 @@ function parseExifSegment(dataView, offset) {
 /**
  * Read string value from EXIF entry
  */
+const textDecoder = new TextDecoder("ascii");
+
 function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
   try {
     const type = dataView.getUint16(entryOffset + 2, littleEndian);
@@ -234,12 +236,14 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
-    let str = "";
-    for (let i = 0; i < count - 1; i++) {
-      str += String.fromCharCode(dataView.getUint8(stringOffset + i));
-    }
-
-    return str.trim();
+    // Performance optimization: Avoid String.fromCharCode loop for binary-to-string conversion.
+    // Use TextDecoder on a Uint8Array view of the buffer, correctly accounting for dataView.byteOffset.
+    const uint8Array = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      count - 1
+    );
+    return textDecoder.decode(uint8Array).trim();
   } catch {
     return null;
   }
