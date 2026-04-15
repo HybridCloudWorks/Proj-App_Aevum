@@ -216,6 +216,9 @@ function parseExifSegment(dataView, offset) {
   }
 }
 
+// Global TextDecoder instance for efficient binary-to-string conversion
+const textDecoder = new TextDecoder("utf-8");
+
 /**
  * Read string value from EXIF entry
  */
@@ -234,12 +237,15 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
-    let str = "";
-    for (let i = 0; i < count - 1; i++) {
-      str += String.fromCharCode(dataView.getUint8(stringOffset + i));
-    }
-
-    return str.trim();
+    // Optimization: Use global TextDecoder on a Uint8Array view instead of manual string concatenation
+    // This avoids JS string instantiation overhead per character and is significantly faster for EXIF parsing
+    const length = Math.max(0, count - 1);
+    const uint8Array = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      length,
+    );
+    return textDecoder.decode(uint8Array).trim();
   } catch {
     return null;
   }
