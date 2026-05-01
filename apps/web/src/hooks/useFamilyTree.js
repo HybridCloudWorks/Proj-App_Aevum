@@ -28,38 +28,46 @@ export function useFamilyTree() {
   const [error, setError] = useState(null);
 
   // Subscribe to user's families
+  // ⚡ Bolt Optimization: Depend on primitive user?.uid instead of objects to prevent unnecessary re-subscriptions
+  const userId = user?.uid;
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       setFamilies([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    const unsubscribe = subscribeToFamilies(user.uid, (data) => {
+    const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
-      }
+      // ⚡ Bolt Optimization: Use functional state update to remove currentFamily from dependency array
+      setCurrentFamily((prev) => {
+        if (data.length > 0 && !prev) {
+          return data[0];
+        }
+        return prev;
+      });
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [userId]);
 
   // Subscribe to current family's members
+  // ⚡ Bolt Optimization: Depend on primitive currentFamily?.id instead of full object reference
+  const currentFamilyId = currentFamily?.id;
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamilyId) {
       setMembers([]);
       return;
     }
 
-    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
+    const unsubscribe = subscribeToFamilyMembers(currentFamilyId, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamilyId]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
