@@ -29,37 +29,44 @@ export function useFamilyTree() {
 
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    // Optimization: depend on primitive `user?.uid` to prevent redundant re-subscriptions
+    // and use functional state update for `setCurrentFamily` so we don't need `currentFamily` as a dependency.
+    const uid = user?.uid;
+    if (!uid) {
       setFamilies([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    const unsubscribe = subscribeToFamilies(user.uid, (data) => {
+    const unsubscribe = subscribeToFamilies(uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        setCurrentFamily((prev) => prev ? prev : data[0]);
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user?.uid]);
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    // Optimization: extract primitive ID to avoid redundant re-subscriptions
+    // when the object reference changes but the ID remains the same.
+    const currentFamilyId = currentFamily?.id;
+
+    if (!currentFamilyId) {
       setMembers([]);
       return;
     }
 
-    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
+    const unsubscribe = subscribeToFamilyMembers(currentFamilyId, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
