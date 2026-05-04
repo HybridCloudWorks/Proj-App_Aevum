@@ -27,39 +27,52 @@ export function useFamilyTree() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const userId = user?.uid;
+
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       setFamilies([]);
       setLoading(false);
       return;
     }
 
     setLoading(true);
-    const unsubscribe = subscribeToFamilies(user.uid, (data) => {
+    const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
-      }
+      setCurrentFamily((prev) => {
+        if (data.length > 0 && !prev) {
+          return data[0];
+        }
+        return prev;
+      });
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+    // ⚡ Bolt Optimization: Using userId (primitive) as a dependency prevents
+    // redundant teardown and recreation of the Firestore subscription when the user object reference changes.
+    // Using functional state update for setCurrentFamily removes currentFamily from dependencies.
+  }, [userId]);
+
+  const currentFamilyId = currentFamily?.id;
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamilyId) {
       setMembers([]);
       return;
     }
 
-    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
+    const unsubscribe = subscribeToFamilyMembers(currentFamilyId, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+    // ⚡ Bolt Optimization: Using currentFamilyId (primitive) as a dependency
+    // instead of the currentFamily object prevents redundant teardown and recreation
+    // of the Firestore subscription when the object reference changes.
+  }, [currentFamilyId]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
