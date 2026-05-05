@@ -29,7 +29,7 @@ export function useFamilyTree() {
 
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setFamilies([]);
       setLoading(false);
       return;
@@ -38,28 +38,34 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      // ⚡ Bolt Performance Optimization:
+      // Use functional state update to remove currentFamily from dependency array.
+      // This prevents redundant unmounts/re-subscriptions when initial selection is set.
+      if (data.length > 0) {
+        setCurrentFamily((prev) => prev || data[0]);
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user?.uid]);
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
 
+    // ⚡ Bolt Performance Optimization:
+    // Depend on specific primitive value (currentFamily?.id) rather than full object reference.
+    // This prevents unnecessary unmounts and re-subscriptions when the object reference changes.
     const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
