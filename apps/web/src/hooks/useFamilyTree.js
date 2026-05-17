@@ -38,28 +38,35 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        // Optimization: Use functional state update to remove currentFamily from dependency array
+        // This prevents tearing down and recreating the Firestore subscription when the initial family is selected
+        setCurrentFamily((prev) => prev || data[0]);
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+  }, [user]);
+
+  // Extract primitive ID for dependency array
+  const currentFamilyId = currentFamily?.id;
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamilyId) {
       setMembers([]);
       return;
     }
 
-    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
+    // Optimization: Depend on the primitive currentFamilyId instead of the currentFamily object
+    // This prevents redundant unmounts and re-subscriptions when the object reference changes but ID remains the same
+    const unsubscribe = subscribeToFamilyMembers(currentFamilyId, (data) => {
       setMembers(data);
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+  }, [currentFamilyId]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
