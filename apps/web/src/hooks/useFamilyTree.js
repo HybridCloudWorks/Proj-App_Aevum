@@ -29,7 +29,7 @@ export function useFamilyTree() {
 
   // Subscribe to user's families
   useEffect(() => {
-    if (!user) {
+    if (!user?.uid) {
       setFamilies([]);
       setLoading(false);
       return;
@@ -38,18 +38,21 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
-      if (data.length > 0 && !currentFamily) {
-        setCurrentFamily(data[0]);
+      if (data.length > 0) {
+        // Bolt ⚡: Use functional state update to prevent O(N) redundant unmounts/re-subscriptions
+        // to Firestore by removing currentFamily from the useEffect dependency array.
+        setCurrentFamily((prev) => prev || data[0]);
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [user, currentFamily]);
+    // Bolt ⚡: Depend on primitive user?.uid instead of full user object to prevent unnecessary re-subscriptions
+  }, [user?.uid]);
 
   // Subscribe to current family's members
   useEffect(() => {
-    if (!currentFamily) {
+    if (!currentFamily?.id) {
       setMembers([]);
       return;
     }
@@ -59,7 +62,8 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
-  }, [currentFamily]);
+    // Bolt ⚡: Depend on primitive currentFamily?.id instead of full object reference
+  }, [currentFamily?.id]);
 
   // Actions
   const createNewFamily = async (name, description = "") => {
