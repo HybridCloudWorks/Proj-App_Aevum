@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 import {
   formatFileSize,
   getImageQuality,
@@ -36,6 +36,27 @@ describe("formatFileSize", () => {
 
   it("should handle large values by rounding to one decimal place", () => {
     expect(formatFileSize(1229)).toBe("1.2 KB"); // 1229 / 1024 = 1.20019...
+  });
+
+  it("should format TBs correctly", () => {
+    const oneTB = Math.pow(1024, 4);
+    expect(formatFileSize(oneTB)).toBe("1 TB");
+    expect(formatFileSize(oneTB * 5.5)).toBe("5.5 TB");
+  });
+
+  it("should format PBs correctly", () => {
+    const onePB = Math.pow(1024, 5);
+    expect(formatFileSize(onePB)).toBe("1 PB");
+  });
+
+  it("should handle boundary values that round up to 1024", () => {
+    // 1023.96 rounds to 1024.0 with toFixed(1)
+    expect(formatFileSize(1023.96)).toBe("1 KB");
+  });
+
+  it("should handle negative values", () => {
+    expect(formatFileSize(-1024)).toBe("-1 KB");
+    expect(formatFileSize(-500)).toBe("-500 B");
   });
 });
 
@@ -108,8 +129,8 @@ describe("createThumbnail", () => {
   // Setup mocks
   beforeAll(() => {
     // Mock URL
-    global.URL.createObjectURL = vi.fn(() => "blob:test");
-    global.URL.revokeObjectURL = vi.fn();
+    globalThis.URL.createObjectURL = vi.fn(() => "blob:test");
+    globalThis.URL.revokeObjectURL = vi.fn();
 
     // Mock document and canvas
     const mockContext = {
@@ -124,7 +145,7 @@ describe("createThumbnail", () => {
 
     // Check if document exists (jsdom) or mock it
     if (typeof document === "undefined") {
-      global.document = {
+      globalThis.document = {
         createElement: vi.fn(() => mockCanvas),
       };
     } else {
@@ -132,7 +153,7 @@ describe("createThumbnail", () => {
     }
 
     // Mock Image
-    global.Image = class {
+    globalThis.Image = class {
       constructor() {
         this.naturalWidth = 1000;
         this.naturalHeight = 1000;
@@ -149,28 +170,28 @@ describe("createThumbnail", () => {
       close: vi.fn(),
     };
 
-    global.createImageBitmap = vi.fn().mockResolvedValue(mockBitmap);
+    globalThis.createImageBitmap = vi.fn().mockResolvedValue(mockBitmap);
 
     await createThumbnail(file, 200);
 
-    expect(global.createImageBitmap).toHaveBeenCalled();
+    expect(globalThis.createImageBitmap).toHaveBeenCalled();
   });
 
   it("should fallback to Image if createImageBitmap is undefined", async () => {
     const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
 
     // Temporarily remove createImageBitmap
-    const originalCreateImageBitmap = global.createImageBitmap;
-    global.createImageBitmap = undefined;
+    const originalCreateImageBitmap = globalThis.createImageBitmap;
+    globalThis.createImageBitmap = undefined;
 
     // Reset mocks
-    global.URL.createObjectURL.mockClear();
+    globalThis.URL.createObjectURL.mockClear();
 
     await createThumbnail(file, 200);
 
-    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(globalThis.URL.createObjectURL).toHaveBeenCalled();
 
     // Restore
-    global.createImageBitmap = originalCreateImageBitmap;
+    globalThis.createImageBitmap = originalCreateImageBitmap;
   });
 });
