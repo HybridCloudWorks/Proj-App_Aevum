@@ -91,8 +91,9 @@ service firebase.storage {
     // User Profile Images
     // ==========================================
     match /users/{userId}/profile/{fileName} {
-      // Anyone can read profile images
-      allow read: if true;
+      // Restricted read: Only the owner or an admin can access profile images.
+      // Note: Full family-based access requires familyId to be present on the user document.
+      allow read: if isOwner(userId) || isAdmin();
       
       // Only owner can upload/update their profile image
       allow write: if isOwner(userId) &&
