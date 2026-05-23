@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { validateFile } from "./storage";
+import { validateFile, uploadMultiplePhotos } from "./storage";
+import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // Mock the dependencies of storage.js to avoid initialization issues
 vi.mock("firebase/storage", () => ({
@@ -84,5 +85,59 @@ describe("validateFile", () => {
     };
     const result = validateFile(file, { maxSizeMB });
     expect(result.valid).toBe(true);
+  });
+});
+
+describe("uploadMultiplePhotos", () => {
+  it("should track overall progress correctly for multiple files", async () => {
+    const files = [
+      { name: "file1.jpg", type: "image/jpeg", size: 100 },
+      { name: "file2.jpg", type: "image/jpeg", size: 100 },
+    ];
+
+    const onProgress = vi.fn();
+
+    // Mock uploadBytesResumable to capture the progress callback
+    let progressCallbacks = [];
+    uploadBytesResumable.mockImplementation(() => ({
+      on: vi.fn((event, progressFn, errorFn, completeFn) => {
+        progressCallbacks.push(progressFn);
+        // Simulate completion immediately in the next tick
+        setTimeout(() => completeFn(), 50);
+      }),
+      snapshot: { ref: {} },
+    }));
+
+    getDownloadURL.mockResolvedValue("http://example.com/photo.jpg");
+
+    const uploadPromise = uploadMultiplePhotos(
+      files,
+      "family123",
+      "user456",
+      onProgress,
+    );
+
+    // Wait for the uploadPhoto calls to set up their tasks
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    // We expect 2 progress callbacks (one for each file's main upload)
+    expect(progressCallbacks.length).toBe(2);
+
+    // Trigger progress for file 1: 50%
+    // uploadPhoto scales this by 0.8 -> 40%
+    progressCallbacks[0]({ bytesTransferred: 50, totalBytes: 100 });
+    // Overall: (40 + 0) / 2 = 20%
+    expect(onProgress).toHaveBeenCalledWith(20);
+
+    // Trigger progress for file 2: 100%
+    // uploadPhoto scales this by 0.8 -> 80%
+    progressCallbacks[1]({ bytesTransferred: 100, totalBytes: 100 });
+    // Overall: (40 + 80) / 2 = 60%
+    expect(onProgress).toHaveBeenCalledWith(60);
+
+    await uploadPromise;
+
+    // Finally should reach 100%
+    expect(onProgress).toHaveBeenLastCalledWith(100);
   });
 });
