@@ -192,14 +192,51 @@ export async function createMediaItem(familyId, mediaData) {
     const mediaItem = {
       ...mediaData,
       familyId,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: mediaData.date || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      _serverUpdatedAt: serverTimestamp(),
     };
 
     await setDoc(mediaRef, mediaItem);
-    return { success: true, mediaId: mediaRef.id };
+    return { success: true, mediaId: mediaRef.id, id: mediaRef.id };
   } catch (error) {
     console.error("Error creating media item:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Create multiple media items in a single batch
+ */
+export async function batchCreateMediaItems(familyId, itemsData) {
+  try {
+    // Firestore batch limit is 500 operations
+    const CHUNK_SIZE = 500;
+    const results = [];
+
+    for (let i = 0; i < itemsData.length; i += CHUNK_SIZE) {
+      const chunk = itemsData.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+
+      chunk.forEach((data) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...data,
+          familyId,
+          createdAt: data.date || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          _serverUpdatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        results.push({ id: mediaRef.id, ...data });
+      });
+
+      await batch.commit();
+    }
+
+    return { success: true, results };
+  } catch (error) {
+    console.error("Error batch creating media items:", error);
     return { success: false, error: error.message };
   }
 }
@@ -449,6 +486,12 @@ export async function createAITask(userId, taskData) {
   }
 }
 
+// Aliases for useMemories hook consistency
+export const createMemory = createMediaItem;
+export const updateMemory = updateMediaItem;
+export const deleteMemory = deleteMediaItem;
+export const batchCreateMemories = batchCreateMediaItems;
+
 export default {
   getUserProfile,
   updateUserProfile,
@@ -457,10 +500,15 @@ export default {
   getUserFamilies,
   subscribeToFamilies,
   createMediaItem,
+  createMemory,
+  batchCreateMediaItems,
+  batchCreateMemories,
   getFamilyMediaItems,
   subscribeToMediaItems,
   updateMediaItem,
+  updateMemory,
   deleteMediaItem,
+  deleteMemory,
   addFamilyMember,
   updateFamilyMember,
   deleteFamilyMember,
