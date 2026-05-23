@@ -11,6 +11,7 @@ import {
   createMemory,
   updateMemory,
   deleteMemory,
+  batchCreateMemories,
 } from "@lib/firestore";
 import {
   uploadPhoto,
@@ -158,21 +159,19 @@ export function useMemories(familyId) {
           (progress) => setUploadProgress(progress),
         );
 
-        // Create memory records for successful uploads
-        const memoryPromises = uploadResult.results.map((result) =>
-          createMemory(familyId, {
-            title: result.file,
-            description: metadata.description || "",
-            photoUrl: result.url,
-            storagePath: result.path,
-            uploadedBy: user.uid,
-            date: metadata.date || new Date().toISOString(),
-            tags: metadata.tags || [],
-            memberIds: metadata.memberIds || [],
-          }),
-        );
+        // Create memory records for successful uploads using optimized batching
+        const memoryData = uploadResult.results.map((result) => ({
+          title: result.file,
+          description: metadata.description || "",
+          photoUrl: result.url,
+          storagePath: result.path,
+          uploadedBy: user.uid,
+          date: metadata.date || new Date().toISOString(),
+          tags: metadata.tags || [],
+          memberIds: metadata.memberIds || [],
+        }));
 
-        await Promise.all(memoryPromises);
+        await batchCreateMemories(familyId, memoryData);
 
         setUploading(false);
         setUploadProgress(0);
