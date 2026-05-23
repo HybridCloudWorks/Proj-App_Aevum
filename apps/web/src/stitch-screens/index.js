@@ -127,6 +127,7 @@ export const STITCH_SCREENS = {
  * Get the path to a screen's HTML file
  */
 export function getScreenHtmlPath(screenFolder) {
+  if (!getAllScreens().includes(screenFolder)) return null;
   return `/src/stitch-screens/${screenFolder}/code.html`;
 }
 
@@ -134,6 +135,7 @@ export function getScreenHtmlPath(screenFolder) {
  * Get the path to a screen's preview image
  */
 export function getScreenImagePath(screenFolder) {
+  if (!getAllScreens().includes(screenFolder)) return null;
   return `/src/stitch-screens/${screenFolder}/screen.png`;
 }
 
