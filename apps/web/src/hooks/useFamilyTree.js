@@ -56,6 +56,9 @@ export function useFamilyTree() {
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
       if (data.length > 0) {
+        // ⚡ Bolt Optimization: Use functional state update to prevent redundant
+        // re-subscriptions caused by including currentFamily in the dependency array
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
         setCurrentFamily((prev) => (prev ? prev : data[0]));
       // ⚡ Bolt Optimization: Use functional state update to remove currentFamily from dependency array
       setCurrentFamily((prev) => {
@@ -92,6 +95,11 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user]);
+
+  // Subscribe to current family's members
+  const currentFamilyId = currentFamily?.id;
+  useEffect(() => {
   }, [userId]);
 
   // Subscribe to current family's members
@@ -143,6 +151,8 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+    // ⚡ Bolt Optimization: Depend on the primitive currentFamilyId rather than
+    // the currentFamily object reference to prevent redundant re-subscriptions
   }, [currentFamily?.id]); // Bolt Performance Optimization: Depend on specific primitive value (currentFamily?.id) rather than full object reference.
   }, [familyId]);
   }, [currentFamily?.id]); // Optimization: Use primitive dependency currentFamily?.id to prevent redundant unmounts and re-subscriptions
