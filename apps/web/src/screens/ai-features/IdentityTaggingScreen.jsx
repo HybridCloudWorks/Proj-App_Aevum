@@ -3,6 +3,7 @@ import BottomNav from "@/components/BottomNav";
 import "./IdentityTaggingScreen.css";
 
 // ⚡ Bolt Optimization: Define NEXT_ITEMS outside component to prevent recreation on every render
+// Optimization: Define static arrays outside component to prevent recreation on every render
 const NEXT_ITEMS = [
   {
     count: 8,
@@ -20,6 +21,7 @@ const NEXT_ITEMS = [
 
 // ⚡ Bolt Optimization: Define GALLERY_ITEMS outside component to prevent recreation on every render
 const GALLERY_ITEMS = [
+const CONTEXT_PHOTOS = [
   {
     tags: true,
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBLJPZoya-57UF9LHyeY02i2XCDXGJOKD0jOTRaSxSzqTNC8QG1tDDAGVfLgLC_53jwPV9rvqY6Mm6Lvc_RnZ9yfAY6t4UNWbKEzFP7MF1qYX9WSG_WFduv-VfybsgdRR7jGRbic8k28RmlTzFaVoqqgDPId-gwB94cEeOMhrxDzUUmBVkGwAoEgb3d0C3LyezcQB_vFH9oloho6j-PZjY0t6OClGUxiD4g8ytqIOpJKMBFPckpXtMEY17bmXXpLBbOXO1Z3zNjAs",
@@ -207,6 +209,7 @@ function IdentityTaggingScreen() {
           </div>
           <div className="grid grid-cols-3 gap-2">
             {GALLERY_ITEMS.map((item, index) => (
+            {CONTEXT_PHOTOS.map((item, index) => (
               <div
                 key={index}
                 className="aspect-square rounded-lg overflow-hidden relative group cursor-pointer"

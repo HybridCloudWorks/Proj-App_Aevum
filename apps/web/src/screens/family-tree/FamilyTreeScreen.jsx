@@ -30,7 +30,7 @@ function FamilyTreeScreen() {
     if (!activeFamilyId) return;
     const unsub = subscribeToFamilyMembers(activeFamilyId, setMembers);
     return () => unsub();
-  // ⚡ Bolt Optimization: Using activeFamilyId (primitive) as a dependency
+    // ⚡ Bolt Optimization: Using activeFamilyId (primitive) as a dependency
     // instead of the families array prevents redundant teardown and recreation
     // of the Firestore subscription when the array reference changes.
   }, [activeFamilyId]);
