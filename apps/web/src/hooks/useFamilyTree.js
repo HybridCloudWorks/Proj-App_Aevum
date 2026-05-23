@@ -59,6 +59,10 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
+      if (data.length > 0) {
+        // Optimization: Use functional state update to set initial family without
+        // adding currentFamily to the dependency array, avoiding redundant re-subscriptions
+        setCurrentFamily((prev) => prev || data[0]);
       // ⚡ Bolt: Use functional state update to remove currentFamily from dependency array
       if (data.length > 0) {
         setCurrentFamily((prev) => prev || data[0]);
@@ -105,6 +109,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user?.uid]);
   }, [user?.uid]); // ⚡ Bolt: Depend on primitive field rather than object reference
   }, [user?.uid]);
 
@@ -150,6 +155,7 @@ export function useFamilyTree() {
   const currentFamilyId = currentFamily?.id;
 
   useEffect(() => {
+    if (!currentFamily?.id) {
     // ⚡ Bolt: Use currentFamily?.id primitive to prevent unnecessary re-subscriptions
     if (!currentFamily?.id) {
     if (!currentFamily?.id) {
@@ -161,6 +167,9 @@ export function useFamilyTree() {
       return;
     }
 
+    // Optimization: Depend on currentFamily.id primitive rather than the object reference
+    // to prevent unnecessary unmounts/re-subscriptions when the object reference changes
+    const unsubscribe = subscribeToFamilyMembers(currentFamily.id, (data) => {
     // Optimization: Depend on the primitive currentFamilyId instead of the currentFamily object
     // This prevents redundant unmounts and re-subscriptions when the object reference changes but ID remains the same
     const unsubscribe = subscribeToFamilyMembers(familyId, (data) => {
@@ -171,6 +180,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [currentFamily?.id]);
   }, [currentFamily?.id]); // ⚡ Bolt: Depend on primitive field rather than object reference
   }, [currentFamily?.id]);
     // ⚡ Bolt Optimization: Depend on the primitive currentFamilyId rather than
