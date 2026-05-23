@@ -37,6 +37,27 @@ describe("formatFileSize", () => {
   it("should handle large values by rounding to one decimal place", () => {
     expect(formatFileSize(1229)).toBe("1.2 KB"); // 1229 / 1024 = 1.20019...
   });
+
+  it("should format TBs correctly", () => {
+    const oneTB = Math.pow(1024, 4);
+    expect(formatFileSize(oneTB)).toBe("1 TB");
+    expect(formatFileSize(oneTB * 5.5)).toBe("5.5 TB");
+  });
+
+  it("should format PBs correctly", () => {
+    const onePB = Math.pow(1024, 5);
+    expect(formatFileSize(onePB)).toBe("1 PB");
+  });
+
+  it("should handle boundary values that round up to 1024", () => {
+    // 1023.96 rounds to 1024.0 with toFixed(1)
+    expect(formatFileSize(1023.96)).toBe("1 KB");
+  });
+
+  it("should handle negative values", () => {
+    expect(formatFileSize(-1024)).toBe("-1 KB");
+    expect(formatFileSize(-500)).toBe("-500 B");
+  });
 });
 
 describe("getImageQuality", () => {
