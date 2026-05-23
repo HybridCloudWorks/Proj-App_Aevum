@@ -4,6 +4,10 @@
 ## 2024-03-20 - Prevent redundant Firestore re-subscriptions
 **Learning:** React components subscribing to real-time data sources (like Firestore or WebSockets) often unnecessarily tear down and recreate their subscriptions when arrays or objects are used directly as `useEffect` dependencies.
 **Action:** When a subscription requires an ID from an array (e.g., `families[0].id`), extract the specific primitive ID into a variable and use *that primitive* as the `useEffect` dependency, rather than the entire array reference.
+
+## 2024-05-18 - Avoid micro-optimizations that sacrifice readability and safety
+**Learning:** Mutating an object returned by `doc.data()` from Firebase SDK to avoid spread syntax (e.g., `const data = doc.data(); data.id = doc.id;`) is a micro-optimization that provides zero measurable performance impact, degrades code readability, and relies on unsafe undocumented behavior.
+**Action:** Do not implement this mutation-based optimization. Focus on larger performance wins like batching requests, caching, indexing, or reducing re-renders. Avoid modifying `firestore.js` or data mapping functions unless fixing an N+1 query problem.
 ## 2026-05-04 - Eliminate state dependencies from effect callbacks via functional updates
 **Learning:** Using an object from state (like `currentFamily`) inside a real-time subscription callback (e.g., Firestore) forces it into the `useEffect` dependency array. This triggers an unnecessary teardown and re-creation of the database subscription every time that state changes.
 **Action:** Use a functional state update (`setCurrentFamily((prev) => ...prev...)`) inside the callback. This eliminates the need to read the current state directly from the outer closure, allowing you to remove the state variable from the `useEffect` dependency array entirely, preventing costly re-subscriptions.
