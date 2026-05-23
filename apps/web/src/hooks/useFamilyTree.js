@@ -204,6 +204,9 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+    // ⚡ Bolt Optimization: Depend on primitive currentFamily?.id instead of object
+    // currentFamily to prevent redundant resubscriptions when object reference changes
+  }, [currentFamily?.id]);
     // ⚡ Bolt Optimization: Using currentFamilyId (primitive) as a dependency
     // instead of the currentFamily object prevents redundant teardown and recreation
     // of the Firestore subscription when the object reference changes.
