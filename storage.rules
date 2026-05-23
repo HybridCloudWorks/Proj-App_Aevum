@@ -30,12 +30,20 @@ service firebase.storage {
     }
     
     function isFamilyMember(familyId) {
+      let family = firestore.get(/databases/(default)/documents/families/$(familyId));
       return isAuthenticated() &&
-             firestore.get(/databases/(default)/documents/families/$(familyId)) != null &&
+             family != null &&
              (
-               request.auth.uid == firestore.get(/databases/(default)/documents/families/$(familyId)).data.ownerId ||
-               request.auth.uid in firestore.get(/databases/(default)/documents/families/$(familyId)).data.members
+               request.auth.uid == family.data.ownerId ||
+               request.auth.uid in family.data.members
              );
+    }
+
+    function isMemoryMember(memoryId) {
+      let memory = firestore.get(/databases/(default)/documents/memories/$(memoryId));
+      return isAuthenticated() &&
+             memory != null &&
+             isFamilyMember(memory.data.familyId);
     }
 
     // Validate image file types (with extension check to prevent spoofing)
@@ -85,6 +93,9 @@ service firebase.storage {
     match /users/{userId}/profile/{fileName} {
       // Authenticated users can read profile images
       allow read: if isAuthenticated();
+      // Restricted read: Only the owner or an admin can access profile images.
+      // Note: Full family-based access requires familyId to be present on the user document.
+      allow read: if isOwner(userId) || isAdmin();
       
       // Only owner can upload/update their profile image
       allow write: if isOwner(userId) &&
@@ -120,9 +131,7 @@ service firebase.storage {
     // ==========================================
     match /memories/{memoryId}/{fileName} {
       // Secure read: restricted to family members by fetching the memory document
-      allow read: if isAuthenticated() &&
-                  firestore.get(/databases/(default)/documents/memories/$(memoryId)) != null &&
-                  isFamilyMember(firestore.get(/databases/(default)/documents/memories/$(memoryId)).data.familyId);
+      allow read: if isMemoryMember(memoryId);
       
       // Upload with validation
       allow create: if isAuthenticated() &&
@@ -133,8 +142,10 @@ service firebase.storage {
       // No direct updates
       allow update: if false;
       
-      // Delete by authenticated users (ownership validated elsewhere)
-      allow delete: if isAuthenticated();
+      // Delete by authenticated users in the family
+      allow delete: if isAuthenticated() &&
+                  firestore.get(/databases/(default)/documents/memories/$(memoryId)) != null &&
+                  isFamilyMember(firestore.get(/databases/(default)/documents/memories/$(memoryId)).data.familyId);
     }
 
     // ==========================================
