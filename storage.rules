@@ -133,8 +133,10 @@ service firebase.storage {
       // No direct updates
       allow update: if false;
       
-      // Delete by authenticated users (ownership validated elsewhere)
-      allow delete: if isAuthenticated();
+      // Delete by authenticated users in the family
+      allow delete: if isAuthenticated() &&
+                  firestore.get(/databases/(default)/documents/memories/$(memoryId)) != null &&
+                  isFamilyMember(firestore.get(/databases/(default)/documents/memories/$(memoryId)).data.familyId);
     }
 
     // ==========================================

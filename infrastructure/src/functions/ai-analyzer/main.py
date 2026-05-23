@@ -126,18 +126,18 @@ def analyze_media_logic(doc_id, fields):
         labels = [label.description for label in response.label_annotations]
         full_text = response.full_text_annotation.text if response.full_text_annotation else ""
         
-        detected_faces = []
-        for face in response.face_annotations:
-            # Extract normalized bounding box coordinates
-            vertices = face.bounding_poly.vertices
-            detected_faces.append({
+        # Extract detected faces using list comprehension for better performance
+        detected_faces = [
+            {
                 'confidence': face.detection_confidence,
                 'boundingBox': [
-                    {'x': vertex.x, 'y': vertex.y} for vertex in vertices
+                    {'x': vertex.x, 'y': vertex.y} for vertex in face.bounding_poly.vertices
                 ],
                 'joyLikelihood': face.joy_likelihood.name,
                 'headwearLikelihood': face.headwear_likelihood.name
-            })
+            }
+            for face in response.face_annotations
+        ]
 
         face_count = len(detected_faces)
         
