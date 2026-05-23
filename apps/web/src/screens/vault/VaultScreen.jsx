@@ -133,10 +133,13 @@ function VaultScreen() {
           <div className="grid grid-cols-1 gap-3">
             <div className="glass-panel rounded-2xl p-0 overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10 pointer-events-none"></div>
+              {/* ⚡ Bolt Optimization: Lazy load offscreen historical archives to conserve bandwidth and reduce initial render time */}
               <img
                 alt="Census Record"
                 className="w-full h-24 object-cover opacity-60 grayscale mix-blend-overlay"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyFb_aap00-1Bxx_9bvAK3wLkoRKF7u-vqIgigZSv3n2BaP4nAFMMPvRG5d7e-GikDsfEL8SPnNAXoslikw7Ke7OR9-zTSuNk6QA3uvW-lMO4Wb4WACNKq9uauUDbkR2OrH58MOAOdTKqU1lf0vHl_W-TIojjAIDlyZlW-_toxNya2mhals7ECMyDUY-CrG4wl_NNdBldrH_a5s-g8MY0do5bW0PZTl9n4vngdqI5WbbwqSfYEzrsk6CGagk04BfDQoEKp6RF7tWI"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 z-20 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">

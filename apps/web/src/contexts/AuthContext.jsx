@@ -5,7 +5,7 @@
  * Provides user state and auth methods to all components.
  */
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { onAuthChange } from "../lib/auth";
 
 const AuthContext = createContext(null);
@@ -29,11 +29,15 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  const value = {
-    user,
-    loading,
-    isAuthenticated: !!user,
-  };
+  // ⚡ Bolt Optimization: Memoize context value to prevent unnecessary re-renders of all consuming components when AuthProvider re-renders
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      isAuthenticated: !!user,
+    }),
+    [user, loading],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
