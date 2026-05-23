@@ -61,6 +61,9 @@ export function useFamilyTree() {
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
       if (data.length > 0) {
+        // ⚡ Bolt Optimization: Use functional state update to prevent
+        // redundant re-subscriptions by removing currentFamily from the dependency array
+        setCurrentFamily((prev) => prev ? prev : data[0]);
         setCurrentFamily((prev) => (prev ? prev : data[0]));
         // ⚡ Bolt Performance Optimization: Use functional state update to prevent redundant re-subscriptions
         setCurrentFamily((prev) => (prev ? prev : data[0]));
@@ -119,6 +122,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user]);
     // ⚡ Bolt Optimization: Changed dependencies from [user, currentFamily] to [user?.uid].
     // By using functional state updates (prev => prev ? prev : data[0]), we no longer
     // depend on the outer `currentFamily` state, preventing redundant teardowns and
