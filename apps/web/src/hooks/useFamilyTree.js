@@ -68,6 +68,12 @@ export function useFamilyTree() {
     }
 
     setLoading(true);
+    // Optimization: Depending on primitive user.uid and removing currentFamily dependency
+    // by using functional state update to prevent redundant re-subscriptions
+    const unsubscribe = subscribeToFamilies(user.uid, (data) => {
+      setFamilies(data);
+      if (data.length > 0) {
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
     const unsubscribe = subscribeToFamilies(uid, (data) => {
       setFamilies(data);
       if (data.length > 0) {
@@ -241,6 +247,8 @@ export function useFamilyTree() {
       return;
     }
 
+    // Optimization: Depending on primitive currentFamily.id instead of object reference
+    // to prevent redundant network teardowns on reference changes
     // Performance optimization: Rely on the primitive currentFamily.id rather than
     // the whole currentFamily object reference to avoid unnecessary teardowns.
     // ⚡ Bolt Performance Optimization:
@@ -259,6 +267,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [currentFamily?.id]);
     // ⚡ Bolt Optimization: Depend on the primitive currentFamilyId instead of currentFamily object reference
   }, [currentFamily?.id]);
     // ⚡ Bolt Optimization: Using currentFamily?.id (primitive) as a dependency
