@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { validateFile } from "./storage";
+import { validateFile, listFamilyPhotos } from "./storage";
+import { listAll, getDownloadURL } from "firebase/storage";
 
 // Mock the dependencies of storage.js to avoid initialization issues
 vi.mock("firebase/storage", () => ({
@@ -18,6 +19,27 @@ vi.mock("./imageMetadata", () => ({
   extractImageMetadata: vi.fn(),
   createThumbnail: vi.fn(),
 }));
+
+describe("listFamilyPhotos", () => {
+  it("should return photo metadata and NOT call getDownloadURL", async () => {
+    const mockItems = [
+      { name: "photo1.jpg", fullPath: "families/123/memories/photo1.jpg" },
+      { name: "photo2.jpg", fullPath: "families/123/memories/photo2.jpg" },
+    ];
+    listAll.mockResolvedValueOnce({ items: mockItems });
+
+    const result = await listFamilyPhotos("123");
+
+    expect(result.success).toBe(true);
+    expect(result.photos).toHaveLength(2);
+    expect(result.photos[0]).toEqual({
+      name: "photo1.jpg",
+      path: "families/123/memories/photo1.jpg",
+    });
+    expect(result.photos[0].url).toBeUndefined();
+    expect(getDownloadURL).not.toHaveBeenCalled();
+  });
+});
 
 describe("validateFile", () => {
   it("should return valid: true for a valid file", () => {
