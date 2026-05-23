@@ -34,6 +34,8 @@ export function useFamilyTree() {
   const userId = user?.uid;
 
   // Subscribe to user's families
+  // ⚡ Bolt Optimization: Removed `currentFamily` from dependency array and used functional state update
+  // to prevent unnecessary Firestore re-subscriptions when currentFamily is initially set.
   // ⚡ Bolt Optimization: Use primitive user.uid instead of user object,
   // and remove currentFamily from dependencies by using a functional state update.
   // This prevents redundant Firestore teardowns and re-subscriptions.
@@ -144,6 +146,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user, user?.uid]);
   }, [user]);
 
   // Subscribe to current family's members
