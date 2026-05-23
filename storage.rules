@@ -83,8 +83,8 @@ service firebase.storage {
     // User Profile Images
     // ==========================================
     match /users/{userId}/profile/{fileName} {
-      // Anyone can read profile images
-      allow read: if true;
+      // Authenticated users can read profile images
+      allow read: if isAuthenticated();
       
       // Only owner can upload/update their profile image
       allow write: if isOwner(userId) &&
@@ -160,8 +160,8 @@ service firebase.storage {
     // Public Assets (app icons, etc.)
     // ==========================================
     match /public/{allPaths=**} {
-      // Anyone can read public assets
-      allow read: if true;
+      // Authenticated users can read public assets
+      allow read: if isAuthenticated();
       
       // Only admins can write public assets
       allow write: if isAdmin();
