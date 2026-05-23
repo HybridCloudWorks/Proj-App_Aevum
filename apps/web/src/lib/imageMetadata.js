@@ -241,6 +241,14 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
+    if (count <= 1) return "";
+
+    const bytes = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      count - 1,
+    );
+    return new TextDecoder("utf-8").decode(bytes).trim();
     // Optimization: Use global TextDecoder on a Uint8Array view instead of manual string concatenation
     // This avoids JS string instantiation overhead per character and is significantly faster for EXIF parsing
     const length = Math.max(0, count - 1);
