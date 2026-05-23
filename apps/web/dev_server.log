@@ -1,0 +1,12 @@
+
+> aevum@1.0.0 dev
+> vite
+
+sh: 1: vite: not found
+npm error Lifecycle script `dev` failed with error:
+npm error code 127
+npm error path /app/apps/web
+npm error workspace aevum@1.0.0
+npm error location /app/apps/web
+npm error command failed
+npm error command sh -c vite
