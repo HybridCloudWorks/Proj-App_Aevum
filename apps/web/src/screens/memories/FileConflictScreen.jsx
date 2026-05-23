@@ -49,13 +49,11 @@ function FileConflictScreen() {
   const handleResolve = () => {
     if (selectedVersion === "version_b") {
       // Keep New Upload
-      console.log("Keeping new version. Archiving existing file.");
       alert(
         `Conflict Resolved! New version kept. The existing file has been moved to the 'Replaced' archive.`,
       );
     } else {
       // Keep Existing
-      console.log("Keeping existing version. Discarding upload.");
       alert(
         `Conflict Resolved! Existing version kept. The uploaded file has been discarded.`,
       );

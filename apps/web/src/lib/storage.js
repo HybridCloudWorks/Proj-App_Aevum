@@ -15,6 +15,11 @@ import {
 import { storage } from "./firebase";
 import { extractImageMetadata, createThumbnail } from "./imageMetadata";
 
+// In-memory cache for download URLs to avoid redundant N+1 getDownloadURL calls.
+// Using a Map for O(1) lookups.
+const downloadUrlCache = new Map();
+const MAX_CACHE_SIZE = 500;
+
 /**
  * Upload a photo to Firebase Storage with progress tracking and metadata extraction
  * @param {File} file - The file to upload
@@ -174,13 +179,40 @@ export async function uploadMultiplePhotos(
   // Track individual progress for each file
   const fileArray = Array.from(files);
   const progressArray = new Array(fileArray.length).fill(0);
+  let totalProgressSum = 0;
+
+  // Optimization: Use an incremental running sum instead of calling .reduce() on every progress event.
+  // This changes the overall progress calculation from O(N) to O(1) per event.
+  let runningTotalProgress = 0;
 
   const uploadPromises = fileArray.map(async (file, index) => {
     const result = await uploadPhoto(file, familyId, userId, (progress) => {
+      const oldProgress = progressArray[index];
+      runningTotalProgress = runningTotalProgress - oldProgress + progress;
       progressArray[index] = progress;
+
       // Calculate overall progress as the average of all individual progresses
-      const totalProgress = progressArray.reduce((acc, curr) => acc + curr, 0);
-      const overallProgress = totalProgress / files.length;
+      const overallProgress = runningTotalProgress / fileArray.length;
+      // Optimization: Update total progress incrementally instead of using .reduce()
+      // which is O(N) on every progress event. This makes the update O(1).
+
+  // Optimization: Track total sum incrementally (O(1)) instead of using .reduce() (O(N)) on every progress event
+  let totalProgressSum = 0;
+
+  const uploadPromises = fileArray.map(async (file, index) => {
+    const result = await uploadPhoto(file, familyId, userId, (progress) => {
+      // Optimization: Update totalProgressSum incrementally instead of using .reduce()
+      // This reduces complexity from O(N) to O(1) per progress event
+      totalProgressSum -= progressArray[index];
+      progressArray[index] = progress;
+      totalProgressSum += progressArray[index];
+
+      const overallProgress = totalProgressSum / fileArray.length;
+      // O(1) incremental update of the total sum
+      totalProgressSum = totalProgressSum - progressArray[index] + progress;
+      progressArray[index] = progress;
+
+      const overallProgress = totalProgressSum / files.length;
       onProgress(overallProgress);
     });
 
@@ -276,10 +308,35 @@ export async function listFamilyPhotos(familyId) {
     const listRef = ref(storage, `families/${familyId}/memories`);
     const result = await listAll(listRef);
 
+    // ⚡ Bolt Optimization: Return metadata only and skip pre-fetching download URLs.
+    // This avoids N+1 network requests (getDownloadURL). Callers should fetch
+    // URLs lazily using getPhotoURL(path) when needed for display.
+    const photos = result.items.map((itemRef) => ({
+      name: itemRef.name,
+      path: itemRef.fullPath,
+    }));
     const photos = await Promise.all(
       result.items.map(async (itemRef) => {
         // Optimization: Use cached getDownloadURL to avoid N+1 API calls
         const url = await getCachedDownloadURL(itemRef);
+        const cacheKey = itemRef.fullPath;
+
+        // Optimization: Cache the Promise instead of the resolved value to
+        // deduplicate concurrent requests for the same URL.
+        let urlPromise = downloadUrlCache.get(cacheKey);
+
+        if (!urlPromise) {
+          // Simple cache eviction: clear if it grows too large
+          if (downloadUrlCache.size >= MAX_CACHE_SIZE) {
+            downloadUrlCache.clear();
+          }
+
+          urlPromise = getDownloadURL(itemRef);
+          downloadUrlCache.set(cacheKey, urlPromise);
+        }
+
+        const url = await urlPromise;
+
         return {
           name: itemRef.name,
           path: itemRef.fullPath,
