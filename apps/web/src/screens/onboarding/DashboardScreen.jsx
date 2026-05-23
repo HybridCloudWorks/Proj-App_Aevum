@@ -18,6 +18,7 @@ import {
 } from "@lib/firestore";
 import { signOut } from "@lib/auth";
 
+// ⚡ Bolt Optimization: Extract fallback memories outside component to prevent recreation on every render
 // ⚡ Bolt Optimization: Moved static array outside component to prevent
 // reallocation on every render, avoiding unnecessary React reconciliation overhead.
 // ⚡ Bolt Optimization: Define fallback memories outside the component

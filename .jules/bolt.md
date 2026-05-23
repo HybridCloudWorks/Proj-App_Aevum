@@ -4,6 +4,10 @@
 ## 2024-03-20 - Prevent redundant Firestore re-subscriptions
 **Learning:** React components subscribing to real-time data sources (like Firestore or WebSockets) often unnecessarily tear down and recreate their subscriptions when arrays or objects are used directly as `useEffect` dependencies.
 **Action:** When a subscription requires an ID from an array (e.g., `families[0].id`), extract the specific primitive ID into a variable and use *that primitive* as the `useEffect` dependency, rather than the entire array reference.
+
+## 2024-03-21 - Optimize inline arrays in functional components
+**Learning:** A common performance anti-pattern in the `apps/web` React codebase is the inline instantiation of static arrays, fallback data, and unmemoized lists within functional components, which should be moved outside the component or wrapped in `useMemo`.
+**Action:** Extract inline arrays into constants outside the component or use `useMemo` when rendering mapped components to prevent recreating identical array instances on every render.
 ## 2026-03-12 - React Context Memoization Limits
 **Learning:** Wrapping a React Context Provider's value in `useMemo` and stabilizing its functions with `useCallback` prevents child re-renders *only* when the parent component re-renders. It does **not** prevent re-renders when the state variables *inside* the context change frequently (like an internal `setInterval`), as those variables must be listed in the `useMemo` dependencies.
 **Action:** Before optimizing a context with `useMemo`, verify the source of the re-renders. If the context itself is the source of frequent state changes (e.g. metrics, polling), split the context into static/dynamic parts or consider a selector-based state management library (like Zustand) rather than relying on standard Context `useMemo`.
