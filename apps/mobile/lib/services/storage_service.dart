@@ -6,10 +6,23 @@ import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
 class StorageService {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Uuid _uuid = const Uuid();
+  final FirebaseStorage _storage;
+  final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
+  final Uuid _uuid;
+
+  /// Creates a new [StorageService] instance.
+  ///
+  /// Optional parameters allow injecting mocks for testing.
+  StorageService({
+    FirebaseStorage? storage,
+    FirebaseFirestore? firestore,
+    FirebaseAuth? auth,
+    Uuid? uuid,
+  })  : _storage = storage ?? FirebaseStorage.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance,
+        _auth = auth ?? FirebaseAuth.instance,
+        _uuid = uuid ?? Uuid();
 
   /// Uploads a file to Firebase Storage and creates a corresponding Firestore document.
   /// Returns the document ID (UUID) of the uploaded media.
