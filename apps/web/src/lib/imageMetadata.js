@@ -367,10 +367,28 @@ export async function createThumbnail(file, maxSize = 200, dimensions = null) {
  */
 export function formatFileSize(bytes) {
   if (bytes === 0) return "0 B";
+
+  const isNegative = bytes < 0;
+  const absBytes = Math.abs(bytes);
+
   const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  let i = Math.floor(Math.log(absBytes) / Math.log(k));
+
+  // Ensure index is within bounds of sizes array
+  i = Math.min(i, sizes.length - 1);
+
+  let value = absBytes / Math.pow(k, i);
+
+  // If rounding up to 1024, move to next unit
+  if (parseFloat(value.toFixed(1)) >= k && i < sizes.length - 1) {
+    i++;
+    value = value / k;
+  }
+
+  const formattedValue = parseFloat(value.toFixed(1));
+  return (isNegative ? "-" : "") + formattedValue + " " + sizes[i];
 }
 
 /**
