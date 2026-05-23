@@ -159,6 +159,8 @@ export function useMemories(familyId) {
           (progress) => setUploadProgress(progress),
         );
 
+        // Create memory records for successful uploads using optimized batching
+        const memoryData = uploadResult.results.map((result) => ({
         // Create memory records for successful uploads using batch operation
         const mediaItemsData = uploadResult.results.map((result) => ({
           title: result.file,
@@ -171,6 +173,7 @@ export function useMemories(familyId) {
           memberIds: metadata.memberIds || [],
         }));
 
+        await batchCreateMemories(familyId, memoryData);
         const memoryResult = await batchCreateMemories(familyId, mediaItemsData);
 
         setUploading(false);

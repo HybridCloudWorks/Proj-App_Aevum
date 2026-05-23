@@ -197,9 +197,53 @@ export async function createMediaItem(familyId, mediaData) {
     };
 
     await setDoc(mediaRef, mediaItem);
-    return { success: true, mediaId: mediaRef.id };
+    return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
   } catch (error) {
     console.error("Error creating media item:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Create multiple media items in a batch
+ */
+export async function batchCreateMediaItems(familyId, mediaDataArray) {
+  try {
+    if (!mediaDataArray || mediaDataArray.length === 0) {
+      return { success: true, ids: [] };
+    }
+
+    const results = [];
+    const chunks = [];
+    const CHUNK_SIZE = 500; // Firestore writeBatch limit
+
+    for (let i = 0; i < mediaDataArray.length; i += CHUNK_SIZE) {
+      chunks.push(mediaDataArray.slice(i, i + CHUNK_SIZE));
+    }
+
+    for (const chunk of chunks) {
+      const batch = writeBatch(db);
+      const chunkIds = [];
+
+      chunk.forEach((item) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...item,
+          familyId,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        chunkIds.push(mediaRef.id);
+      });
+
+      await batch.commit();
+      results.push(...chunkIds);
+    }
+
+    return { success: true, ids: results };
+  } catch (error) {
+    console.error("Error batch creating media items:", error);
     return { success: false, error: error.message };
   }
 }
@@ -491,6 +535,15 @@ export async function createAITask(userId, taskData) {
   }
 }
 
+// ==========================================
+// Aliases for Consistency
+// ==========================================
+
+export const createMemory = createMediaItem;
+export const updateMemory = updateMediaItem;
+export const deleteMemory = deleteMediaItem;
+export const batchCreateMemories = batchCreateMediaItems;
+
 export default {
   getUserProfile,
   updateUserProfile,
@@ -500,6 +553,8 @@ export default {
   subscribeToFamilies,
   createMediaItem,
   createMemory,
+  batchCreateMediaItems,
+  batchCreateMemories,
   getFamilyMediaItems,
   subscribeToMediaItems,
   updateMediaItem,
