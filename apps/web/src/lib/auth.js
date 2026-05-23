@@ -195,7 +195,7 @@ function getAuthErrorMessage(code) {
     "auth/email-already-in-use": "Invalid credentials.",
     "auth/invalid-email": "Please enter a valid email address.",
     "auth/operation-not-allowed": "This sign-in method is not enabled.",
-    "auth/weak-password": "Password must be at least 6 characters.",
+    "auth/weak-password": "Password must be at least 8 characters.",
     "auth/user-disabled": "This account has been disabled.",
     "auth/user-not-found": "Invalid credentials.",
     "auth/wrong-password": "Invalid credentials.",
