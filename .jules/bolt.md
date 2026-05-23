@@ -4,6 +4,9 @@
 ## 2024-03-20 - Prevent redundant Firestore re-subscriptions
 **Learning:** React components subscribing to real-time data sources (like Firestore or WebSockets) often unnecessarily tear down and recreate their subscriptions when arrays or objects are used directly as `useEffect` dependencies.
 **Action:** When a subscription requires an ID from an array (e.g., `families[0].id`), extract the specific primitive ID into a variable and use *that primitive* as the `useEffect` dependency, rather than the entire array reference.
+## 2026-03-12 - React Context Memoization Limits
+**Learning:** Wrapping a React Context Provider's value in `useMemo` and stabilizing its functions with `useCallback` prevents child re-renders *only* when the parent component re-renders. It does **not** prevent re-renders when the state variables *inside* the context change frequently (like an internal `setInterval`), as those variables must be listed in the `useMemo` dependencies.
+**Action:** Before optimizing a context with `useMemo`, verify the source of the re-renders. If the context itself is the source of frequent state changes (e.g. metrics, polling), split the context into static/dynamic parts or consider a selector-based state management library (like Zustand) rather than relying on standard Context `useMemo`.
 
 ## 2024-05-18 - Avoid micro-optimizations that sacrifice readability and safety
 **Learning:** Mutating an object returned by `doc.data()` from Firebase SDK to avoid spread syntax (e.g., `const data = doc.data(); data.id = doc.id;`) is a micro-optimization that provides zero measurable performance impact, degrades code readability, and relies on unsafe undocumented behavior.
