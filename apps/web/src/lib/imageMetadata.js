@@ -227,6 +227,8 @@ const textDecoder = new TextDecoder("utf-8");
 /**
  * Read string value from EXIF entry
  */
+const textDecoder = new TextDecoder("ascii");
+
 const textDecoder = new TextDecoder("utf-8");
 function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
   try {
@@ -243,6 +245,14 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
+    // Performance optimization: Avoid String.fromCharCode loop for binary-to-string conversion.
+    // Use TextDecoder on a Uint8Array view of the buffer, correctly accounting for dataView.byteOffset.
+    const uint8Array = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      count - 1
+    );
+    return textDecoder.decode(uint8Array).trim();
     // Optimization: Use global TextDecoder on a Uint8Array view
     // instead of manual String.fromCharCode concatenation loop.
     // This significantly reduces object allocation overhead and is ~10x faster
