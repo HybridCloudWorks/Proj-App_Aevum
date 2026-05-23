@@ -198,11 +198,13 @@ export async function createMediaItem(familyId, mediaData) {
     const mediaItem = {
       ...mediaData,
       familyId,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: mediaData.date || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      _serverUpdatedAt: serverTimestamp(),
     };
 
     await setDoc(mediaRef, mediaItem);
+    return { success: true, mediaId: mediaRef.id, id: mediaRef.id };
     return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
   } catch (error) {
     console.error("Error creating media item:", error);
@@ -211,6 +213,35 @@ export async function createMediaItem(familyId, mediaData) {
 }
 
 /**
+ * Create multiple media items in a single batch
+ */
+export async function batchCreateMediaItems(familyId, itemsData) {
+  try {
+    // Firestore batch limit is 500 operations
+    const CHUNK_SIZE = 500;
+    const results = [];
+
+    for (let i = 0; i < itemsData.length; i += CHUNK_SIZE) {
+      const chunk = itemsData.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+
+      chunk.forEach((data) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...data,
+          familyId,
+          createdAt: data.date || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          _serverUpdatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        results.push({ id: mediaRef.id, ...data });
+      });
+
+      await batch.commit();
+    }
+
+    return { success: true, results };
  * Create multiple media items in a batch
  */
 export async function batchCreateMediaItems(familyId, mediaDataArray) {
@@ -545,6 +576,7 @@ export async function createAITask(userId, taskData) {
   }
 }
 
+// Aliases for useMemories hook consistency
 // ==========================================
 // Aliases for Consistency
 // ==========================================

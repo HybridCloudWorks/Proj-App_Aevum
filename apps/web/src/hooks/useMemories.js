@@ -159,6 +159,38 @@ export function useMemories(familyId) {
           (progress) => setUploadProgress(progress),
         );
 
+        // Create memory records for successful uploads in a batch
+        if (uploadResult.results.length > 0) {
+          const memoriesData = uploadResult.results.map((result) => ({
+            title: result.file,
+            description: metadata.description || "",
+            photoUrl: result.url,
+            thumbnailUrl: result.thumbnailUrl || result.url,
+            storagePath: result.path,
+            uploadedBy: user.uid,
+            date:
+              metadata.date ||
+              result.metadata?.exif?.dateTaken ||
+              new Date().toISOString(),
+            tags: metadata.tags || [],
+            memberIds: metadata.memberIds || [],
+            imageMetadata: result.metadata
+              ? {
+                  width: result.metadata.width,
+                  height: result.metadata.height,
+                  aspectRatio: result.metadata.aspectRatio,
+                  fileSize: result.metadata.fileSize,
+                  exif: result.metadata.exif || {},
+                  gps: result.metadata.gps || {},
+                }
+              : null,
+          }));
+
+          const batchResult = await batchCreateMemories(familyId, memoriesData);
+          if (!batchResult.success) {
+            setError(batchResult.error);
+          }
+        }
         // Create memory records for successful uploads using optimized batching
         const memoryData = uploadResult.results.map((result) => ({
         // Create memory records for successful uploads using batch operation
