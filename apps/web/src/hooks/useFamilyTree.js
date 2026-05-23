@@ -72,6 +72,9 @@ export function useFamilyTree() {
         setCurrentFamily((prev) => prev ? prev : data[0]);
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
+      // Performance optimization: Use functional state update to prevent redundant
+      // re-subscriptions to Firestore when currentFamily state changes.
+      setCurrentFamily(prev => (data.length > 0 && !prev ? data[0] : prev));
       if (data.length > 0) {
         setCurrentFamily((prev) => (prev ? prev : data[0]));
         // ⚡ Bolt Optimization: Use functional state update to prevent needing currentFamily
@@ -184,6 +187,7 @@ export function useFamilyTree() {
   // ⚡ Bolt Optimization: Depend on primitive currentFamily?.id instead of full object reference
   const currentFamilyId = currentFamily?.id;
   useEffect(() => {
+    if (!currentFamily?.id) {
   }, [user?.uid]); // Bolt Performance Optimization: Depend on specific primitive value (user?.uid) rather than full object reference to prevent unnecessary unmounts/re-subscriptions.
   }, [user]);
 
@@ -226,6 +230,8 @@ export function useFamilyTree() {
       return;
     }
 
+    // Performance optimization: Rely on the primitive currentFamily.id rather than
+    // the whole currentFamily object reference to avoid unnecessary teardowns.
     // ⚡ Bolt Performance Optimization:
     // Depend on specific primitive value (currentFamily?.id) rather than full object reference.
     // This prevents unnecessary unmounts and re-subscriptions when the object reference changes.
