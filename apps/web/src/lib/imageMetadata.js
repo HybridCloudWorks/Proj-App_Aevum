@@ -234,12 +234,14 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
-    let str = "";
-    for (let i = 0; i < count - 1; i++) {
-      str += String.fromCharCode(dataView.getUint8(stringOffset + i));
-    }
+    if (count <= 1) return "";
 
-    return str.trim();
+    const bytes = new Uint8Array(
+      dataView.buffer,
+      dataView.byteOffset + stringOffset,
+      count - 1,
+    );
+    return new TextDecoder("utf-8").decode(bytes).trim();
   } catch {
     return null;
   }
