@@ -27,6 +27,10 @@ export function useFamilyTree() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Optimization: Extract primitives to prevent redundant listener teardowns
+  // when object references change but IDs remain the same
+  const userId = user?.uid;
+  const currentFamilyId = currentFamily?.id;
   const userId = user?.uid;
 
   // Subscribe to user's families
@@ -51,6 +55,8 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
+      if (data.length > 0) {
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
       // ⚡ Bolt Optimization: Use functional state update to remove currentFamily from dependency array
       setCurrentFamily((prev) => {
         if (data.length > 0 && !prev) {
