@@ -262,11 +262,40 @@ export async function deletePhoto(path) {
   try {
     const storageRef = ref(storage, path);
     await deleteObject(storageRef);
+    // Evict from cache if deleted
+    if (downloadUrlCache.has(path)) {
+      downloadUrlCache.delete(path);
+    }
     return { success: true };
   } catch (error) {
     console.error("Delete photo error:", error);
     return { success: false, error: getStorageErrorMessage(error.code) };
   }
+}
+
+// Optimization: In-memory cache for download URLs to deduplicate concurrent requests
+// and eliminate N+1 API call pattern. Uses a fixed size limit with FIFO eviction.
+const downloadUrlCache = new Map();
+const MAX_CACHE_SIZE = 500;
+
+async function getCachedDownloadURL(itemRef) {
+  const path = itemRef.fullPath;
+  if (downloadUrlCache.has(path)) {
+    return downloadUrlCache.get(path);
+  }
+
+  const urlPromise = getDownloadURL(itemRef).catch((error) => {
+    downloadUrlCache.delete(path);
+    throw error;
+  });
+
+  if (downloadUrlCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = downloadUrlCache.keys().next().value;
+    downloadUrlCache.delete(firstKey);
+  }
+
+  downloadUrlCache.set(path, urlPromise);
+  return urlPromise;
 }
 
 /**
@@ -288,6 +317,8 @@ export async function listFamilyPhotos(familyId) {
     }));
     const photos = await Promise.all(
       result.items.map(async (itemRef) => {
+        // Optimization: Use cached getDownloadURL to avoid N+1 API calls
+        const url = await getCachedDownloadURL(itemRef);
         const cacheKey = itemRef.fullPath;
 
         // Optimization: Cache the Promise instead of the resolved value to
