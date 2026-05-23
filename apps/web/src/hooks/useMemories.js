@@ -191,14 +191,35 @@ export function useMemories(familyId) {
             setError(batchResult.error);
           }
         }
+        // Create memory records for successful uploads using optimized batching
+        const memoryData = uploadResult.results.map((result) => ({
+        // Create memory records for successful uploads using batch operation
+        const mediaItemsData = uploadResult.results.map((result) => ({
+          title: result.file,
+          description: metadata.description || "",
+          photoUrl: result.url,
+          storagePath: result.path,
+          uploadedBy: user.uid,
+          date: metadata.date || new Date().toISOString(),
+          tags: metadata.tags || [],
+          memberIds: metadata.memberIds || [],
+        }));
+
+        await batchCreateMemories(familyId, memoryData);
+        const memoryResult = await batchCreateMemories(familyId, mediaItemsData);
 
         setUploading(false);
         setUploadProgress(0);
 
+        if (!memoryResult.success) {
+          setError(memoryResult.error);
+        }
+
         return {
-          success: uploadResult.failed.length === 0,
+          success: uploadResult.failed.length === 0 && memoryResult.success,
           uploaded: uploadResult.results.length,
           failed: uploadResult.failed,
+          error: memoryResult.error,
         };
       } catch (err) {
         setError(err.message);
