@@ -245,6 +245,9 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
         tiffOffset + dataView.getUint32(entryOffset + 8, littleEndian);
     }
 
+    // Performance optimization: Use TextDecoder instead of manual string concatenation
+    // This avoids O(n) allocations in a loop and is significantly faster for long strings
+    const bytes = new Uint8Array(
     // Performance optimization: Avoid String.fromCharCode loop for binary-to-string conversion.
     // Use TextDecoder on a Uint8Array view of the buffer, correctly accounting for dataView.byteOffset.
     const uint8Array = new Uint8Array(
@@ -262,6 +265,7 @@ function readExifString(dataView, entryOffset, tiffOffset, littleEndian) {
       dataView.byteOffset + stringOffset,
       count - 1,
     );
+    const str = new TextDecoder("utf-8").decode(bytes);
     const str = textDecoder.decode(uint8Array);
     // ⚡ Bolt: Performance optimization
     // Avoid O(n) string concatenations by using native TextDecoder for binary-to-string conversion.
