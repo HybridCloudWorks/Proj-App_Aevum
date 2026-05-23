@@ -48,6 +48,9 @@ export function useFamilyTree() {
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
       if (data.length > 0) {
+        // Optimization: Use functional state update to remove currentFamily from dependency array
+        // This prevents tearing down and recreating the Firestore subscription when the initial family is selected
+        setCurrentFamily((prev) => prev || data[0]);
         // ⚡ Bolt Optimization: Use functional state update to remove currentFamily
         // from the useEffect dependency array, preventing O(N) unmounts/re-subscriptions.
         setCurrentFamily((prev) => prev || data[0]);
@@ -69,6 +72,10 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user]);
+
+  // Extract primitive ID for dependency array
+  const currentFamilyId = currentFamily?.id;
   }, [userId]);
 
   // Subscribe to current family's members
@@ -98,6 +105,8 @@ export function useFamilyTree() {
       return;
     }
 
+    // Optimization: Depend on the primitive currentFamilyId instead of the currentFamily object
+    // This prevents redundant unmounts and re-subscriptions when the object reference changes but ID remains the same
     const unsubscribe = subscribeToFamilyMembers(familyId, (data) => {
     // OPTIMIZATION: Depend on primitive currentFamilyId rather than object reference
     // to prevent unnecessary re-subscriptions on object identity changes.
