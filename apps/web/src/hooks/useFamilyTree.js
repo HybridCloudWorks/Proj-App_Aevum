@@ -73,6 +73,8 @@ export function useFamilyTree() {
     const unsubscribe = subscribeToFamilies(user.uid, (data) => {
       setFamilies(data);
       if (data.length > 0) {
+        // ⚡ Bolt Optimization: Use functional state update to remove currentFamily dependency
+        setCurrentFamily((prev) => (prev ? prev : data[0]));
         setCurrentFamily((prev) => (prev ? prev : data[0]));
     const unsubscribe = subscribeToFamilies(uid, (data) => {
       setFamilies(data);
