@@ -264,6 +264,13 @@ export async function listFamilyPhotos(familyId) {
     const listRef = ref(storage, `families/${familyId}/memories`);
     const result = await listAll(listRef);
 
+    // ⚡ Bolt Optimization: Return metadata only and skip pre-fetching download URLs.
+    // This avoids N+1 network requests (getDownloadURL). Callers should fetch
+    // URLs lazily using getPhotoURL(path) when needed for display.
+    const photos = result.items.map((itemRef) => ({
+      name: itemRef.name,
+      path: itemRef.fullPath,
+    }));
     const photos = await Promise.all(
       result.items.map(async (itemRef) => {
         const cacheKey = itemRef.fullPath;
