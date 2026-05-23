@@ -181,6 +181,11 @@ export async function uploadMultiplePhotos(
   const progressArray = new Array(fileArray.length).fill(0);
   let totalProgressSum = 0;
 
+  const uploadPromises = fileArray.map(async (file, index) => {
+    const result = await uploadPhoto(file, familyId, userId, (progress) => {
+      // Optimization: Update total progress incrementally instead of using .reduce()
+      // which is O(N) on every progress event. This makes the update O(1).
+
   // Optimization: Track total sum incrementally (O(1)) instead of using .reduce() (O(N)) on every progress event
   let totalProgressSum = 0;
 
