@@ -180,12 +180,16 @@ export async function uploadMultiplePhotos(
   const fileArray = Array.from(files);
   const progressArray = new Array(fileArray.length).fill(0);
 
+  // Optimization: Track total sum incrementally (O(1)) instead of using .reduce() (O(N)) on every progress event
+  let totalProgressSum = 0;
+
   const uploadPromises = fileArray.map(async (file, index) => {
     const result = await uploadPhoto(file, familyId, userId, (progress) => {
+      // O(1) incremental update of the total sum
+      totalProgressSum = totalProgressSum - progressArray[index] + progress;
       progressArray[index] = progress;
-      // Calculate overall progress as the average of all individual progresses
-      const totalProgress = progressArray.reduce((acc, curr) => acc + curr, 0);
-      const overallProgress = totalProgress / files.length;
+
+      const overallProgress = totalProgressSum / files.length;
       onProgress(overallProgress);
     });
 
