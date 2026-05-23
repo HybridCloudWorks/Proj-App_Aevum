@@ -177,23 +177,31 @@ function CloudRedundancyScreen() {
               className="text-accent text-xs font-bold hover:text-white transition-colors flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-[14px]">
-                refresh
+                {recoveryKey ? "refresh" : "add"}
               </span>{" "}
-              Regenerate
+              {recoveryKey ? "Regenerate" : "Generate"}
             </button>
           </div>
           <div className="bg-black/30 border border-white/10 rounded-xl p-4 flex items-center justify-between group cursor-pointer active:bg-black/40 transition-colors">
-            <div className="flex gap-2 font-mono text-sm text-slate-300 tracking-wider">
-              {recoveryKey.split("-").map((part, index) => (
-                <div key={index} className="flex">
-                  <span>{part}</span>
-                  {index < 3 && <span className="text-slate-600 mx-1">-</span>}
-                </div>
-              ))}
+            <div
+              className={`flex gap-2 font-mono text-sm text-slate-300 tracking-wider ${!recoveryKey ? "opacity-30" : ""}`}
+            >
+              {(recoveryKey || "XXXX-XXXX-XXXX-XXXX")
+                .split("-")
+                .map((part, index) => (
+                  <div key={index} className="flex">
+                    <span>{part}</span>
+                    {index < 3 && (
+                      <span className="text-slate-600 mx-1">-</span>
+                    )}
+                  </div>
+                ))}
             </div>
             <span
-              className="material-symbols-outlined text-slate-500 group-hover:text-white transition-colors text-[20px]"
-              onClick={() => navigator.clipboard.writeText(recoveryKey)}
+              className={`material-symbols-outlined transition-colors text-[20px] ${recoveryKey ? "text-slate-500 group-hover:text-white" : "text-slate-700 cursor-not-allowed"}`}
+              onClick={() =>
+                recoveryKey && navigator.clipboard.writeText(recoveryKey)
+              }
             >
               content_copy
             </span>
