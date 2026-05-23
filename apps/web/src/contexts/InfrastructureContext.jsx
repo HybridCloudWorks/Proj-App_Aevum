@@ -22,7 +22,7 @@ export const InfrastructureProvider = ({ children }) => {
 
   // Redundancy Settings
   const [zeroKnowledge, setZeroKnowledge] = useState(true);
-  const [recoveryKey, setRecoveryKey] = useState("8X92-ZK4M-P92L-XXXX");
+  const [recoveryKey, setRecoveryKey] = useState(null);
   const [redundancyVerified] = useState(true);
 
   // Catalog Engine
@@ -49,10 +49,12 @@ export const InfrastructureProvider = ({ children }) => {
 
   const regenerateKey = useCallback(() => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const randomValues = new Uint32Array(16);
+    window.crypto.getRandomValues(randomValues);
     let newKey = "";
     for (let i = 0; i < 16; i++) {
       if (i > 0 && i % 4 === 0) newKey += "-";
-      newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+      newKey += chars[randomValues[i] % chars.length];
     }
     setRecoveryKey(newKey);
   }, []);

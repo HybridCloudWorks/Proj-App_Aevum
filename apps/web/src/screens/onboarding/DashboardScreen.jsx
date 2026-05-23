@@ -20,6 +20,7 @@ import { signOut } from "@lib/auth";
 
 // ⚡ Bolt Optimization: Define fallback memories outside the component
 // to prevent recreating the array reference on every render when there are no memories.
+// Optimization: Define fallback arrays outside component to prevent recreation on every render
 const FALLBACK_MEMORIES = [
   { year: "1985", title: "Summer Wedding" },
   { year: "1992", title: "First Grade" },
