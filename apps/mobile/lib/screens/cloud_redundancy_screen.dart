@@ -433,7 +433,7 @@ class CloudRedundancyScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "8X92 - ZK4M - P92L - XXXX",
+                  "",
                   style: GoogleFonts.jetBrainsMono(
                     color: Colors.white70,
                     fontSize: 14,

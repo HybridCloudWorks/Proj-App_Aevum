@@ -51,7 +51,9 @@ export async function getUserProfile(userId) {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-      return { success: true, data: { id: userSnap.id, ...userSnap.data() } };
+      const data = userSnap.data();
+      data.id = userSnap.id;
+      return { success: true, data };
     }
     return { success: false, error: "User not found" };
   } catch (error) {
@@ -84,7 +86,9 @@ export function subscribeToUserProfile(userId, callback) {
   const userRef = doc(db, COLLECTIONS.USERS, userId);
   return onSnapshot(userRef, (doc) => {
     if (doc.exists()) {
-      callback({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      data.id = doc.id;
+      callback(data);
     } else {
       callback(null);
     }
@@ -148,10 +152,11 @@ export async function getUserFamilies(userId) {
     );
 
     const snapshot = await getDocs(familiesQuery);
-    const families = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const families = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
 
     return { success: true, data: families };
   } catch (error) {
@@ -171,10 +176,11 @@ export function subscribeToFamilies(userId, callback) {
   );
 
   return onSnapshot(familiesQuery, (snapshot) => {
-    const families = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const families = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(families);
   });
 }
@@ -192,14 +198,89 @@ export async function createMediaItem(familyId, mediaData) {
     const mediaItem = {
       ...mediaData,
       familyId,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: mediaData.date || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      _serverUpdatedAt: serverTimestamp(),
     };
 
     await setDoc(mediaRef, mediaItem);
-    return { success: true, mediaId: mediaRef.id };
+    return { success: true, mediaId: mediaRef.id, id: mediaRef.id };
+    return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
   } catch (error) {
     console.error("Error creating media item:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Create multiple media items in a single batch
+ */
+export async function batchCreateMediaItems(familyId, itemsData) {
+  try {
+    // Firestore batch limit is 500 operations
+    const CHUNK_SIZE = 500;
+    const results = [];
+
+    for (let i = 0; i < itemsData.length; i += CHUNK_SIZE) {
+      const chunk = itemsData.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+
+      chunk.forEach((data) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...data,
+          familyId,
+          createdAt: data.date || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          _serverUpdatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        results.push({ id: mediaRef.id, ...data });
+      });
+
+      await batch.commit();
+    }
+
+    return { success: true, results };
+ * Create multiple media items in a batch
+ */
+export async function batchCreateMediaItems(familyId, mediaDataArray) {
+  try {
+    if (!mediaDataArray || mediaDataArray.length === 0) {
+      return { success: true, ids: [] };
+    }
+
+    const results = [];
+    const chunks = [];
+    const CHUNK_SIZE = 500; // Firestore writeBatch limit
+
+    for (let i = 0; i < mediaDataArray.length; i += CHUNK_SIZE) {
+      chunks.push(mediaDataArray.slice(i, i + CHUNK_SIZE));
+    }
+
+    for (const chunk of chunks) {
+      const batch = writeBatch(db);
+      const chunkIds = [];
+
+      chunk.forEach((item) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...item,
+          familyId,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        chunkIds.push(mediaRef.id);
+      });
+
+      await batch.commit();
+      results.push(...chunkIds);
+    }
+
+    return { success: true, ids: results };
+  } catch (error) {
+    console.error("Error batch creating media items:", error);
     return { success: false, error: error.message };
   }
 }
@@ -217,10 +298,11 @@ export async function getFamilyMediaItems(familyId, maxResults = 20) {
     );
 
     const snapshot = await getDocs(mediaQuery);
-    const mediaItems = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const mediaItems = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
 
     return { success: true, mediaItems };
   } catch (error) {
@@ -241,10 +323,11 @@ export function subscribeToMediaItems(familyId, callback, maxResults = 20) {
   );
 
   return onSnapshot(mediaQuery, (snapshot) => {
-    const mediaItems = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const mediaItems = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(mediaItems);
   });
 }
@@ -279,6 +362,48 @@ export async function deleteMediaItem(familyId, mediaId) {
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Bulk create media items using Firestore batches
+ */
+export async function batchCreateMediaItems(familyId, mediaItemsData) {
+  try {
+    const MAX_BATCH_SIZE = 500;
+    const results = [];
+
+    // Process in chunks of 500 (Firestore limit)
+    for (let i = 0; i < mediaItemsData.length; i += MAX_BATCH_SIZE) {
+      const batch = writeBatch(db);
+      const chunk = mediaItemsData.slice(i, i + MAX_BATCH_SIZE);
+
+      const chunkResults = chunk.map((data) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...data,
+          familyId,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        return { success: true, mediaId: mediaRef.id };
+      });
+
+      await batch.commit();
+      results.push(...chunkResults);
+    }
+
+    return { success: true, results };
+  } catch (error) {
+    console.error("Error batch creating media items:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Aliases for Consistency
+export const createMemory = createMediaItem;
+export const updateMemory = updateMediaItem;
+export const deleteMemory = deleteMediaItem;
+export const batchCreateMemories = batchCreateMediaItems;
 
 // ==========================================
 // Family Member Operations
@@ -346,10 +471,11 @@ export function subscribeToFamilyMembers(familyId, callback) {
   );
 
   return onSnapshot(membersQuery, (snapshot) => {
-    const members = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const members = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(members);
   });
 }
@@ -369,10 +495,11 @@ export function subscribeToAITasks(userId, callback) {
   );
 
   return onSnapshot(tasksQuery, (snapshot) => {
-    const tasks = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const tasks = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(tasks);
   });
 }
@@ -449,6 +576,16 @@ export async function createAITask(userId, taskData) {
   }
 }
 
+// Aliases for useMemories hook consistency
+// ==========================================
+// Aliases for Consistency
+// ==========================================
+
+export const createMemory = createMediaItem;
+export const updateMemory = updateMediaItem;
+export const deleteMemory = deleteMediaItem;
+export const batchCreateMemories = batchCreateMediaItems;
+
 export default {
   getUserProfile,
   updateUserProfile,
@@ -457,10 +594,17 @@ export default {
   getUserFamilies,
   subscribeToFamilies,
   createMediaItem,
+  createMemory,
+  batchCreateMediaItems,
+  batchCreateMemories,
   getFamilyMediaItems,
   subscribeToMediaItems,
   updateMediaItem,
+  updateMemory,
   deleteMediaItem,
+  deleteMemory,
+  batchCreateMediaItems,
+  batchCreateMemories,
   addFamilyMember,
   updateFamilyMember,
   deleteFamilyMember,

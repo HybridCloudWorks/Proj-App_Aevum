@@ -225,7 +225,7 @@ function AuthScreen() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     required
-                    minLength={6}
+                    minLength={8}
                     className="w-full h-14 px-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:border-indigo-500/50 transition-colors"
                   />
                 </div>
