@@ -129,8 +129,8 @@ describe("createThumbnail", () => {
   // Setup mocks
   beforeAll(() => {
     // Mock URL
-    global.URL.createObjectURL = vi.fn(() => "blob:test");
-    global.URL.revokeObjectURL = vi.fn();
+    globalThis.URL.createObjectURL = vi.fn(() => "blob:test");
+    globalThis.URL.revokeObjectURL = vi.fn();
 
     // Mock document and canvas
     const mockContext = {
@@ -145,7 +145,7 @@ describe("createThumbnail", () => {
 
     // Check if document exists (jsdom) or mock it
     if (typeof document === "undefined") {
-      global.document = {
+      globalThis.document = {
         createElement: vi.fn(() => mockCanvas),
       };
     } else {
@@ -153,7 +153,7 @@ describe("createThumbnail", () => {
     }
 
     // Mock Image
-    global.Image = class {
+    globalThis.Image = class {
       constructor() {
         this.naturalWidth = 1000;
         this.naturalHeight = 1000;
@@ -170,28 +170,28 @@ describe("createThumbnail", () => {
       close: vi.fn(),
     };
 
-    global.createImageBitmap = vi.fn().mockResolvedValue(mockBitmap);
+    globalThis.createImageBitmap = vi.fn().mockResolvedValue(mockBitmap);
 
     await createThumbnail(file, 200);
 
-    expect(global.createImageBitmap).toHaveBeenCalled();
+    expect(globalThis.createImageBitmap).toHaveBeenCalled();
   });
 
   it("should fallback to Image if createImageBitmap is undefined", async () => {
     const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
 
     // Temporarily remove createImageBitmap
-    const originalCreateImageBitmap = global.createImageBitmap;
-    global.createImageBitmap = undefined;
+    const originalCreateImageBitmap = globalThis.createImageBitmap;
+    globalThis.createImageBitmap = undefined;
 
     // Reset mocks
-    global.URL.createObjectURL.mockClear();
+    globalThis.URL.createObjectURL.mockClear();
 
     await createThumbnail(file, 200);
 
-    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(globalThis.URL.createObjectURL).toHaveBeenCalled();
 
     // Restore
-    global.createImageBitmap = originalCreateImageBitmap;
+    globalThis.createImageBitmap = originalCreateImageBitmap;
   });
 });
