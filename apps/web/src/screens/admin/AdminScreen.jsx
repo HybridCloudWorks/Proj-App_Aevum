@@ -6,6 +6,8 @@ import "./AdminScreen.css";
  *
  * Converted from Stitch: aevum_admin_infrastructure_1/code.html
  * System administration and deployment dashboard.
+ * This screen provides a high-level overview of the Aevum deployment and infrastructure.
+ * Based on Stitch screen: aevum_admin_infrastructure_1 (Aevum Deployment Center)
  */
 function AdminScreen() {
   const navigate = useNavigate();
@@ -41,6 +43,7 @@ function AdminScreen() {
           </span>
         </button>
       </header>
+
       <main className="flex-1 p-5 flex flex-col gap-4 w-full max-w-md mx-auto relative z-10 pb-24">
         <div className="grid grid-cols-2 gap-3">
           <div className="glass-card p-4 rounded-2xl col-span-2 relative overflow-hidden group">
@@ -86,6 +89,7 @@ function AdminScreen() {
               </div>
             </div>
           </div>
+
           <div className="glass-card p-4 rounded-2xl flex flex-col justify-between glass-card-hover transition-all">
             <div className="flex items-center gap-2 mb-2 text-slate-400">
               <span className="material-symbols-outlined text-[18px]">
@@ -108,6 +112,7 @@ function AdminScreen() {
               </div>
             </div>
           </div>
+
           <div className="glass-card p-4 rounded-2xl flex flex-col justify-between glass-card-hover transition-all">
             <div className="flex items-center gap-2 mb-2 text-slate-400">
               <span className="material-symbols-outlined text-[18px]">
@@ -132,6 +137,7 @@ function AdminScreen() {
               </div>
             </div>
           </div>
+
           <div className="glass-card p-4 rounded-2xl col-span-2">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2 text-slate-400">
@@ -168,6 +174,7 @@ function AdminScreen() {
               <span className="text-slate-500">0 Critical</span>
             </div>
           </div>
+
           <div className="glass-card p-4 rounded-2xl col-span-2">
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-2 text-slate-400">
@@ -223,6 +230,7 @@ function AdminScreen() {
           </div>
         </div>
       </main>
+
       <div className="fixed bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-background-dark via-background-dark/95 to-transparent z-20 max-w-md mx-auto">
         <div className="flex gap-3">
           <button className="flex-1 bg-white/5 hover:bg-white/10 text-slate-300 font-medium py-3.5 rounded-xl border border-white/10 transition-all flex items-center justify-center gap-2">
