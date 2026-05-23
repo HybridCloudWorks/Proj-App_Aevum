@@ -15,6 +15,31 @@ import {
 import { storage } from "./firebase";
 import { extractImageMetadata, createThumbnail } from "./imageMetadata";
 
+// Cache for getDownloadURL promises to deduplicate concurrent requests and avoid N+1 network calls
+// Max size of 500 to prevent unbounded memory growth, evicting oldest (FIFO)
+const MAX_CACHE_SIZE = 500;
+const downloadUrlCache = new Map();
+
+/**
+ * Helper to get cached download URL promise
+ * @param {import("firebase/storage").StorageReference} storageRef
+ */
+const getCachedDownloadURL = (storageRef) => {
+  const path = storageRef.fullPath;
+  if (!downloadUrlCache.has(path)) {
+    // Cache the promise itself to deduplicate concurrent requests
+    const promise = getDownloadURL(storageRef).catch((error) => {
+      downloadUrlCache.delete(path);
+      throw error;
+    });
+    downloadUrlCache.set(path, promise);
+    if (downloadUrlCache.size > MAX_CACHE_SIZE) {
+      const firstKey = downloadUrlCache.keys().next().value;
+      downloadUrlCache.delete(firstKey);
+    }
+  }
+  return downloadUrlCache.get(path);
+};
 // In-memory cache for download URLs to avoid redundant N+1 getDownloadURL calls.
 // Using a Map for O(1) lookups.
 const downloadUrlCache = new Map();
@@ -92,7 +117,10 @@ export async function uploadPhoto(
           });
         },
         async () => {
-          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          if (downloadUrlCache.has(uploadTask.snapshot.ref.fullPath)) {
+            downloadUrlCache.delete(uploadTask.snapshot.ref.fullPath);
+          }
+          const url = await getCachedDownloadURL(uploadTask.snapshot.ref);
           resolve({ success: true, url, path });
         },
       );
@@ -118,7 +146,10 @@ export async function uploadPhoto(
           contentType: "image/jpeg",
         });
 
-        return await getDownloadURL(thumbRef);
+        if (downloadUrlCache.has(thumbRef.fullPath)) {
+          downloadUrlCache.delete(thumbRef.fullPath);
+        }
+        return await getCachedDownloadURL(thumbRef);
       } catch (e) {
         console.warn("Thumbnail creation failed:", e);
         return null;
@@ -245,7 +276,7 @@ export async function uploadMultiplePhotos(
 export async function getPhotoURL(path) {
   try {
     const storageRef = ref(storage, path);
-    const url = await getDownloadURL(storageRef);
+    const url = await getCachedDownloadURL(storageRef);
     return { success: true, url };
   } catch (error) {
     console.error("Get photo URL error:", error);
@@ -262,6 +293,8 @@ export async function deletePhoto(path) {
   try {
     const storageRef = ref(storage, path);
     await deleteObject(storageRef);
+    if (downloadUrlCache.has(storageRef.fullPath)) {
+      downloadUrlCache.delete(storageRef.fullPath);
     // Evict from cache if deleted
     if (downloadUrlCache.has(path)) {
       downloadUrlCache.delete(path);
@@ -317,6 +350,7 @@ export async function listFamilyPhotos(familyId) {
     }));
     const photos = await Promise.all(
       result.items.map(async (itemRef) => {
+        const url = await getCachedDownloadURL(itemRef);
         // Optimization: Use cached getDownloadURL to avoid N+1 API calls
         const url = await getCachedDownloadURL(itemRef);
         const cacheKey = itemRef.fullPath;
@@ -367,7 +401,10 @@ export async function uploadProfilePhoto(file, userId) {
       contentType: file.type,
     });
 
-    const url = await getDownloadURL(storageRef);
+    if (downloadUrlCache.has(storageRef.fullPath)) {
+      downloadUrlCache.delete(storageRef.fullPath);
+    }
+    const url = await getCachedDownloadURL(storageRef);
     return { success: true, url, path };
   } catch (error) {
     console.error("Upload profile photo error:", error);
@@ -391,7 +428,10 @@ export async function uploadMemberPhoto(file, familyId, memberId) {
       contentType: file.type,
     });
 
-    const url = await getDownloadURL(storageRef);
+    if (downloadUrlCache.has(storageRef.fullPath)) {
+      downloadUrlCache.delete(storageRef.fullPath);
+    }
+    const url = await getCachedDownloadURL(storageRef);
     return { success: true, url, path };
   } catch (error) {
     console.error("Upload member photo error:", error);
