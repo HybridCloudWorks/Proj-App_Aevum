@@ -4,6 +4,9 @@
 ## 2024-03-20 - Prevent redundant Firestore re-subscriptions
 **Learning:** React components subscribing to real-time data sources (like Firestore or WebSockets) often unnecessarily tear down and recreate their subscriptions when arrays or objects are used directly as `useEffect` dependencies.
 **Action:** When a subscription requires an ID from an array (e.g., `families[0].id`), extract the specific primitive ID into a variable and use *that primitive* as the `useEffect` dependency, rather than the entire array reference.
+## 2026-05-04 - Eliminate state dependencies from effect callbacks via functional updates
+**Learning:** Using an object from state (like `currentFamily`) inside a real-time subscription callback (e.g., Firestore) forces it into the `useEffect` dependency array. This triggers an unnecessary teardown and re-creation of the database subscription every time that state changes.
+**Action:** Use a functional state update (`setCurrentFamily((prev) => ...prev...)`) inside the callback. This eliminates the need to read the current state directly from the outer closure, allowing you to remove the state variable from the `useEffect` dependency array entirely, preventing costly re-subscriptions.
 
 ## 2024-05-09 - Deduplicate getDownloadURL promises in Storage listings
 **Learning:** Functions like `listFamilyPhotos` execute `getDownloadURL` on an array of references, resulting in N+1 network calls. Modifying the return signature to lazy-load these URLs constitutes a breaking change.
