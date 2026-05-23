@@ -40,6 +40,7 @@ export function useFamilyTree() {
   // ⚡ Bolt Optimization: Depend on primitive user?.uid instead of objects to prevent unnecessary re-subscriptions
   const userId = user?.uid;
   useEffect(() => {
+    // ⚡ Bolt: Use user?.uid primitive instead of full user object to prevent unnecessary re-subscriptions
     if (!userId) {
   // ⚡ Bolt Optimization: Extract primitive user.uid to prevent redundant re-subscriptions
   // on user object identity changes.
@@ -58,6 +59,9 @@ export function useFamilyTree() {
     setLoading(true);
     const unsubscribe = subscribeToFamilies(userId, (data) => {
       setFamilies(data);
+      // ⚡ Bolt: Use functional state update to remove currentFamily from dependency array
+      if (data.length > 0) {
+        setCurrentFamily((prev) => prev || data[0]);
       if (data.length > 0) {
         // ⚡ Bolt Optimization: Use functional state update to remove currentFamily
         // dependency from the effect, preventing redundant Firebase teardowns.
@@ -101,6 +105,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [user?.uid]); // ⚡ Bolt: Depend on primitive field rather than object reference
   }, [user?.uid]);
 
   // Subscribe to current family's members
@@ -145,6 +150,8 @@ export function useFamilyTree() {
   const currentFamilyId = currentFamily?.id;
 
   useEffect(() => {
+    // ⚡ Bolt: Use currentFamily?.id primitive to prevent unnecessary re-subscriptions
+    if (!currentFamily?.id) {
     if (!currentFamily?.id) {
     // Optimization: Check for primitive id rather than full object
     if (!currentFamily?.id) {
@@ -164,6 +171,7 @@ export function useFamilyTree() {
     });
 
     return () => unsubscribe();
+  }, [currentFamily?.id]); // ⚡ Bolt: Depend on primitive field rather than object reference
   }, [currentFamily?.id]);
     // ⚡ Bolt Optimization: Depend on the primitive currentFamilyId rather than
     // the currentFamily object reference to prevent redundant re-subscriptions
