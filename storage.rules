@@ -91,6 +91,8 @@ service firebase.storage {
     // User Profile Images
     // ==========================================
     match /users/{userId}/profile/{fileName} {
+      // Authenticated users can read profile images
+      allow read: if isAuthenticated();
       // Restricted read: Only the owner or an admin can access profile images.
       // Note: Full family-based access requires familyId to be present on the user document.
       allow read: if isOwner(userId) || isAdmin();
@@ -169,8 +171,8 @@ service firebase.storage {
     // Public Assets (app icons, etc.)
     // ==========================================
     match /public/{allPaths=**} {
-      // Anyone can read public assets
-      allow read: if true;
+      // Authenticated users can read public assets
+      allow read: if isAuthenticated();
       
       // Only admins can write public assets
       allow write: if isAdmin();
