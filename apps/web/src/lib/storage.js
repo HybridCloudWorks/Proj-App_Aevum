@@ -15,6 +15,11 @@ import {
 import { storage } from "./firebase";
 import { extractImageMetadata, createThumbnail } from "./imageMetadata";
 
+// In-memory cache for download URLs to avoid redundant N+1 getDownloadURL calls.
+// Using a Map for O(1) lookups.
+const downloadUrlCache = new Map();
+const MAX_CACHE_SIZE = 500;
+
 /**
  * Upload a photo to Firebase Storage with progress tracking and metadata extraction
  * @param {File} file - The file to upload
@@ -176,6 +181,9 @@ export async function uploadMultiplePhotos(
   const progressArray = new Array(fileArray.length).fill(0);
   let totalProgressSum = 0;
 
+  // Optimization: Track total sum incrementally (O(1)) instead of using .reduce() (O(N)) on every progress event
+  let totalProgressSum = 0;
+
   const uploadPromises = fileArray.map(async (file, index) => {
     const result = await uploadPhoto(file, familyId, userId, (progress) => {
       // Optimization: Update totalProgressSum incrementally instead of using .reduce()
@@ -185,6 +193,11 @@ export async function uploadMultiplePhotos(
       totalProgressSum += progressArray[index];
 
       const overallProgress = totalProgressSum / fileArray.length;
+      // O(1) incremental update of the total sum
+      totalProgressSum = totalProgressSum - progressArray[index] + progress;
+      progressArray[index] = progress;
+
+      const overallProgress = totalProgressSum / files.length;
       onProgress(overallProgress);
     });
 
@@ -253,7 +266,24 @@ export async function listFamilyPhotos(familyId) {
 
     const photos = await Promise.all(
       result.items.map(async (itemRef) => {
-        const url = await getDownloadURL(itemRef);
+        const cacheKey = itemRef.fullPath;
+
+        // Optimization: Cache the Promise instead of the resolved value to
+        // deduplicate concurrent requests for the same URL.
+        let urlPromise = downloadUrlCache.get(cacheKey);
+
+        if (!urlPromise) {
+          // Simple cache eviction: clear if it grows too large
+          if (downloadUrlCache.size >= MAX_CACHE_SIZE) {
+            downloadUrlCache.clear();
+          }
+
+          urlPromise = getDownloadURL(itemRef);
+          downloadUrlCache.set(cacheKey, urlPromise);
+        }
+
+        const url = await urlPromise;
+
         return {
           name: itemRef.name,
           path: itemRef.fullPath,
