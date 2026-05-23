@@ -42,13 +42,9 @@ export const analytics =
 
 // Connect to emulators in development
 if (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === "true") {
-  console.log("🔧 Connecting to Firebase Emulators...");
-
   connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "localhost", 8080);
   connectStorageEmulator(storage, "localhost", 9199);
-
-  console.log("✅ Connected to Firebase Emulators");
 }
 
 export default app;
