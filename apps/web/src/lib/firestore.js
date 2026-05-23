@@ -51,7 +51,9 @@ export async function getUserProfile(userId) {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-      return { success: true, data: { id: userSnap.id, ...userSnap.data() } };
+      const data = userSnap.data();
+      data.id = userSnap.id;
+      return { success: true, data };
     }
     return { success: false, error: "User not found" };
   } catch (error) {
@@ -84,7 +86,9 @@ export function subscribeToUserProfile(userId, callback) {
   const userRef = doc(db, COLLECTIONS.USERS, userId);
   return onSnapshot(userRef, (doc) => {
     if (doc.exists()) {
-      callback({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      data.id = doc.id;
+      callback(data);
     } else {
       callback(null);
     }
@@ -148,10 +152,11 @@ export async function getUserFamilies(userId) {
     );
 
     const snapshot = await getDocs(familiesQuery);
-    const families = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const families = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
 
     return { success: true, data: families };
   } catch (error) {
@@ -171,10 +176,11 @@ export function subscribeToFamilies(userId, callback) {
   );
 
   return onSnapshot(familiesQuery, (snapshot) => {
-    const families = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const families = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(families);
   });
 }
@@ -261,10 +267,11 @@ export async function getFamilyMediaItems(familyId, maxResults = 20) {
     );
 
     const snapshot = await getDocs(mediaQuery);
-    const mediaItems = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const mediaItems = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
 
     return { success: true, mediaItems };
   } catch (error) {
@@ -285,10 +292,11 @@ export function subscribeToMediaItems(familyId, callback, maxResults = 20) {
   );
 
   return onSnapshot(mediaQuery, (snapshot) => {
-    const mediaItems = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const mediaItems = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(mediaItems);
   });
 }
@@ -432,10 +440,11 @@ export function subscribeToFamilyMembers(familyId, callback) {
   );
 
   return onSnapshot(membersQuery, (snapshot) => {
-    const members = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const members = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(members);
   });
 }
@@ -455,10 +464,11 @@ export function subscribeToAITasks(userId, callback) {
   );
 
   return onSnapshot(tasksQuery, (snapshot) => {
-    const tasks = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const tasks = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      return data;
+    });
     callback(tasks);
   });
 }
