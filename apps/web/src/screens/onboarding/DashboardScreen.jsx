@@ -18,6 +18,14 @@ import {
 } from "@lib/firestore";
 import { signOut } from "@lib/auth";
 
+// ⚡ Bolt Optimization: Define fallback memories outside the component
+// to prevent recreating the array reference on every render when there are no memories.
+// Optimization: Define fallback arrays outside component to prevent recreation on every render
+const FALLBACK_MEMORIES = [
+  { year: "1985", title: "Summer Wedding" },
+  { year: "1992", title: "First Grade" },
+];
+
 function DashboardScreen() {
   const { user } = useAuth();
   const [families, setFamilies] = useState([]);
@@ -328,10 +336,7 @@ function DashboardScreen() {
                     </div>
                   ))
                 : /* Fallback placeholders if no real memories yet */
-                  [
-                    { year: "1985", title: "Summer Wedding" },
-                    { year: "1992", title: "First Grade" },
-                  ].map((memory, i) => (
+                  FALLBACK_MEMORIES.map((memory, i) => (
                     <div
                       key={i}
                       className="flex-shrink-0 w-32 group cursor-pointer"

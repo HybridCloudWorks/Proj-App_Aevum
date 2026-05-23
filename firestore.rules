@@ -28,21 +28,29 @@ service cloud.firestore {
     match /members/{memberId} {
       allow read, delete: if isOwner(resource);
       allow create: if isNewOwner();
-      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+      allow update: if isOwner(resource) &&
+                    request.resource.data.userId == resource.data.userId &&
+                    request.resource.data.familyId == resource.data.familyId &&
+                    request.resource.data.createdAt == resource.data.createdAt;
     }
 
     // --- MEDIA ITEMS ---
     match /media_items/{mediaId} {
       allow read, delete: if isOwner(resource);
       allow create: if isNewOwner();
-      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+      allow update: if isOwner(resource) &&
+                    request.resource.data.userId == resource.data.userId &&
+                    request.resource.data.familyId == resource.data.familyId &&
+                    request.resource.data.createdAt == resource.data.createdAt;
     }
 
     // --- AI TASKS ---
     match /ai_tasks/{taskId} {
       allow read, delete: if isOwner(resource);
       allow create: if isNewOwner();
-      allow update: if isOwner(resource) && (request.resource.data.userId == request.auth.uid);
+      allow update: if isOwner(resource) &&
+                    request.resource.data.userId == resource.data.userId &&
+                    request.resource.data.createdAt == resource.data.createdAt;
     }
 
     // --- FAMILIES ---
@@ -52,7 +60,10 @@ service cloud.firestore {
         request.auth.uid in resource.data.members
       );
       allow create: if isAuthenticated() && request.auth.uid == request.resource.data.ownerId;
-      allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.ownerId;
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.ownerId &&
+                    request.resource.data.ownerId == resource.data.ownerId &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAuthenticated() && request.auth.uid == resource.data.ownerId;
     }
     
     // Legacy support (subcollections of families if any remain)
