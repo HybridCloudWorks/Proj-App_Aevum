@@ -280,6 +280,48 @@ export async function deleteMediaItem(familyId, mediaId) {
   }
 }
 
+/**
+ * Bulk create media items using Firestore batches
+ */
+export async function batchCreateMediaItems(familyId, mediaItemsData) {
+  try {
+    const MAX_BATCH_SIZE = 500;
+    const results = [];
+
+    // Process in chunks of 500 (Firestore limit)
+    for (let i = 0; i < mediaItemsData.length; i += MAX_BATCH_SIZE) {
+      const batch = writeBatch(db);
+      const chunk = mediaItemsData.slice(i, i + MAX_BATCH_SIZE);
+
+      const chunkResults = chunk.map((data) => {
+        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+        const mediaItem = {
+          ...data,
+          familyId,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+        batch.set(mediaRef, mediaItem);
+        return { success: true, mediaId: mediaRef.id };
+      });
+
+      await batch.commit();
+      results.push(...chunkResults);
+    }
+
+    return { success: true, results };
+  } catch (error) {
+    console.error("Error batch creating media items:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Aliases for Consistency
+export const createMemory = createMediaItem;
+export const updateMemory = updateMediaItem;
+export const deleteMemory = deleteMediaItem;
+export const batchCreateMemories = batchCreateMediaItems;
+
 // ==========================================
 // Family Member Operations
 // ==========================================
@@ -457,10 +499,15 @@ export default {
   getUserFamilies,
   subscribeToFamilies,
   createMediaItem,
+  createMemory,
   getFamilyMediaItems,
   subscribeToMediaItems,
   updateMediaItem,
+  updateMemory,
   deleteMediaItem,
+  deleteMemory,
+  batchCreateMediaItems,
+  batchCreateMemories,
   addFamilyMember,
   updateFamilyMember,
   deleteFamilyMember,
