@@ -4,10 +4,11 @@ import "./AdminScreen.css";
 /**
  * Admin Screen
  *
+ * Converted from Stitch: aevum_admin_infrastructure_1/code.html
+ * System administration and deployment dashboard.
  * This screen provides a high-level overview of the Aevum deployment and infrastructure.
  * Based on Stitch screen: aevum_admin_infrastructure_1 (Aevum Deployment Center)
  */
-
 function AdminScreen() {
   const navigate = useNavigate();
 
