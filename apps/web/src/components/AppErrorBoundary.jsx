@@ -34,7 +34,7 @@ export class AppErrorBoundary extends Component {
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Aevum</p>
           <h1 className="mt-4 text-3xl font-bold text-white">Something went wrong</h1>
           <p className="mt-4 text-sm leading-6 text-gray-400">
-            This screen could not be displayed. Your account and family archive have not been reported as deleted or changed by this error.
+            This screen could not be displayed. Try the screen again or return home and continue from a known route.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <button
