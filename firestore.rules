@@ -83,6 +83,83 @@ service cloud.firestore {
         request.resource.data.createdAt == resource.data.createdAt;
     }
 
+    function mediaIdentityUnchanged() {
+      return request.resource.data.familyId == resource.data.familyId &&
+        request.resource.data.createdBy == resource.data.createdBy &&
+        request.resource.data.uploadedBy == resource.data.uploadedBy &&
+        request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    function mediaReservationValid() {
+      return request.resource.data.status == 'uploading' &&
+        request.resource.data.aiStatus == 'waiting' &&
+        request.resource.data.storage == {};
+    }
+
+    function mediaUploadFinalizationValid() {
+      return resource.data.status == 'uploading' &&
+        request.resource.data.status == 'uploaded' &&
+        request.resource.data.aiStatus == resource.data.aiStatus &&
+        request.resource.data.storage.diff(resource.data.storage).affectedKeys().hasOnly([
+          'originalPath'
+        ]) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'status',
+          'photoUrl',
+          'thumbnailUrl',
+          'storage',
+          'imageMetadata',
+          'uploadCompletedAt',
+          'updatedAt'
+        ]);
+    }
+
+    function mediaUploadFailureValid() {
+      return resource.data.status == 'uploading' &&
+        request.resource.data.status == 'upload_failed' &&
+        request.resource.data.aiStatus == resource.data.aiStatus &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'status',
+          'uploadError',
+          'updatedAt'
+        ]);
+    }
+
+    function mediaContentUpdateValid() {
+      return request.resource.data.status == resource.data.status &&
+        request.resource.data.aiStatus == resource.data.aiStatus &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'title',
+          'description',
+          'memberIds',
+          'tags',
+          'date',
+          'albumIds',
+          'updatedAt'
+        ]);
+    }
+
+    function mediaAnalysisRequestValid() {
+      return resource.data.status == 'processed' &&
+        request.resource.data.status == resource.data.status &&
+        request.resource.data.aiStatus == 'pending' &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'aiStatus',
+          'updatedAt'
+        ]);
+    }
+
+    function mediaRestorationRequestValid() {
+      return resource.data.status == 'processed' &&
+        request.resource.data.status == resource.data.status &&
+        request.resource.data.aiStatus == 'restoration_pending' &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'aiStatus',
+          'restorationParams',
+          'updatedAt'
+        ]);
+    }
+
     // -----------------------------------------------------------------------
     // User profiles
     // -----------------------------------------------------------------------
@@ -171,7 +248,9 @@ service cloud.firestore {
     }
 
     // -----------------------------------------------------------------------
-    // Media metadata
+    // Media metadata. Clients reserve/upload/edit/request work; trusted backend
+    // processors use Admin SDK/IAM and therefore are not constrained by these
+    // client Rules when writing processing/derivative fields.
     // -----------------------------------------------------------------------
     match /media_items/{mediaId} {
       allow read: if canReadFamily(resource.data.familyId);
@@ -179,13 +258,18 @@ service cloud.firestore {
       allow create: if isSignedIn() &&
         request.resource.data.createdBy == request.auth.uid &&
         request.resource.data.uploadedBy == request.auth.uid &&
-        canWriteFamily(request.resource.data.familyId);
+        canWriteFamily(request.resource.data.familyId) &&
+        mediaReservationValid();
 
       allow update: if canWriteFamily(resource.data.familyId) &&
-        request.resource.data.familyId == resource.data.familyId &&
-        request.resource.data.createdBy == resource.data.createdBy &&
-        request.resource.data.uploadedBy == resource.data.uploadedBy &&
-        request.resource.data.createdAt == resource.data.createdAt;
+        mediaIdentityUnchanged() &&
+        (
+          mediaUploadFinalizationValid() ||
+          mediaUploadFailureValid() ||
+          mediaContentUpdateValid() ||
+          mediaAnalysisRequestValid() ||
+          mediaRestorationRequestValid()
+        );
 
       allow delete: if canWriteFamily(resource.data.familyId);
     }
