@@ -37,6 +37,7 @@ const COLLECTIONS = Object.freeze({
 
 const COLLABORATORS = "collaborators";
 const VALID_COLLABORATOR_ROLES = new Set(["editor", "viewer"]);
+const VALID_COLLABORATOR_STATUSES = new Set(["active", "invited", "revoked"]);
 
 function documentData(snapshot) {
   if (!snapshot.exists()) return null;
@@ -179,6 +180,9 @@ export async function setFamilyCollaborator(
   if (!VALID_COLLABORATOR_ROLES.has(role)) {
     return { success: false, error: "Role must be editor or viewer" };
   }
+  if (!VALID_COLLABORATOR_STATUSES.has(status)) {
+    return { success: false, error: "Invalid collaborator status" };
+  }
 
   try {
     const familyRef = doc(db, COLLECTIONS.FAMILIES, familyId);
@@ -189,22 +193,25 @@ export async function setFamilyCollaborator(
       COLLABORATORS,
       userId,
     );
+    const collaboratorSnapshot = await getDoc(collaboratorRef);
     const batch = writeBatch(db);
+    const collaboratorData = {
+      userId,
+      role,
+      status,
+      invitedBy:
+        collaboratorSnapshot.data()?.invitedBy || invitedBy,
+      updatedAt: serverTimestamp(),
+    };
 
-    batch.set(
-      collaboratorRef,
-      {
-        userId,
-        role,
-        status,
-        invitedBy,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true },
-    );
+    if (!collaboratorSnapshot.exists()) {
+      collaboratorData.createdAt = serverTimestamp();
+    }
+
+    batch.set(collaboratorRef, collaboratorData, { merge: true });
     batch.update(familyRef, {
-      collaboratorIds: arrayUnion(userId),
+      collaboratorIds:
+        status === "active" ? arrayUnion(userId) : arrayRemove(userId),
       updatedAt: serverTimestamp(),
     });
 
