@@ -1,20 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
 
-// Mock the useAuth hook
 vi.mock("../contexts/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
 describe("ProtectedRoute", () => {
-  it("renders loading state when loading is true", () => {
-    useAuth.mockReturnValue({
-      user: null,
-      loading: true,
-    });
+  it("renders loading state while authentication is loading", () => {
+    useAuth.mockReturnValue({ user: null, loading: true, isAdmin: false });
 
     const { container } = render(
       <MemoryRouter>
@@ -24,17 +20,12 @@ describe("ProtectedRoute", () => {
       </MemoryRouter>,
     );
 
-    // Check for the spinner (animate-spin class)
-    const spinner = container.querySelector(".animate-spin");
-    expect(spinner).toBeInTheDocument();
+    expect(container.querySelector(".animate-spin")).toBeInTheDocument();
     expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
   });
 
-  it("redirects to /auth when user is not authenticated", () => {
-    useAuth.mockReturnValue({
-      user: null,
-      loading: false,
-    });
+  it("redirects unauthenticated users to /auth", () => {
+    useAuth.mockReturnValue({ user: null, loading: false, isAdmin: false });
 
     render(
       <MemoryRouter initialEntries={["/dashboard"]}>
@@ -52,27 +43,70 @@ describe("ProtectedRoute", () => {
       </MemoryRouter>,
     );
 
-    // Should have redirected to /auth
     expect(screen.getByText("Auth Page")).toBeInTheDocument();
     expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
   });
 
-  it("renders children when user is authenticated", () => {
+  it("renders normal protected content for an authenticated user", () => {
     useAuth.mockReturnValue({
-      user: { id: "user-123", email: "test@example.com" },
+      user: { uid: "user-123", email: "test@example.com" },
       loading: false,
+      isAdmin: false,
     });
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/dashboard"]}>
         <ProtectedRoute>
           <div data-testid="protected-content">Protected Content</div>
         </ProtectedRoute>
       </MemoryRouter>,
     );
 
-    // Should render the protected content
     expect(screen.getByTestId("protected-content")).toBeInTheDocument();
-    expect(screen.getByText("Protected Content")).toBeInTheDocument();
+  });
+
+  it("redirects an authenticated non-admin away from /admin", () => {
+    useAuth.mockReturnValue({
+      user: { uid: "user-123" },
+      loading: false,
+      isAdmin: false,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/admin"]}>
+        <Routes>
+          <Route path="/dashboard" element={<div>Dashboard</div>} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <div>Admin Console</div>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.queryByText("Admin Console")).not.toBeInTheDocument();
+  });
+
+  it("renders /admin for a user with the trusted admin claim", () => {
+    useAuth.mockReturnValue({
+      user: { uid: "admin-123" },
+      loading: false,
+      isAdmin: true,
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/admin"]}>
+        <ProtectedRoute>
+          <div>Admin Console</div>
+        </ProtectedRoute>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Admin Console")).toBeInTheDocument();
   });
 });
