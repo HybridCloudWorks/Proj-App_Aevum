@@ -54,7 +54,7 @@ service firebase.storage {
     }
 
     function isSupportedImage() {
-      return request.resource.contentType.matches('image/(jpeg|png|webp|heic|heif)');
+      return request.resource.contentType.matches('image/(jpeg|png|tiff|webp|heic|heif)');
     }
 
     function imageWithinLimit() {
