@@ -20,6 +20,10 @@ service firebase.storage {
         : null;
     }
 
+    function mediaDoc(mediaId) {
+      return firestore.get(/databases/(default)/documents/media_items/$(mediaId));
+    }
+
     function canReadFamily(familyId) {
       let family = familyDoc(familyId);
       return isAdmin() ||
@@ -39,126 +43,79 @@ service firebase.storage {
           collaborator.data.role == 'editor');
     }
 
-    function isImage() {
-      return request.resource.contentType.matches('image/(jpeg|png|gif|webp|heic)');
+    function validMediaReservation(familyId, mediaId) {
+      let media = mediaDoc(mediaId);
+      return isSignedIn() &&
+        media != null &&
+        media.data.familyId == familyId &&
+        media.data.createdBy == request.auth.uid &&
+        media.data.uploadedBy == request.auth.uid &&
+        media.data.status == 'uploading';
     }
 
-    function isVideo() {
-      return request.resource.contentType.matches('video/(mp4|webm|quicktime)');
-    }
-
-    function isAudio() {
-      return request.resource.contentType.matches('audio/(mpeg|wav|ogg|mp4|x-m4a)');
-    }
-
-    function isDocument() {
-      return request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)');
+    function isSupportedImage() {
+      return request.resource.contentType.matches('image/(jpeg|png|tiff|webp|heic|heif)');
     }
 
     function imageWithinLimit() {
       return request.resource.size <= 10 * 1024 * 1024;
     }
 
-    function videoWithinLimit() {
-      return request.resource.size <= 500 * 1024 * 1024;
-    }
-
-    function audioWithinLimit() {
-      return request.resource.size <= 100 * 1024 * 1024;
-    }
-
-    function documentWithinLimit() {
-      return request.resource.size <= 20 * 1024 * 1024;
-    }
-
-    function validFamilyOriginal() {
-      return (isImage() && imageWithinLimit()) ||
-        (isVideo() && videoWithinLimit()) ||
-        (isAudio() && audioWithinLimit()) ||
-        (isDocument() && documentWithinLimit());
-    }
-
-    // -----------------------------------------------------------------------
     // User profile images
-    // -----------------------------------------------------------------------
     match /users/{userId}/profile/{fileName} {
       allow read: if isAdmin() ||
         (isSignedIn() && request.auth.uid == userId);
       allow create: if isSignedIn() &&
         request.auth.uid == userId &&
-        isImage() &&
+        isSupportedImage() &&
         imageWithinLimit();
       allow update: if false;
       allow delete: if isAdmin() ||
         (isSignedIn() && request.auth.uid == userId);
     }
 
-    // -----------------------------------------------------------------------
-    // Canonical family media paths
-    // -----------------------------------------------------------------------
+    // Canonical family media paths. Originals require a pre-reserved media
+    // document owned by the uploader, are client-created once, and immutable.
     match /families/{familyId}/media/{mediaId}/original/{fileName} {
       allow read: if canReadFamily(familyId);
-      allow create: if canWriteFamily(familyId) && validFamilyOriginal();
+      allow create: if canWriteFamily(familyId) &&
+        validMediaReservation(familyId, mediaId) &&
+        isSupportedImage() &&
+        imageWithinLimit();
       allow update: if false;
       allow delete: if canWriteFamily(familyId);
     }
 
-    match /families/{familyId}/media/{mediaId}/derived/{fileName} {
+    // Derivatives may be nested by source generation. Clients can read but not write.
+    match /families/{familyId}/media/{mediaId}/derived/{allPaths=**} {
       allow read: if canReadFamily(familyId);
-      // Derived objects are written by trusted backend processors using IAM.
       allow create, update, delete: if false;
     }
 
-    // -----------------------------------------------------------------------
     // Genealogical member photos
-    // -----------------------------------------------------------------------
     match /families/{familyId}/members/{personId}/{fileName} {
       allow read: if canReadFamily(familyId);
       allow create: if canWriteFamily(familyId) &&
-        isImage() &&
+        isSupportedImage() &&
         imageWithinLimit();
       allow update: if false;
       allow delete: if canWriteFamily(familyId);
     }
 
-    // -----------------------------------------------------------------------
-    // Temporary PR-01 uploader compatibility.
-    // Remove these two matches when PR-03 moves uploads to media/{mediaId}/...
-    // -----------------------------------------------------------------------
-    match /families/{familyId}/memories/{fileName} {
-      allow read: if canReadFamily(familyId);
-      allow create: if canWriteFamily(familyId) && validFamilyOriginal();
-      allow update: if false;
-      allow delete: if canWriteFamily(familyId);
-    }
-
-    match /families/{familyId}/thumbnails/{fileName} {
-      allow read: if canReadFamily(familyId);
-      allow create: if canWriteFamily(familyId) &&
-        isImage() &&
-        imageWithinLimit();
-      allow update: if false;
-      allow delete: if canWriteFamily(familyId);
-    }
-
-    // -----------------------------------------------------------------------
     // User-owned AI staging area. Trusted workers may use IAM/server SDKs.
-    // -----------------------------------------------------------------------
     match /ai-processing/{userId}/{taskId}/{fileName} {
       allow read: if isAdmin() ||
         (isSignedIn() && request.auth.uid == userId);
       allow create: if isSignedIn() &&
         request.auth.uid == userId &&
-        isImage() &&
+        isSupportedImage() &&
         imageWithinLimit();
       allow update: if false;
       allow delete: if isAdmin() ||
         (isSignedIn() && request.auth.uid == userId);
     }
 
-    // -----------------------------------------------------------------------
     // Managed app assets
-    // -----------------------------------------------------------------------
     match /public/{allPaths=**} {
       allow read: if isSignedIn();
       allow create, update, delete: if isAdmin();

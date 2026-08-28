@@ -1,21 +1,27 @@
+import 'package:aevum_native/services/storage_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:aevum_native/services/storage_service.dart';
 
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 class MockFirebaseStorage extends Mock implements FirebaseStorage {}
 class MockUser extends Mock implements User {}
 class MockUuid extends Mock implements Uuid {}
-class MockCollectionReference extends Mock implements CollectionReference<Map<String, dynamic>> {}
-class MockDocumentReference extends Mock implements DocumentReference<Map<String, dynamic>> {
+class MockCollectionReference extends Mock
+    implements CollectionReference<Map<String, dynamic>> {}
+class MockDocumentReference extends Mock
+    implements DocumentReference<Map<String, dynamic>> {
   @override
   Future<void> set(Map<String, dynamic>? data, [SetOptions? options]) =>
-      super.noSuchMethod(Invocation.method(#set, [data, options]), returnValue: Future<void>.value(), returnValueForMissingStub: Future<void>.value());
+      super.noSuchMethod(
+        Invocation.method(#set, [data, options]),
+        returnValue: Future<void>.value(),
+        returnValueForMissingStub: Future<void>.value(),
+      );
 }
 
 void main() {
@@ -46,25 +52,31 @@ void main() {
   });
 
   group('StorageService - createAlbum', () {
-    const String testTitle = 'Test Album';
+    const String testName = 'Test Album';
     const String testDescription = 'Test Description';
     const String testUid = 'user123';
+    const String testFamilyId = 'family123';
     const String testAlbumId = 'uuid-1234';
 
     test('throws Exception when user is not authenticated', () async {
       when(mockAuth.currentUser).thenReturn(null);
 
       expect(
-        () => storageService.createAlbum(testTitle),
-        throwsA(isA<Exception>().having(
-          (e) => e.toString(),
-          'message',
-          contains('User not authenticated'),
-        )),
+        () => storageService.createAlbum(
+          testName,
+          familyId: testFamilyId,
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            contains('User not authenticated'),
+          ),
+        ),
       );
     });
 
-    test('successfully creates an album when authenticated', () async {
+    test('creates a family-scoped album when authenticated', () async {
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn(testUid);
       when(mockUuid.v4()).thenReturn(testAlbumId);
@@ -73,22 +85,30 @@ void main() {
       when(mockDocument.set(any)).thenAnswer((_) => Future.value());
 
       final result = await storageService.createAlbum(
-        testTitle,
+        testName,
+        familyId: testFamilyId,
         description: testDescription,
       );
 
       expect(result, testAlbumId);
-
       verify(mockFirestore.collection('albums')).called(1);
       verify(mockCollection.doc(testAlbumId)).called(1);
-      verify(mockDocument.set(argThat(containsPair('id', testAlbumId)))).called(1);
-      verify(mockDocument.set(argThat(containsPair('ownerId', testUid)))).called(1);
-      verify(mockDocument.set(argThat(containsPair('title', testTitle)))).called(1);
-      verify(mockDocument.set(argThat(containsPair('description', testDescription)))).called(1);
-      verify(mockDocument.set(argThat(containsPair('itemCount', 0)))).called(1);
+      verify(
+        mockDocument.set(argThat(containsPair('familyId', testFamilyId))),
+      ).called(1);
+      verify(
+        mockDocument.set(argThat(containsPair('createdBy', testUid))),
+      ).called(1);
+      verify(mockDocument.set(argThat(containsPair('name', testName)))).called(1);
+      verify(
+        mockDocument.set(argThat(containsPair('description', testDescription))),
+      ).called(1);
+      verify(
+        mockDocument.set(argThat(containsPair('mediaIds', <String>[]))),
+      ).called(1);
     });
 
-    test('successfully creates an album with default description', () async {
+    test('uses an empty description by default', () async {
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn(testUid);
       when(mockUuid.v4()).thenReturn(testAlbumId);
@@ -96,13 +116,16 @@ void main() {
       when(mockCollection.doc(testAlbumId)).thenReturn(mockDocument);
       when(mockDocument.set(any)).thenAnswer((_) => Future.value());
 
-      final result = await storageService.createAlbum(testTitle);
+      final result = await storageService.createAlbum(
+        testName,
+        familyId: testFamilyId,
+      );
 
       expect(result, testAlbumId);
       verify(mockDocument.set(argThat(containsPair('description', '')))).called(1);
     });
 
-    test('createAlbum includes expected initial fields', () async {
+    test('does not store legacy owner/sharedWith authorization fields', () async {
       when(mockAuth.currentUser).thenReturn(mockUser);
       when(mockUser.uid).thenReturn(testUid);
       when(mockUuid.v4()).thenReturn(testAlbumId);
@@ -110,10 +133,15 @@ void main() {
       when(mockCollection.doc(testAlbumId)).thenReturn(mockDocument);
       when(mockDocument.set(any)).thenAnswer((_) => Future.value());
 
-      await storageService.createAlbum(testTitle);
+      await storageService.createAlbum(testName, familyId: testFamilyId);
 
-      verify(mockDocument.set(argThat(containsPair('sharedWith', [])))).called(1);
-      verify(mockDocument.set(argThat(containsPair('coverPhotoUrl', null)))).called(1);
+      final verification = verify(mockDocument.set(captureAny));
+      final Map<String, dynamic> payload =
+          verification.captured.single as Map<String, dynamic>;
+      expect(payload.containsKey('ownerId'), isFalse);
+      expect(payload.containsKey('sharedWith'), isFalse);
+      expect(payload['familyId'], testFamilyId);
+      expect(payload['createdBy'], testUid);
     });
   });
 }

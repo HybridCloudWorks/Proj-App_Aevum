@@ -199,8 +199,7 @@ export async function setFamilyCollaborator(
       userId,
       role,
       status,
-      invitedBy:
-        collaboratorSnapshot.data()?.invitedBy || invitedBy,
+      invitedBy: collaboratorSnapshot.data()?.invitedBy || invitedBy,
       updatedAt: serverTimestamp(),
     };
 
@@ -267,6 +266,68 @@ function normalizeMediaCreateData(mediaData) {
     createdBy,
     uploadedBy: mediaData.uploadedBy || createdBy,
   };
+}
+
+export async function reserveMediaItem(familyId, userId, mediaData = {}) {
+  try {
+    const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
+    const safeData = stripImmutableFields(mediaData, [
+      "familyId",
+      "createdBy",
+      "uploadedBy",
+      "createdAt",
+      "updatedAt",
+      "status",
+      "aiStatus",
+      "storage",
+    ]);
+
+    await setDoc(mediaRef, {
+      ...safeData,
+      familyId,
+      createdBy: userId,
+      uploadedBy: userId,
+      status: "uploading",
+      aiStatus: "waiting",
+      storage: {},
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+    return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
+  } catch (error) {
+    return errorResult("Error reserving media item", error);
+  }
+}
+
+export async function finalizeMediaUpload(mediaId, uploadData) {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
+      status: "uploaded",
+      photoUrl: uploadData.url || null,
+      thumbnailUrl: uploadData.thumbnailUrl || uploadData.url || null,
+      "storage.originalPath": uploadData.path,
+      imageMetadata: uploadData.metadata || null,
+      uploadCompletedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return errorResult("Error finalizing media upload", error);
+  }
+}
+
+export async function markMediaUploadFailed(mediaId, errorMessage) {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
+      status: "upload_failed",
+      uploadError: String(errorMessage || "Upload failed").slice(0, 1000),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    return errorResult("Error marking media upload failed", error);
+  }
 }
 
 export async function createMediaItem(familyId, mediaData) {
@@ -538,6 +599,9 @@ export default {
   subscribeToFamilyCollaborators,
   setFamilyCollaborator,
   removeFamilyCollaborator,
+  reserveMediaItem,
+  finalizeMediaUpload,
+  markMediaUploadFailed,
   createMediaItem,
   createMemory,
   batchCreateMediaItems,
