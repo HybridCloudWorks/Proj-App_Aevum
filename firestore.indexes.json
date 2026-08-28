@@ -1,7 +1,21 @@
 {
   "indexes": [
     {
-      "collectionGroup": "memories",
+      "collectionGroup": "families",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "collaboratorIds",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "media_items",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -15,11 +29,25 @@
       ]
     },
     {
-      "collectionGroup": "families",
+      "collectionGroup": "ai_tasks",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "ownerId",
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "albums",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "familyId",
           "order": "ASCENDING"
         },
         {
