@@ -1,16 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  getDownloadURL,
-  listAll,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import * as imageMetadata from "./imageMetadata";
-import {
-  listFamilyPhotos,
-  uploadMultiplePhotos,
-  uploadPhoto,
-  validateFile,
-} from "./storage";
+import { uploadMultiplePhotos, uploadPhoto, validateFile } from "./storage";
 
 vi.mock("firebase/storage", () => ({
   ref: vi.fn((_storage, path) => ({
@@ -20,19 +11,17 @@ vi.mock("firebase/storage", () => ({
   uploadBytesResumable: vi.fn(),
   getDownloadURL: vi.fn(),
   deleteObject: vi.fn(),
-  listAll: vi.fn(),
 }));
 
 vi.mock("./firebase", () => ({ storage: {} }));
 
 vi.mock("./imageMetadata", () => ({
   extractImageMetadata: vi.fn(),
-  createThumbnail: vi.fn(),
 }));
 
-function completedUploadTask(name) {
+function completedUploadTask(storageRef) {
   const task = {
-    snapshot: { ref: { name, fullPath: name } },
+    snapshot: { ref: storageRef },
     on: vi.fn((_event, progress, _error, complete) => {
       progress({ bytesTransferred: 100, totalBytes: 100 });
       complete();
@@ -45,10 +34,13 @@ function completedUploadTask(name) {
 }
 
 describe("validateFile", () => {
-  it("accepts a valid image", () => {
+  it("accepts supported image formats including HEIF", () => {
     expect(
       validateFile({ type: "image/jpeg", size: 5 * 1024 * 1024 }),
     ).toEqual({ valid: true });
+    expect(validateFile({ type: "image/heif", size: 1024 })).toEqual({
+      valid: true,
+    });
   });
 
   it("rejects a missing file", () => {
@@ -72,55 +64,6 @@ describe("validateFile", () => {
     expect(result.valid).toBe(false);
     expect(result.error).toContain("File size exceeds 10MB limit");
   });
-
-  it("honors custom validation options", () => {
-    expect(
-      validateFile(
-        { type: "image/gif", size: 1024 },
-        { allowedTypes: ["image/gif"] },
-      ),
-    ).toEqual({ valid: true });
-
-    expect(
-      validateFile(
-        { type: "image/jpeg", size: 2 * 1024 * 1024 },
-        { maxSizeMB: 1 },
-      ).valid,
-    ).toBe(false);
-  });
-});
-
-describe("listFamilyPhotos", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns metadata without pre-fetching download URLs", async () => {
-    listAll.mockResolvedValue({
-      items: [
-        {
-          name: "photo1.jpg",
-          fullPath: "families/123/memories/photo1.jpg",
-        },
-        {
-          name: "photo2.jpg",
-          fullPath: "families/123/memories/photo2.jpg",
-        },
-      ],
-    });
-
-    const result = await listFamilyPhotos("123");
-    expect(result.success).toBe(true);
-    expect(result.photos).toEqual([
-      {
-        name: "photo1.jpg",
-        path: "families/123/memories/photo1.jpg",
-      },
-      {
-        name: "photo2.jpg",
-        path: "families/123/memories/photo2.jpg",
-      },
-    ]);
-    expect(getDownloadURL).not.toHaveBeenCalled();
-  });
 });
 
 describe("uploadPhoto", () => {
@@ -133,46 +76,47 @@ describe("uploadPhoto", () => {
       exif: {},
       gps: {},
     });
-    imageMetadata.createThumbnail.mockResolvedValue(null);
     getDownloadURL.mockResolvedValue("https://example.test/photo.jpg");
+    uploadBytesResumable.mockImplementation((storageRef) =>
+      completedUploadTask(storageRef),
+    );
   });
 
-  it("uploads an image and optional thumbnail", async () => {
-    const mainTask = completedUploadTask("main");
-    const thumbnailTask = completedUploadTask("thumbnail");
-    uploadBytesResumable
-      .mockReturnValueOnce(mainTask)
-      .mockReturnValueOnce(thumbnailTask);
-    imageMetadata.createThumbnail.mockResolvedValue(
-      new Blob(["thumb"], { type: "image/jpeg" }),
-    );
-    getDownloadURL.mockImplementation((storageRef) =>
-      Promise.resolve(
-        storageRef.name === "thumbnail"
-          ? "https://example.test/thumb.jpg"
-          : "https://example.test/photo.jpg",
-      ),
-    );
-
+  it("requires a reserved mediaId", async () => {
     const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
     const result = await uploadPhoto(file, "family", "user");
 
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("reserved mediaId");
+    expect(uploadBytesResumable).not.toHaveBeenCalled();
+  });
+
+  it("uploads only the canonical immutable original", async () => {
+    const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
+    const result = await uploadPhoto(file, "family", "user", () => {}, {
+      mediaId: "media-1",
+    });
+
     expect(result.success).toBe(true);
-    expect(result.url).toBe("https://example.test/photo.jpg");
-    expect(result.thumbnailUrl).toBe("https://example.test/thumb.jpg");
-    expect(result.metadata.width).toBe(1000);
+    expect(result.mediaId).toBe("media-1");
+    expect(result.path).toBe(
+      "families/family/media/media-1/original/test.jpg",
+    );
+    expect(result.thumbnailUrl).toBeNull();
+    expect(uploadBytesResumable).toHaveBeenCalledTimes(1);
+    expect(uploadBytesResumable.mock.calls[0][0].fullPath).toBe(
+      "families/family/media/media-1/original/test.jpg",
+    );
   });
 
   it("continues when metadata extraction fails", async () => {
     const metadataError = new Error("metadata failed");
     imageMetadata.extractImageMetadata.mockRejectedValue(metadataError);
-    uploadBytesResumable.mockReturnValue(completedUploadTask("main"));
     const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
     const result = await uploadPhoto(file, "family", "user", () => {}, {
-      extractMetadata: true,
-      createThumbnail: false,
+      mediaId: "media-1",
     });
 
     expect(result.success).toBe(true);
@@ -194,15 +138,27 @@ describe("uploadMultiplePhotos", () => {
       exif: {},
       gps: {},
     });
-    imageMetadata.createThumbnail.mockResolvedValue(null);
     getDownloadURL.mockResolvedValue("https://example.test/photo.jpg");
   });
 
-  it("tracks aggregate progress and returns successful files", async () => {
+  it("rejects a batch without one reserved mediaId per file", async () => {
+    const files = [
+      new File(["a"], "one.jpg", { type: "image/jpeg" }),
+      new File(["b"], "two.jpg", { type: "image/jpeg" }),
+    ];
+
+    const result = await uploadMultiplePhotos(files, "family", "user");
+    expect(result.success).toBe(false);
+    expect(result.results).toEqual([]);
+    expect(result.failed).toHaveLength(2);
+    expect(uploadBytesResumable).not.toHaveBeenCalled();
+  });
+
+  it("tracks aggregate progress for canonical media IDs", async () => {
     const controls = [];
-    uploadBytesResumable.mockImplementation((_storageRef, file) => {
+    uploadBytesResumable.mockImplementation((storageRef) => {
       const task = {
-        snapshot: { ref: { name: file.name, fullPath: file.name } },
+        snapshot: { ref: storageRef },
         on: vi.fn((_event, progress, error, complete) => {
           controls.push({ progress, error, complete });
         }),
@@ -219,21 +175,30 @@ describe("uploadMultiplePhotos", () => {
       new File(["b"], "two.jpg", { type: "image/jpeg" }),
     ];
 
-    const promise = uploadMultiplePhotos(files, "family", "user", onProgress);
+    const promise = uploadMultiplePhotos(
+      files,
+      "family",
+      "user",
+      onProgress,
+      { mediaIds: ["media-1", "media-2"] },
+    );
     await vi.waitFor(() => expect(controls).toHaveLength(2));
 
     controls[0].progress({ bytesTransferred: 50, totalBytes: 100 });
-    expect(onProgress).toHaveBeenCalledWith(20);
+    expect(onProgress).toHaveBeenCalledWith(25);
 
     controls[1].progress({ bytesTransferred: 100, totalBytes: 100 });
-    expect(onProgress).toHaveBeenCalledWith(60);
+    expect(onProgress).toHaveBeenCalledWith(75);
 
     controls[0].complete();
     controls[1].complete();
 
     const result = await promise;
     expect(result.success).toBe(true);
-    expect(result.results).toHaveLength(2);
+    expect(result.results.map((item) => item.mediaId)).toEqual([
+      "media-1",
+      "media-2",
+    ]);
     expect(result.failed).toEqual([]);
     expect(onProgress).toHaveBeenLastCalledWith(100);
   });

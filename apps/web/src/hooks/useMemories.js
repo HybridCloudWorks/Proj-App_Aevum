@@ -1,16 +1,18 @@
 /**
  * useMemories Hook
  *
- * Coordinates Firebase Storage uploads with Firestore media records while
- * preserving the existing memories API used by the current screens.
+ * Canonical upload lifecycle:
+ * reserve Firestore media ID -> upload original -> finalize upload metadata ->
+ * backend preservation processor creates derivatives/archive and advances status.
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  batchCreateMemories,
-  createMemory,
   deleteMemory,
+  finalizeMediaUpload,
+  markMediaUploadFailed,
+  reserveMediaItem,
   subscribeToMediaItems,
   updateMemory,
 } from "@lib/firestore";
@@ -21,34 +23,14 @@ import {
   validateFile,
 } from "@lib/storage";
 
-function mediaRecordFromUpload(result, userId, metadata = {}) {
-  const capturedAt =
-    metadata.date ||
-    result.metadata?.exif?.dateTaken ||
-    new Date().toISOString();
-
+function reservationData(file, metadata = {}) {
   return {
-    userId,
-    uploadedBy: userId,
-    title: metadata.title || result.file || "Untitled memory",
+    title: metadata.title || file.name || "Untitled memory",
     description: metadata.description || "",
-    imageUrl: result.url,
-    photoUrl: result.url,
-    thumbnailUrl: result.thumbnailUrl || result.url,
-    storagePath: result.path,
-    date: capturedAt,
+    date: metadata.date || new Date().toISOString(),
     tags: metadata.tags || [],
     memberIds: metadata.memberIds || [],
-    imageMetadata: result.metadata
-      ? {
-          width: result.metadata.width,
-          height: result.metadata.height,
-          aspectRatio: result.metadata.aspectRatio,
-          fileSize: result.metadata.fileSize,
-          exif: result.metadata.exif || {},
-          gps: result.metadata.gps || {},
-        }
-      : null,
+    originalFileName: file.name,
   };
 }
 
@@ -103,48 +85,62 @@ export function useMemories(familyId) {
       setUploading(true);
       setUploadProgress(0);
 
+      let mediaId = null;
       let uploadedPath = null;
+
       try {
+        const reservation = await reserveMediaItem(
+          familyId,
+          userId,
+          reservationData(file, metadata),
+        );
+        if (!reservation.success) {
+          setError(reservation.error);
+          return reservation;
+        }
+
+        mediaId = reservation.mediaId;
         const uploadResult = await uploadPhoto(
           file,
           familyId,
           userId,
           setUploadProgress,
-          { extractMetadata: true, createThumbnail: true },
+          {
+            mediaId,
+            extractMetadata: true,
+            createThumbnail: false,
+          },
         );
 
         if (!uploadResult.success) {
+          await markMediaUploadFailed(mediaId, uploadResult.error);
           setError(uploadResult.error);
-          return uploadResult;
+          return { ...uploadResult, memoryId: mediaId };
         }
 
         uploadedPath = uploadResult.path;
-        const memoryResult = await createMemory(
-          familyId,
-          mediaRecordFromUpload(
-            { ...uploadResult, file: file.name },
-            userId,
-            metadata,
-          ),
-        );
-
-        if (!memoryResult.success) {
-          setError(memoryResult.error);
+        const finalization = await finalizeMediaUpload(mediaId, uploadResult);
+        if (!finalization.success) {
           if (uploadedPath) await deletePhoto(uploadedPath);
-          return memoryResult;
+          await markMediaUploadFailed(mediaId, finalization.error);
+          setError(finalization.error);
+          return { ...finalization, memoryId: mediaId };
         }
 
         return {
           success: true,
-          memoryId: memoryResult.id,
+          memoryId: mediaId,
+          mediaId,
           photoUrl: uploadResult.url,
-          thumbnailUrl: uploadResult.thumbnailUrl,
+          thumbnailUrl: uploadResult.thumbnailUrl || uploadResult.url,
           metadata: uploadResult.metadata,
+          status: "uploaded",
         };
       } catch (uploadError) {
-        setError(uploadError.message);
         if (uploadedPath) await deletePhoto(uploadedPath);
-        return { success: false, error: uploadError.message };
+        if (mediaId) await markMediaUploadFailed(mediaId, uploadError.message);
+        setError(uploadError.message);
+        return { success: false, memoryId: mediaId, error: uploadError.message };
       } finally {
         setUploading(false);
         setUploadProgress(0);
@@ -174,7 +170,12 @@ export function useMemories(familyId) {
         return {
           success: false,
           uploaded: 0,
-          failed: [{ file: invalidFile.file.name, error: invalidFile.validation.error }],
+          failed: [
+            {
+              file: invalidFile.file.name,
+              error: invalidFile.validation.error,
+            },
+          ],
           error: invalidFile.validation.error,
         };
       }
@@ -184,48 +185,103 @@ export function useMemories(familyId) {
       setUploadProgress(0);
 
       try {
+        const reservations = await Promise.all(
+          fileArray.map((file) =>
+            reserveMediaItem(
+              familyId,
+              userId,
+              reservationData(file, metadata),
+            ),
+          ),
+        );
+
+        const failed = [];
+        const uploadFiles = [];
+        const mediaIds = [];
+
+        reservations.forEach((reservation, index) => {
+          if (reservation.success) {
+            uploadFiles.push(fileArray[index]);
+            mediaIds.push(reservation.mediaId);
+          } else {
+            failed.push({
+              file: fileArray[index].name,
+              error: reservation.error,
+            });
+          }
+        });
+
+        if (!uploadFiles.length) {
+          const firstError = failed[0]?.error || "Unable to reserve media items";
+          setError(firstError);
+          return { success: false, uploaded: 0, failed, error: firstError };
+        }
+
         const uploadResult = await uploadMultiplePhotos(
-          fileArray,
+          uploadFiles,
           familyId,
           userId,
           setUploadProgress,
+          {
+            mediaIds,
+            extractMetadata: true,
+            createThumbnail: false,
+          },
         );
 
-        if (!uploadResult.results.length) {
-          const firstError = uploadResult.failed[0]?.error || "No files were uploaded";
-          setError(firstError);
-          return {
-            success: false,
-            uploaded: 0,
-            failed: uploadResult.failed,
-            error: firstError,
-          };
-        }
-
-        const records = uploadResult.results.map((result) =>
-          mediaRecordFromUpload(result, userId, metadata),
+        await Promise.allSettled(
+          uploadResult.failed
+            .filter((item) => item.mediaId)
+            .map((item) => markMediaUploadFailed(item.mediaId, item.error)),
         );
-        const memoryResult = await batchCreateMemories(familyId, records);
+        failed.push(...uploadResult.failed);
 
-        if (!memoryResult.success) {
-          setError(memoryResult.error);
-          await Promise.allSettled(
-            uploadResult.results
-              .map((result) => result.path)
-              .filter(Boolean)
-              .map((path) => deletePhoto(path)),
-          );
-        }
+        const finalized = await Promise.all(
+          uploadResult.results.map(async (result) => {
+            const finalization = await finalizeMediaUpload(result.mediaId, result);
+            if (finalization.success) {
+              return { success: true, result };
+            }
+
+            if (result.path) await deletePhoto(result.path);
+            await markMediaUploadFailed(result.mediaId, finalization.error);
+            return {
+              success: false,
+              result,
+              error: finalization.error,
+            };
+          }),
+        );
+
+        const finalizedSuccesses = finalized.filter((item) => item.success);
+        finalized
+          .filter((item) => !item.success)
+          .forEach((item) => {
+            failed.push({
+              file: item.result.file,
+              mediaId: item.result.mediaId,
+              error: item.error,
+            });
+          });
+
+        const success = failed.length === 0;
+        const firstError = failed[0]?.error;
+        if (!success && firstError) setError(firstError);
 
         return {
-          success: uploadResult.failed.length === 0 && memoryResult.success,
-          uploaded: memoryResult.success ? uploadResult.results.length : 0,
-          failed: uploadResult.failed,
-          error: memoryResult.error,
+          success,
+          uploaded: finalizedSuccesses.length,
+          failed,
+          error: firstError,
         };
       } catch (uploadError) {
         setError(uploadError.message);
-        return { success: false, uploaded: 0, failed: [], error: uploadError.message };
+        return {
+          success: false,
+          uploaded: 0,
+          failed: [],
+          error: uploadError.message,
+        };
       } finally {
         setUploading(false);
         setUploadProgress(0);

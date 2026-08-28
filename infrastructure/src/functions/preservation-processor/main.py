@@ -1,171 +1,303 @@
-import os
 import io
+import os
 import tempfile
-import functions_framework
-from google.cloud import storage, firestore
-from PIL import Image, ImageOps
+from pathlib import PurePosixPath
 
-# Config - could be moved to env vars
-TEMP_BUCKET = os.environ.get('TEMP_BUCKET', 'aevum-uploads-temp')
-ARCHIVE_BUCKET = os.environ.get('ARCHIVE_BUCKET', 'aevum-archive')
-GALLERY_BUCKET = os.environ.get('GALLERY_BUCKET', 'aevum-gallery')
+import functions_framework
+from google.api_core.exceptions import PreconditionFailed
+from google.cloud import firestore, storage
+from PIL import ExifTags, Image, ImageOps
+from pillow_heif import register_heif_opener
+
+register_heif_opener()
+
+SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
+ARCHIVE_BUCKET = os.environ.get("ARCHIVE_BUCKET")
 
 storage_client = storage.Client()
 firestore_client = firestore.Client()
 
+SUPPORTED_IMAGE_TYPES = {
+    "image/jpeg",
+    "image/png",
+    "image/tiff",
+    "image/webp",
+    "image/heic",
+    "image/heif",
+}
+
+
+def parse_original_path(object_name):
+    """Return (family_id, media_id, filename) for canonical original paths."""
+    parts = PurePosixPath(object_name).parts
+    if len(parts) != 6:
+        return None
+    if parts[0] != "families" or parts[2] != "media" or parts[4] != "original":
+        return None
+    return parts[1], parts[3], parts[5]
+
+
+def rational_to_float(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError, ZeroDivisionError):
+        if isinstance(value, tuple) and len(value) == 2 and value[1]:
+            return value[0] / value[1]
+        raise
+
+
+def dms_to_decimal(values, reference):
+    degrees, minutes, seconds = [rational_to_float(value) for value in values]
+    decimal = degrees + minutes / 60.0 + seconds / 3600.0
+    return -decimal if reference in {"S", "W"} else decimal
+
+
+def extract_exif(image):
+    """Extract a conservative subset of preservation metadata."""
+    result = {}
+    try:
+        exif = image.getexif()
+        if not exif:
+            return result
+
+        decoded = {ExifTags.TAGS.get(tag, tag): value for tag, value in exif.items()}
+        result["dateTaken"] = decoded.get("DateTimeOriginal") or decoded.get("DateTime")
+        result["cameraMake"] = str(decoded.get("Make") or "") or None
+        result["cameraModel"] = str(decoded.get("Model") or "") or None
+        result["orientation"] = decoded.get("Orientation")
+
+        gps_ifd = None
+        if hasattr(exif, "get_ifd"):
+            try:
+                gps_ifd = exif.get_ifd(0x8825)
+            except (KeyError, TypeError, ValueError):
+                gps_ifd = None
+
+        if gps_ifd:
+            gps = {ExifTags.GPSTAGS.get(tag, tag): value for tag, value in gps_ifd.items()}
+            if all(
+                key in gps
+                for key in (
+                    "GPSLatitude",
+                    "GPSLatitudeRef",
+                    "GPSLongitude",
+                    "GPSLongitudeRef",
+                )
+            ):
+                result["location"] = {
+                    "latitude": dms_to_decimal(gps["GPSLatitude"], gps["GPSLatitudeRef"]),
+                    "longitude": dms_to_decimal(
+                        gps["GPSLongitude"], gps["GPSLongitudeRef"]
+                    ),
+                }
+    except Exception as error:  # Metadata must never prevent preservation.
+        print(f"EXIF extraction warning: {error}")
+
+    return result
+
+
+def upload_if_absent(bucket, path, stream, content_type):
+    """Create an immutable derivative once; retries reuse the existing object."""
+    stream.seek(0)
+    blob = bucket.blob(path)
+    try:
+        blob.upload_from_file(
+            stream,
+            content_type=content_type,
+            if_generation_match=0,
+        )
+        print(f"Created derivative: gs://{bucket.name}/{path}")
+    except PreconditionFailed:
+        print(f"Derivative already exists: gs://{bucket.name}/{path}")
+    return blob
+
+
+def archive_original(source_bucket, source_blob, archive_bucket, archive_path, generation):
+    """Copy the exact source generation to the archive exactly once."""
+    try:
+        source_bucket.copy_blob(
+            source_blob,
+            archive_bucket,
+            new_name=archive_path,
+            source_generation=int(generation),
+            if_source_generation_match=int(generation),
+            if_generation_match=0,
+        )
+        print(f"Archived original: gs://{archive_bucket.name}/{archive_path}")
+    except PreconditionFailed:
+        print(f"Archive object already exists: gs://{archive_bucket.name}/{archive_path}")
+
+
 @functions_framework.cloud_event
 def process_upload(cloud_event):
-    """Event-driven function triggered by GCS upload."""
+    """Preserve one canonical family media original and create derivatives."""
     data = cloud_event.data
-    event_id = cloud_event["id"]
-    event_type = cloud_event["type"]
+    bucket_name = data.get("bucket")
+    object_name = data.get("name")
+    generation = str(data.get("generation") or "0")
+    event_id = cloud_event.get("id")
 
-    bucket_name = data["bucket"]
-    file_name = data["name"]
-
-    print(f"Processing file: {file_name} from bucket: {bucket_name}")
-
-    if not file_name:
-        print("No file name provided.")
+    if not object_name or not bucket_name:
+        print("Ignoring event without bucket/object name")
         return
 
-    # Check file extension or content-type
-    ext = file_name.split('.')[-1].lower()
-    if ext not in ['jpg', 'jpeg', 'png', 'tiff', 'tif', 'heic', 'raw']:
-        print(f"Skipping non-image file: {file_name}")
+    if SOURCE_BUCKET and bucket_name != SOURCE_BUCKET:
+        print(f"Ignoring object from unexpected bucket: {bucket_name}")
         return
 
-    temp_bucket = storage_client.bucket(bucket_name)
-    blob = temp_bucket.blob(file_name)
-    
-    # 1. Download Original to Disk to avoid keeping full-res raw file bytes in RAM
-    fd, temp_local_filename = tempfile.mkstemp(suffix=".tmp")
-    os.close(fd) # Close the OS file handle immediately to prevent leaks
-    
-    original_image = None
+    parsed = parse_original_path(object_name)
+    if not parsed:
+        # Derived/profile/member objects share the bucket and must not recurse.
+        print(f"Ignoring non-canonical-original object: {object_name}")
+        return
+
+    family_id, media_id, file_name = parsed
+    media_ref = firestore_client.collection("media_items").document(media_id)
+    media_snapshot = media_ref.get()
+
+    if not media_snapshot.exists:
+        print(f"Orphan original has no media_items/{media_id}; leaving object untouched")
+        return
+
+    media = media_snapshot.to_dict() or {}
+    if media.get("familyId") != family_id:
+        print(
+            f"Family mismatch for media {media_id}: path={family_id}, "
+            f"document={media.get('familyId')}"
+        )
+        return
+
+    status = media.get("status")
+    processing = media.get("processing") or {}
+    if status == "upload_failed":
+        print(f"Ignoring failed upload media {media_id}")
+        return
+
+    if status == "processed" and str(processing.get("sourceGeneration")) == generation:
+        print(f"Media {media_id} generation {generation} already processed")
+        return
+
+    if status == "uploading":
+        # Storage finalization can race the client's Firestore finalization.
+        # Raising allows Eventarc retry policy to revisit after status=uploaded.
+        raise RuntimeError(f"Media {media_id} upload metadata is not finalized yet")
+
+    source_bucket = storage_client.bucket(bucket_name)
+    source_blob = source_bucket.blob(object_name, generation=int(generation))
+    content_type = data.get("contentType") or source_blob.content_type
+
+    if content_type and content_type not in SUPPORTED_IMAGE_TYPES:
+        media_ref.update(
+            {
+                "status": "processing_failed",
+                "processingError": f"Unsupported preservation type: {content_type}",
+                "updatedAt": firestore.SERVER_TIMESTAMP,
+            }
+        )
+        return
+
+    media_ref.update(
+        {
+            "status": "processing",
+            "processing.sourceGeneration": generation,
+            "processing.eventId": event_id,
+            "processing.startedAt": firestore.SERVER_TIMESTAMP,
+            "updatedAt": firestore.SERVER_TIMESTAMP,
+        }
+    )
+
+    fd, local_path = tempfile.mkstemp(suffix=os.path.splitext(file_name)[1] or ".img")
+    os.close(fd)
+
     try:
-        blob.download_to_filename(temp_local_filename)
-        original_image = Image.open(temp_local_filename)
+        source_blob.download_to_filename(local_path)
 
-        # Use existing UUID logic from path: uploads/{userId}/{year}/{month}/{category}/{uuid}.ext
-        # Extract UUID and metadata if stored in customMetadata
-        metadata = blob.metadata or {}
-        media_uuid = metadata.get('uuid') or file_name.split('/')[-1].split('.')[0]
-        user_id = metadata.get('uploadedBy') or 'unknown'
+        with Image.open(local_path) as opened_image:
+            exif = extract_exif(opened_image)
+            original_width, original_height = opened_image.size
+            normalized = ImageOps.exif_transpose(opened_image).convert("RGB")
 
-        print(f"Identified Media UUID: {media_uuid} for User: {user_id}")
+            display = normalized.copy()
+            display.thumbnail((1920, 1920), Image.Resampling.LANCZOS)
+            display_width, display_height = display.size
+            display_io = io.BytesIO()
+            display.save(display_io, format="WEBP", quality=85, method=6)
 
-        # Capture original metadata before modification
-        original_width, original_height = original_image.size
+            thumbnail = display.copy()
+            thumbnail.thumbnail((200, 200), Image.Resampling.LANCZOS)
+            thumbnail_io = io.BytesIO()
+            thumbnail.save(thumbnail_io, format="WEBP", quality=80, method=6)
 
-        # 5. Extract EXIF Data (moved up before resizing)
-        exif_data = {}
-        try:
-            exif = original_image._getexif()
-            if exif:
-                from PIL.ExifTags import TAGS, GPSTAGS
-                exif_data = {
-                    "gps" if (decoded := TAGS.get(tag, tag)) == "GPSInfo" else decoded: {
-                        GPSTAGS.get(t, t): v for t, v in value.items()
-                    }
-                    if decoded == "GPSInfo"
-                    else str(value)
-                    for tag, value in exif.items()
-                }
-        except Exception as e:
-            print(f"Error extracting EXIF: {e}")
+        derived_prefix = (
+            f"families/{family_id}/media/{media_id}/derived/{generation}"
+        )
+        display_path = f"{derived_prefix}/display.webp"
+        thumbnail_path = f"{derived_prefix}/thumbnail.webp"
 
-        # 2. Generate Optimized WebP Versions
-        # B. Display (1080p width, dynamic height) - Generated first to avoid copies
-        display_io = io.BytesIO()
-        if original_image.width > 1920:
-            original_image.thumbnail((1920, 1920)) # Maintain aspect ratio
-        original_image.save(display_io, format='WEBP', quality=85)
-        display_io.seek(0)
-        display_width, display_height = original_image.size
+        upload_if_absent(source_bucket, display_path, display_io, "image/webp")
+        upload_if_absent(source_bucket, thumbnail_path, thumbnail_io, "image/webp")
 
-        # A. Thumbnail (200x200) - Generated from the already resized image
-        thumb_io = io.BytesIO()
-        original_image.thumbnail((200, 200))
-        original_image.save(thumb_io, format='WEBP', quality=80)
-        thumb_io.seek(0)
+        if not ARCHIVE_BUCKET:
+            raise RuntimeError("ARCHIVE_BUCKET is not configured")
+        archive_bucket = storage_client.bucket(ARCHIVE_BUCKET)
+        archive_path = (
+            f"families/{family_id}/media/{media_id}/originals/"
+            f"{generation}/{file_name}"
+        )
+        archive_original(
+            source_bucket,
+            source_blob,
+            archive_bucket,
+            archive_path,
+            generation,
+        )
 
-        # 3. Upload Optimized Versions to Gallery Bucket
-        gallery_bucket_ref = storage_client.bucket(GALLERY_BUCKET)
-
-        # Path: gallery/{userId}/{uuid}/thumbnail.webp
-        thumb_path = f"gallery/{user_id}/{media_uuid}/thumbnail.webp"
-        thumb_blob = gallery_bucket_ref.blob(thumb_path)
-        thumb_blob.upload_from_file(thumb_io, content_type='image/webp')
-
-        # Path: gallery/{userId}/{uuid}/display.webp
-        display_path = f"gallery/{user_id}/{media_uuid}/display.webp"
-        display_blob = gallery_bucket_ref.blob(display_path)
-        display_blob.upload_from_file(display_io, content_type='image/webp')
-
-        print(f"Uploaded optimized versions to {GALLERY_BUCKET}")
-
-        # 4. Move Original to Archive Bucket (Coldline)
-        archive_bucket_ref = storage_client.bucket(ARCHIVE_BUCKET)
-
-        # Path: archive/{userId}/{year}/... same path as temp
-        archive_blob = temp_bucket.copy_blob(blob, archive_bucket_ref, file_name)
-
-        if archive_blob.exists():
-            print(f"Moved original to Archive: {ARCHIVE_BUCKET}/{file_name}")
-            # Delete from Temp
-            blob.delete()
-        else:
-            print("Failed to copy to Archive bucket.")
-            return
-
-        # Helper to convert GPS to decimal
-        def get_decimal_from_dms(dms, ref):
-            degrees = dms[0]
-            minutes = dms[1]
-            seconds = dms[2]
-            decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
-            if ref in ['S', 'W']:
-                decimal = -decimal
-            return decimal
-
-        lat = None
-        lng = None
-        if "gps" in exif_data:
-            try:
-                gps = exif_data["gps"]
-                lat = get_decimal_from_dms(gps["GPSLatitude"], gps["GPSLatitudeRef"])
-                lng = get_decimal_from_dms(gps["GPSLongitude"], gps["GPSLongitudeRef"])
-            except:
-                pass
-
-        # 6. Update Firestore Metadata
-        doc_ref = firestore_client.collection('media_items').document(media_uuid)
-        doc_ref.set({
-            'status': 'processed',
-            'urls': {
-                'thumbnail': f"gs://{GALLERY_BUCKET}/{thumb_path}",
-                'display': f"gs://{GALLERY_BUCKET}/{display_path}",
-                'archive': f"gs://{ARCHIVE_BUCKET}/{file_name}"
+        update = {
+            "status": "processed",
+            "aiStatus": "pending",
+            "storage.originalPath": object_name,
+            "storage.originalGsUri": f"gs://{bucket_name}/{object_name}",
+            "storage.displayPath": display_path,
+            "storage.displayGsUri": f"gs://{bucket_name}/{display_path}",
+            "storage.thumbnailPath": thumbnail_path,
+            "storage.thumbnailGsUri": f"gs://{bucket_name}/{thumbnail_path}",
+            "storage.archiveGsUri": f"gs://{ARCHIVE_BUCKET}/{archive_path}",
+            "processing.sourceGeneration": generation,
+            "processing.completedAt": firestore.SERVER_TIMESTAMP,
+            "processing.originalDimensions": {
+                "width": original_width,
+                "height": original_height,
             },
-            'dimensions': {
-                'original': f"{original_width}x{original_height}",
-                'display': f"{display_width}x{display_height}"
+            "processing.displayDimensions": {
+                "width": display_width,
+                "height": display_height,
             },
-            'location': {
-                'latitude': lat,
-                'longitude': lng
-            } if lat and lng else None,
-            'takenAt': exif_data.get('DateTimeOriginal') or exif_data.get('DateTime'),
-            'aiStatus': 'pending',
-            'processedAt': firestore.SERVER_TIMESTAMP
-        }, merge=True)
+            "processedAt": firestore.SERVER_TIMESTAMP,
+            "updatedAt": firestore.SERVER_TIMESTAMP,
+        }
+        if exif.get("dateTaken"):
+            update["processing.dateTaken"] = exif["dateTaken"]
+        if exif.get("cameraMake"):
+            update["processing.cameraMake"] = exif["cameraMake"]
+        if exif.get("cameraModel"):
+            update["processing.cameraModel"] = exif["cameraModel"]
+        if exif.get("location"):
+            update["processing.location"] = exif["location"]
 
-        print(f"Updated Firestore document: {media_uuid} with location: {lat}, {lng}")
+        media_ref.update(update)
+        print(f"Preservation completed for media_items/{media_id}")
 
+    except Exception as error:
+        print(f"Preservation failed for {media_id}: {error}")
+        media_ref.update(
+            {
+                "status": "processing_failed",
+                "processingError": str(error)[:1000],
+                "processing.failedAt": firestore.SERVER_TIMESTAMP,
+                "updatedAt": firestore.SERVER_TIMESTAMP,
+            }
+        )
+        raise
     finally:
-        # Cleanup local file to prevent storage leaks
-        if original_image is not None:
-            original_image.close()
-        if os.path.exists(temp_local_filename):
-            os.remove(temp_local_filename)
+        if os.path.exists(local_path):
+            os.remove(local_path)

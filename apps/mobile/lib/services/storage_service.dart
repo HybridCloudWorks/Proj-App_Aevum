@@ -1,9 +1,10 @@
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart';
 
 class StorageService {
   final FirebaseStorage _storage;
@@ -11,9 +12,6 @@ class StorageService {
   final FirebaseAuth _auth;
   final Uuid _uuid;
 
-  /// Creates a new [StorageService] instance.
-  ///
-  /// Optional parameters allow injecting mocks for testing.
   StorageService({
     FirebaseStorage? storage,
     FirebaseFirestore? firestore,
@@ -22,115 +20,149 @@ class StorageService {
   })  : _storage = storage ?? FirebaseStorage.instance,
         _firestore = firestore ?? FirebaseFirestore.instance,
         _auth = auth ?? FirebaseAuth.instance,
-        _uuid = uuid ?? Uuid();
+        _uuid = uuid ?? const Uuid();
 
-  /// Uploads a file to Firebase Storage and creates a corresponding Firestore document.
-  /// Returns the document ID (UUID) of the uploaded media.
-  Future<String?> uploadMedia({
+  String _safeFileName(String filePath) {
+    return path.basename(filePath).replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+  }
+
+  String _contentType(String filePath) {
+    switch (path.extension(filePath).toLowerCase()) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.webp':
+        return 'image/webp';
+      case '.heic':
+        return 'image/heic';
+      case '.heif':
+        return 'image/heif';
+      default:
+        throw ArgumentError('Unsupported image type: ${path.extension(filePath)}');
+    }
+  }
+
+  /// Reserve a canonical media record, upload its immutable original, and mark
+  /// the record uploaded. The backend preservation processor owns derivatives,
+  /// archival copies, EXIF normalization, and AI handoff.
+  Future<String> uploadMedia({
     required File file,
-    required String category, // e.g., 'family_photos', 'documents', 'scans'
+    required String familyId,
+    required String category,
+    String? title,
     String? description,
     List<String>? tags,
     String? albumId,
   }) async {
+    final User? user = _auth.currentUser;
+    if (user == null) throw Exception('User not authenticated');
+
+    final String mediaId = _uuid.v4();
+    final String fileName = _safeFileName(file.path);
+    final String contentType = _contentType(file.path);
+    final String storagePath =
+        'families/$familyId/media/$mediaId/original/$fileName';
+    final DocumentReference<Map<String, dynamic>> mediaRef =
+        _firestore.collection('media_items').doc(mediaId);
+
+    await mediaRef.set({
+      'familyId': familyId,
+      'createdBy': user.uid,
+      'uploadedBy': user.uid,
+      'title': title ?? path.basenameWithoutExtension(file.path),
+      'description': description ?? '',
+      'category': category,
+      'tags': tags ?? <String>[],
+      'memberIds': <String>[],
+      'albumIds': albumId != null ? <String>[albumId] : <String>[],
+      'status': 'uploading',
+      'aiStatus': 'waiting',
+      'storage': <String, dynamic>{},
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
     try {
-      final User? user = _auth.currentUser;
-      if (user == null) throw Exception('User not authenticated');
-
-      // 1. Generate Unique ID & Path Strategy
-      // Path: uploads/{userId}/{year}/{month}/{category}/{uuid}.ext
-      final String uuid = _uuid.v4();
-      final String fileExt = path.extension(file.path);
-      final DateTime now = DateTime.now();
-      final String storagePath =
-          'uploads/${user.uid}/${now.year}/${now.month}/$category/$uuid$fileExt';
-
-      // 2. Upload to Firebase Storage
-      final Reference ref = _storage.ref().child(storagePath);
-      final UploadTask uploadTask = ref.putFile(
+      final Reference storageRef = _storage.ref().child(storagePath);
+      final TaskSnapshot snapshot = await storageRef.putFile(
         file,
         SettableMetadata(
-          contentType: 'image/${fileExt.replaceAll('.', '')}',
+          contentType: contentType,
           customMetadata: {
-            'originalName': path.basename(file.path),
+            'mediaId': mediaId,
+            'familyId': familyId,
             'uploadedBy': user.uid,
-            'category': category,
-            'uuid': uuid,
+            'originalName': path.basename(file.path),
           },
         ),
       );
-
-      final TaskSnapshot snapshot = await uploadTask;
       final String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      // 3. Create Metadata Document in Firestore
-      // Global Collection: media_items (for scalable querying)
-      // Categorization happens via fields, not folder structure.
-      await _firestore.collection('media_items').doc(uuid).set({
-        'id': uuid,
-        'userId': user.uid,
-        'storagePath': storagePath,
-        'url': downloadUrl,
-        'category': category, // High-level Type: Photo, Video, Document
-        'tags': tags ?? [],
-        'albumIds': albumId != null ? [albumId] : [],
-        'description': description ?? '',
-        'metadata': {
-          'size': snapshot.totalBytes,
-          'contentType': snapshot.metadata?.contentType,
-          'created': FieldValue.serverTimestamp(),
+      await mediaRef.update({
+        'status': 'uploaded',
+        'photoUrl': downloadUrl,
+        'thumbnailUrl': downloadUrl,
+        'storage.originalPath': storagePath,
+        'imageMetadata': {
+          'fileSize': snapshot.totalBytes,
+          'contentType': snapshot.metadata?.contentType ?? contentType,
           'originalName': path.basename(file.path),
         },
-        'aiStatus': 'pending', // Trigger for AI processing
+        'uploadCompletedAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      return uuid;
-    } catch (e) {
-      // Error handling should ideally use a logging framework
-      return null;
+      return mediaId;
+    } catch (error) {
+      await mediaRef.update({
+        'status': 'upload_failed',
+        'uploadError': error.toString(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      rethrow;
     }
   }
 
-  /// Requests AI restoration for a media item.
   Future<void> requestRestoration({
     required String mediaId,
     required bool colorize,
     required bool sharpen,
     required bool repair,
   }) async {
-    try {
-      await _firestore.collection('media_items').doc(mediaId).update({
-        'aiStatus': 'restoration_pending',
-        'restorationParams': {
-          'colorize': colorize,
-          'sharpen': sharpen,
-          'repair': repair,
-          'requestedAt': FieldValue.serverTimestamp(),
-        },
-      });
-    } catch (e) {
-      rethrow;
-    }
+    await _firestore.collection('media_items').doc(mediaId).update({
+      'aiStatus': 'restoration_pending',
+      'restorationParams': {
+        'colorize': colorize,
+        'sharpen': sharpen,
+        'repair': repair,
+        'requestedAt': FieldValue.serverTimestamp(),
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
   }
 
-  /// Creates a new logical Album in Firestore.
-  Future<String> createAlbum(String title, {String? description}) async {
+  /// Create a family-scoped album. Authorization is inherited from family RBAC;
+  /// a genealogical relationship never grants application access.
+  Future<String> createAlbum(
+    String name, {
+    required String familyId,
+    String? description,
+  }) async {
     final User? user = _auth.currentUser;
     if (user == null) throw Exception('User not authenticated');
 
     final String albumId = _uuid.v4();
     await _firestore.collection('albums').doc(albumId).set({
-      'id': albumId,
-      'ownerId': user.uid,
-      'title': title,
+      'familyId': familyId,
+      'createdBy': user.uid,
+      'name': name,
       'description': description ?? '',
-      'created': FieldValue.serverTimestamp(),
-      'coverPhotoUrl': null,
-      'itemCount': 0,
-      'sharedWith': [],
+      'mediaIds': <String>[],
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
     return albumId;
   }
 }
-
-

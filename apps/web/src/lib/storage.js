@@ -1,19 +1,19 @@
 /**
  * Firebase Storage service for Aevum media.
  *
- * The memory/thumbnails paths remain temporarily compatible with the PR-01
- * uploader. PR-03 migrates family media to media/{mediaId}/original|derived.
+ * Family media uploads require a pre-reserved mediaId and always write to the
+ * canonical immutable original path. Client-side thumbnails are intentionally
+ * not generated; the preservation processor owns all derivatives.
  */
 
 import {
   deleteObject,
   getDownloadURL,
-  listAll,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "./firebase";
-import { createThumbnail, extractImageMetadata } from "./imageMetadata";
+import { extractImageMetadata } from "./imageMetadata";
 
 const MAX_CACHE_SIZE = 500;
 const downloadUrlCache = new Map();
@@ -50,14 +50,13 @@ async function getCachedDownloadURL(storageRef) {
   return downloadUrlCache.get(key);
 }
 
-function waitForUpload(uploadTask, onProgress = () => {}, progressWeight = 1) {
+function waitForUpload(uploadTask, onProgress = () => {}) {
   return new Promise((resolve, reject) => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         if (!snapshot.totalBytes) return;
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        onProgress(progress * progressWeight);
+        onProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
       },
       reject,
       () => resolve(uploadTask.snapshot),
@@ -70,16 +69,24 @@ export async function uploadPhoto(
   familyId,
   userId,
   onProgress = () => {},
-  options = { extractMetadata: true, createThumbnail: true },
+  options = {},
 ) {
+  const mediaId = options.mediaId;
+  if (!mediaId) {
+    return {
+      success: false,
+      mediaId: null,
+      error: "A reserved mediaId is required before uploading family media.",
+    };
+  }
+
   try {
-    const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const path = `families/${familyId}/memories/${timestamp}_${safeName}`;
+    const path = `families/${familyId}/media/${mediaId}/original/${safeName}`;
     const storageRef = ref(storage, path);
 
     let imageMetadata = null;
-    if (options.extractMetadata) {
+    if (options.extractMetadata !== false) {
       try {
         imageMetadata = await extractImageMetadata(file);
       } catch (error) {
@@ -88,6 +95,8 @@ export async function uploadPhoto(
     }
 
     const customMetadata = {
+      mediaId,
+      familyId,
       uploadedBy: userId,
       originalName: file.name,
       uploadedAt: new Date().toISOString(),
@@ -101,65 +110,39 @@ export async function uploadPhoto(
       }),
     };
 
-    const mainTask = uploadBytesResumable(storageRef, file, {
+    const uploadTask = uploadBytesResumable(storageRef, file, {
       contentType: file.type,
       customMetadata,
     });
 
-    const progressWeight = options.createThumbnail ? 0.8 : 1;
-    let mainSnapshot;
+    let snapshot;
     try {
-      mainSnapshot = await waitForUpload(mainTask, onProgress, progressWeight);
+      snapshot = await waitForUpload(uploadTask, onProgress);
     } catch (error) {
       console.error("Upload error:", error);
       return {
         success: false,
+        mediaId,
         error: getStorageErrorMessage(error.code),
       };
     }
 
-    const uploadedRef = mainSnapshot?.ref || mainTask.snapshot?.ref || storageRef;
+    const uploadedRef = snapshot?.ref || uploadTask.snapshot?.ref || storageRef;
     evictDownloadUrl(uploadedRef);
     const url = await getCachedDownloadURL(uploadedRef);
-
-    let thumbnailUrl = null;
-    if (options.createThumbnail) {
-      try {
-        const thumbnail = await createThumbnail(
-          file,
-          200,
-          imageMetadata
-            ? { width: imageMetadata.width, height: imageMetadata.height }
-            : null,
-        );
-
-        if (thumbnail) {
-          const thumbnailPath = `families/${familyId}/thumbnails/${timestamp}_${safeName}`;
-          const thumbnailRef = ref(storage, thumbnailPath);
-          const thumbnailTask = uploadBytesResumable(thumbnailRef, thumbnail, {
-            contentType: "image/jpeg",
-          });
-          const thumbnailSnapshot = await thumbnailTask;
-          const uploadedThumbnailRef = thumbnailSnapshot?.ref || thumbnailRef;
-          evictDownloadUrl(uploadedThumbnailRef);
-          thumbnailUrl = await getCachedDownloadURL(uploadedThumbnailRef);
-        }
-      } catch (error) {
-        console.warn("Thumbnail creation failed:", error);
-      }
-    }
 
     onProgress(100);
     return {
       success: true,
+      mediaId,
       url,
       path,
-      thumbnailUrl,
+      thumbnailUrl: null,
       metadata: imageMetadata,
     };
   } catch (error) {
     console.error("Upload photo error:", error);
-    return { success: false, error: error.message };
+    return { success: false, mediaId, error: error.message };
   }
 }
 
@@ -168,10 +151,24 @@ export async function uploadMultiplePhotos(
   familyId,
   userId,
   onProgress = () => {},
+  options = {},
 ) {
   const fileArray = Array.from(files || []);
   if (!fileArray.length) {
     return { success: true, results: [], failed: [] };
+  }
+
+  const mediaIds = options.mediaIds || [];
+  if (mediaIds.length !== fileArray.length || mediaIds.some((id) => !id)) {
+    return {
+      success: false,
+      results: [],
+      failed: fileArray.map((file, index) => ({
+        file: file.name,
+        mediaId: mediaIds[index] || null,
+        error: "Every file requires a reserved mediaId before upload.",
+      })),
+    };
   }
 
   const progressByFile = new Array(fileArray.length).fill(0);
@@ -179,12 +176,21 @@ export async function uploadMultiplePhotos(
 
   const uploadResults = await Promise.all(
     fileArray.map(async (file, index) => {
-      const result = await uploadPhoto(file, familyId, userId, (progress) => {
-        totalProgress -= progressByFile[index];
-        progressByFile[index] = progress;
-        totalProgress += progress;
-        onProgress(totalProgress / fileArray.length);
-      });
+      const result = await uploadPhoto(
+        file,
+        familyId,
+        userId,
+        (progress) => {
+          totalProgress -= progressByFile[index];
+          progressByFile[index] = progress;
+          totalProgress += progress;
+          onProgress(totalProgress / fileArray.length);
+        },
+        {
+          mediaId: mediaIds[index],
+          extractMetadata: options.extractMetadata !== false,
+        },
+      );
 
       return { file: file.name, ...result };
     }),
@@ -193,7 +199,11 @@ export async function uploadMultiplePhotos(
   const results = uploadResults.filter((result) => result.success);
   const failed = uploadResults
     .filter((result) => !result.success)
-    .map((result) => ({ file: result.file, error: result.error }));
+    .map((result) => ({
+      file: result.file,
+      mediaId: result.mediaId,
+      error: result.error,
+    }));
 
   onProgress(100);
   return { success: failed.length === 0, results, failed };
@@ -218,22 +228,6 @@ export async function deletePhoto(path) {
     return { success: true };
   } catch (error) {
     console.error("Delete photo error:", error);
-    return { success: false, error: getStorageErrorMessage(error.code) };
-  }
-}
-
-export async function listFamilyPhotos(familyId) {
-  try {
-    const result = await listAll(ref(storage, `families/${familyId}/memories`));
-    return {
-      success: true,
-      photos: result.items.map((itemRef) => ({
-        name: itemRef.name,
-        path: itemRef.fullPath,
-      })),
-    };
-  } catch (error) {
-    console.error("List photos error:", error);
     return { success: false, error: getStorageErrorMessage(error.code) };
   }
 }
@@ -299,7 +293,13 @@ function getStorageErrorMessage(code) {
 export function validateFile(file, options = {}) {
   const {
     maxSizeMB = 10,
-    allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic"],
+    allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+    ],
   } = options;
 
   if (!file) return { valid: false, error: "No file provided." };
@@ -308,7 +308,7 @@ export function validateFile(file, options = {}) {
     return {
       valid: false,
       error:
-        "File type not supported. Please upload a JPEG, PNG, WebP, or HEIC image.",
+        "File type not supported. Please upload a JPEG, PNG, WebP, HEIC, or HEIF image.",
     };
   }
 
