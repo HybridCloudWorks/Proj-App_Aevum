@@ -1,19 +1,25 @@
 terraform {
+  required_version = ">= 1.6.0, < 2.0.0"
+
+  # Partial backend configuration. Supply bucket/prefix during `terraform init`
+  # per environment; never keep production state on a developer workstation.
+  backend "gcs" {}
+
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 5.0.0"
+      version = "~> 7.45"
     }
   }
 }
 
 variable "project_id" {
-  description = "GCP Project ID"
+  description = "GCP/Firebase project ID"
   type        = string
 }
 
 variable "region" {
-  description = "GCP Region for resources"
+  description = "GCP region for storage resources"
   type        = string
   default     = "us-central1"
 }
@@ -23,42 +29,37 @@ provider "google" {
   region  = var.region
 }
 
-# 1. Ingestion Bucket (Temporary Holding)
-# Users upload here directly.
+# Build-source staging only. Authenticated users do NOT upload media here.
 resource "google_storage_bucket" "uploads_temp" {
-  name          = "${var.project_id}-uploads-temp"
-  location      = var.region
-  force_destroy = false
+  name                        = "${var.project_id}-uploads-temp"
+  location                    = var.region
+  force_destroy               = false
   uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
 
+  # Function source archives are content-addressed. Retain them long enough for
+  # rollback/debugging without leaving an unbounded build-artifact bucket.
   lifecycle_rule {
     condition {
-      age = 1 # Delete temp files after 24 hours if processing failed or succeeded and moved
+      age = 30
     }
     action {
       type = "Delete"
     }
   }
-
-  cors {
-    origin          = ["*"]
-    method          = ["GET", "HEAD", "PUT", "POST", "DELETE"]
-    response_header = ["*"]
-    max_age_seconds = 3600
-  }
 }
 
-# 2. Archive Bucket (Cold Storage - The "Digital Negative")
-# Stores original high-res uploads (TIFF, RAW, PNG).
+# Immutable-preservation destination for exact source generations.
 resource "google_storage_bucket" "archive" {
-  name          = "${var.project_id}-archive"
-  location      = var.region
-  storage_class = "COLDLINE"
+  name                        = "${var.project_id}-archive"
+  location                    = var.region
+  storage_class               = "COLDLINE"
   uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
 
   lifecycle_rule {
     condition {
-      age = 365 # Move to Archive (Deep Cold) after 1 year if untouched
+      age = 365
     }
     action {
       type          = "SetStorageClass"
@@ -71,13 +72,15 @@ resource "google_storage_bucket" "archive" {
   }
 }
 
-# 3. Gallery Bucket (Hot/Warm Storage - Display)
-# Stores optimized WebP versions for the app.
+# Legacy gallery bucket retained to avoid destructive migration in this release.
+# PR-03 moved canonical display/thumbnail derivatives into Firebase Storage.
+# Do not add new application dependencies or public CORS behavior here.
 resource "google_storage_bucket" "gallery" {
-  name          = "${var.project_id}-gallery"
-  location      = var.region
-  storage_class = "STANDARD"
+  name                        = "${var.project_id}-gallery"
+  location                    = var.region
+  storage_class               = "STANDARD"
   uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
 
   lifecycle_rule {
     condition {
@@ -85,22 +88,11 @@ resource "google_storage_bucket" "gallery" {
     }
     action {
       type          = "SetStorageClass"
-      storage_class = "NEARLINE" # Move display assets to cheaper tier if not viewed in 3 months
+      storage_class = "NEARLINE"
     }
-  }
-
-  cors {
-    origin          = ["*"]
-    method          = ["GET", "HEAD"]
-    response_header = ["*"]
-    max_age_seconds = 3600
   }
 }
 
-# Note: Firestore is often created manually via Firebase Console, but this resource exists if needed.
-# resource "google_firestore_database" "database" {
-#   project     = var.project_id
-#   name        = "(default)"
-#   location_id = var.region
-#   type        = "FIRESTORE_NATIVE"
-# }
+# Firestore lifecycle remains managed through the existing Firebase/GCP project.
+# If Terraform takes ownership later, import the existing database before adding
+# a google_firestore_database resource to avoid replacement/drift.
