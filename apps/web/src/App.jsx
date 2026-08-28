@@ -10,9 +10,10 @@
  */
 
 import { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import AppErrorBoundary from "@/components/AppErrorBoundary";
 import MainLayout from "@/layouts/MainLayout";
 import { InfrastructureProvider } from "@/contexts/InfrastructureContext";
 import { ROUTES } from "@/lib/routes";
@@ -119,6 +120,7 @@ const SpatialHeritageTree = lazy(
 const AIResourceManager = lazy(
   () => import("@screens/ai-features/AIResourceManager"),
 );
+const NotFoundScreen = lazy(() => import("@screens/errors/NotFoundScreen"));
 
 // Loading fallback component
 function LoadingFallback() {
@@ -132,358 +134,359 @@ function LoadingFallback() {
 
 function App() {
   return (
-    <AuthProvider>
-      <InfrastructureProvider>
-        <BrowserRouter>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              {/* Screen Gallery - Browse all Stitch screens */}
-              <Route path={ROUTES.GALLERY} element={<ScreenGallery />} />
+    <AppErrorBoundary>
+      <AuthProvider>
+        <InfrastructureProvider>
+          <BrowserRouter>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                {/* Screen Gallery - Browse all Stitch screens */}
+                <Route path={ROUTES.GALLERY} element={<ScreenGallery />} />
 
-              {/* Public routes */}
-              <Route path={ROUTES.HOME} element={<WelcomeScreen />} />
-              <Route path={ROUTES.WELCOME} element={<WelcomeScreen />} />
-              <Route path={ROUTES.AUTH} element={<AuthScreen />} />
+                {/* Public routes */}
+                <Route path={ROUTES.HOME} element={<WelcomeScreen />} />
+                <Route path={ROUTES.WELCOME} element={<WelcomeScreen />} />
+                <Route path={ROUTES.AUTH} element={<AuthScreen />} />
 
-              {/* Main Application Routes */}
-              <Route
-                path={ROUTES.MEMORIES}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <MemoriesScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.EXPLORER}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <ExplorerScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.VAULT}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <VaultScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.LEGACY}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <LegacyPlanningScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.STORY_DETAILS}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <FamilyStoryScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              {/* Temporary route to see the story without ID for demo */}
-              <Route
-                path={ROUTES.STORY_SAMPLE}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <FamilyStoryScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.MESSAGES}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <MessengerHubScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
+                {/* Main Application Routes */}
+                <Route
+                  path={ROUTES.MEMORIES}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <MemoriesScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.EXPLORER}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <ExplorerScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.VAULT}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <VaultScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.LEGACY}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <LegacyPlanningScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.STORY_DETAILS}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <FamilyStoryScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                {/* Temporary route to see the story without ID for demo */}
+                <Route
+                  path={ROUTES.STORY_SAMPLE}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <FamilyStoryScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.MESSAGES}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <MessengerHubScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Protected routes - Require authentication */}
-              <Route
-                path={ROUTES.DASHBOARD}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <DashboardScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.FAMILY_TREE}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <FamilyTreeScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              {/* Duplicate MEMORIES route removed, it was already handled above */}
+                {/* Protected routes - Require authentication */}
+                <Route
+                  path={ROUTES.DASHBOARD}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <DashboardScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.FAMILY_TREE}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <FamilyTreeScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route
-                path={ROUTES.UPLOAD}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <UploadScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.UPLOAD_CONFLICT}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <FileConflictScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.HERITAGE_MAP}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <HeritageMapScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_HUB}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <AIFeaturesScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_IDENTITY_MATCHER}
-                element={
-                  <ProtectedRoute>
-                    <IdentityMatcherScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_DISCOVERY}
-                element={
-                  <ProtectedRoute>
-                    <SemanticDiscoveryScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_RESTORATION}
-                element={
-                  <ProtectedRoute>
-                    <RestorationScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_IDENTITY_TAGGING}
-                element={
-                  <ProtectedRoute>
-                    <IdentityTaggingScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.APPROVAL_HUB}
-                element={
-                  <ProtectedRoute>
-                    <ApprovalHubScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.MESSAGES_ACCESS}
-                element={
-                  <ProtectedRoute>
-                    <BranchAccessScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.MESSAGES_COLLAB}
-                element={
-                  <ProtectedRoute>
-                    <BranchCollaborationScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.PROFILE}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <IdentityScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS}
-                element={
-                  <ProtectedRoute>
-                    <MainLayout>
-                      <SettingsScreen />
-                    </MainLayout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_DELEGATION}
-                element={
-                  <ProtectedRoute>
-                    <AdminDelegationScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_LEGACY_HANDOVER}
-                element={
-                  <ProtectedRoute>
-                    <LegacyHandoverScreen />
-                  </ProtectedRoute>
-                }
-              />
+                <Route
+                  path={ROUTES.UPLOAD}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <UploadScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.UPLOAD_CONFLICT}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <FileConflictScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.HERITAGE_MAP}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <HeritageMapScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_HUB}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <AIFeaturesScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_IDENTITY_MATCHER}
+                  element={
+                    <ProtectedRoute>
+                      <IdentityMatcherScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_DISCOVERY}
+                  element={
+                    <ProtectedRoute>
+                      <SemanticDiscoveryScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_RESTORATION}
+                  element={
+                    <ProtectedRoute>
+                      <RestorationScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_IDENTITY_TAGGING}
+                  element={
+                    <ProtectedRoute>
+                      <IdentityTaggingScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.APPROVAL_HUB}
+                  element={
+                    <ProtectedRoute>
+                      <ApprovalHubScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.MESSAGES_ACCESS}
+                  element={
+                    <ProtectedRoute>
+                      <BranchAccessScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.MESSAGES_COLLAB}
+                  element={
+                    <ProtectedRoute>
+                      <BranchCollaborationScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.PROFILE}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <IdentityScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS}
+                  element={
+                    <ProtectedRoute>
+                      <MainLayout>
+                        <SettingsScreen />
+                      </MainLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_DELEGATION}
+                  element={
+                    <ProtectedRoute>
+                      <AdminDelegationScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_LEGACY_HANDOVER}
+                  element={
+                    <ProtectedRoute>
+                      <LegacyHandoverScreen />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route
-                path={ROUTES.SETTINGS_INFRASTRUCTURE}
-                element={
-                  <ProtectedRoute>
-                    <InfrastructureControlScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_VAULT_HEALTH}
-                element={
-                  <ProtectedRoute>
-                    <VaultHealthScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_REDUNDANCY}
-                element={
-                  <ProtectedRoute>
-                    <CloudRedundancyScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_STORAGE_ARCHITECTURE}
-                element={
-                  <ProtectedRoute>
-                    <StorageArchitectureScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_CATALOG_ENGINE}
-                element={
-                  <ProtectedRoute>
-                    <CatalogEngineScreen />
-                  </ProtectedRoute>
-                }
-              />
+                <Route
+                  path={ROUTES.SETTINGS_INFRASTRUCTURE}
+                  element={
+                    <ProtectedRoute>
+                      <InfrastructureControlScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_VAULT_HEALTH}
+                  element={
+                    <ProtectedRoute>
+                      <VaultHealthScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_REDUNDANCY}
+                  element={
+                    <ProtectedRoute>
+                      <CloudRedundancyScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_STORAGE_ARCHITECTURE}
+                  element={
+                    <ProtectedRoute>
+                      <StorageArchitectureScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_CATALOG_ENGINE}
+                  element={
+                    <ProtectedRoute>
+                      <CatalogEngineScreen />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Privacy Routes */}
-              <Route
-                path={ROUTES.SETTINGS_PRIVACY_RULES}
-                element={
-                  <ProtectedRoute>
-                    <PrivacyRulesScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_PRIVACY_SECURITY}
-                element={
-                  <ProtectedRoute>
-                    <PrivacySecurityScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SETTINGS_RESTRICTED_PROFILE}
-                element={
-                  <ProtectedRoute>
-                    <RestrictedProfileScreen />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Privacy Routes */}
+                <Route
+                  path={ROUTES.SETTINGS_PRIVACY_RULES}
+                  element={
+                    <ProtectedRoute>
+                      <PrivacyRulesScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_PRIVACY_SECURITY}
+                  element={
+                    <ProtectedRoute>
+                      <PrivacySecurityScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SETTINGS_RESTRICTED_PROFILE}
+                  element={
+                    <ProtectedRoute>
+                      <RestrictedProfileScreen />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Spatial Features */}
-              <Route
-                path={ROUTES.SPATIAL_GALLERY}
-                element={
-                  <ProtectedRoute>
-                    <SpatialMemoryGallery />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SPATIAL_HERITAGE_TREE}
-                element={
-                  <ProtectedRoute>
-                    <SpatialHeritageTree />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={ROUTES.AI_RESOURCE_MANAGER}
-                element={
-                  <ProtectedRoute>
-                    <AIResourceManager />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Spatial Features */}
+                <Route
+                  path={ROUTES.SPATIAL_GALLERY}
+                  element={
+                    <ProtectedRoute>
+                      <SpatialMemoryGallery />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.SPATIAL_HERITAGE_TREE}
+                  element={
+                    <ProtectedRoute>
+                      <SpatialHeritageTree />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path={ROUTES.AI_RESOURCE_MANAGER}
+                  element={
+                    <ProtectedRoute>
+                      <AIResourceManager />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Admin routes */}
-              <Route
-                path={ROUTES.ADMIN_ROOT}
-                element={
-                  <ProtectedRoute>
-                    <AdminScreen />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Admin routes */}
+                <Route
+                  path={ROUTES.ADMIN_ROOT}
+                  element={
+                    <ProtectedRoute>
+                      <AdminScreen />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </InfrastructureProvider>
-    </AuthProvider>
+                {/* Fallback */}
+                <Route path="*" element={<NotFoundScreen />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </InfrastructureProvider>
+      </AuthProvider>
+    </AppErrorBoundary>
   );
 }
 
