@@ -1,51 +1,62 @@
 /**
- * Auth Context Provider
- *
- * React context for authentication state management.
- * Provides user state and auth methods to all components.
+ * Authentication context for Firebase user and trusted ID-token claims.
  */
 
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
-import { onAuthChange } from "../lib/auth";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { onIdTokenChanged } from "firebase/auth";
+import { auth } from "../lib/firebase";
 
 const AuthContext = createContext(null);
 
-/**
- * Auth Provider Component
- * Wraps the app and provides auth state to all children.
- */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [claims, setClaims] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Subscribe to auth state changes
-    const unsubscribe = onAuthChange((authUser) => {
+    let active = true;
+
+    const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
+      if (!active) return;
       setUser(authUser);
-      setLoading(false);
+
+      if (!authUser) {
+        setClaims({});
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const token = await authUser.getIdTokenResult();
+        if (active) setClaims(token.claims || {});
+      } catch (error) {
+        console.error("Failed to read authentication claims:", error);
+        if (active) setClaims({});
+      } finally {
+        if (active) setLoading(false);
+      }
     });
 
-    // Cleanup subscription
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
-  // ⚡ Bolt Optimization: Memoize context value to prevent unnecessary re-renders of all consuming components when AuthProvider re-renders
   const value = useMemo(
     () => ({
       user,
+      claims,
       loading,
-      isAuthenticated: !!user,
+      isAuthenticated: Boolean(user),
+      isAdmin: claims.admin === true,
     }),
-    [user, loading],
+    [user, claims, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-/**
- * Hook to access auth context
- * @returns {Object} Auth context value
- */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === null) {
