@@ -1,12 +1,14 @@
 /**
  * Aevum Firestore service.
  *
- * PR-01 recovery note: this module intentionally keeps the existing public API
- * while removing duplicate/partially merged implementations. Data-model and
- * authorization changes are handled in the canonical-data-contract follow-up.
+ * Canonical contract: docs/architecture/data-contract.md
+ * Authentication collaborators and genealogical people are intentionally
+ * separate concepts. Family authorization is rooted at the family document.
  */
 
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -27,10 +29,15 @@ import { db } from "./firebase";
 const COLLECTIONS = Object.freeze({
   USERS: "users",
   FAMILIES: "families",
-  MEMBERS: "members",
+  FAMILY_MEMBERS: "family_members",
   MEDIA_ITEMS: "media_items",
+  ALBUMS: "albums",
   AI_TASKS: "ai_tasks",
 });
+
+const COLLABORATORS = "collaborators";
+const VALID_COLLABORATOR_ROLES = new Set(["editor", "viewer"]);
+const VALID_COLLABORATOR_STATUSES = new Set(["active", "invited", "revoked"]);
 
 function documentData(snapshot) {
   if (!snapshot.exists()) return null;
@@ -46,7 +53,16 @@ function errorResult(context, error, fallback = {}) {
   return { success: false, ...fallback, error: error.message };
 }
 
+function stripImmutableFields(data, fields) {
+  const sanitized = { ...data };
+  for (const field of fields) delete sanitized[field];
+  return sanitized;
+}
+
+// -----------------------------------------------------------------------------
 // User profiles
+// -----------------------------------------------------------------------------
+
 export async function getUserProfile(userId) {
   try {
     const snapshot = await getDoc(doc(db, COLLECTIONS.USERS, userId));
@@ -61,8 +77,16 @@ export async function getUserProfile(userId) {
 
 export async function updateUserProfile(userId, updates) {
   try {
+    const safeUpdates = stripImmutableFields(updates, [
+      "uid",
+      "createdAt",
+      "admin",
+      "role",
+      "roles",
+      "claims",
+    ]);
     await updateDoc(doc(db, COLLECTIONS.USERS, userId), {
-      ...updates,
+      ...safeUpdates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
@@ -79,19 +103,30 @@ export function subscribeToUserProfile(userId, callback, onError) {
   );
 }
 
-// Families
+// -----------------------------------------------------------------------------
+// Families and collaborators
+// -----------------------------------------------------------------------------
+
 export async function createFamily(userId, familyData) {
   try {
     const familyRef = doc(collection(db, COLLECTIONS.FAMILIES));
-    const members = Array.from(new Set([...(familyData.members || []), userId]));
+    const safeFamilyData = stripImmutableFields(familyData, [
+      "ownerId",
+      "createdBy",
+      "collaboratorIds",
+      "members",
+      "createdAt",
+      "updatedAt",
+    ]);
 
     await setDoc(familyRef, {
-      ...familyData,
+      ...safeFamilyData,
       ownerId: userId,
-      members,
+      createdBy: userId,
+      collaboratorIds: [userId],
+      memberCount: familyData.memberCount ?? 0,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      memberCount: familyData.memberCount ?? 0,
     });
 
     return { success: true, familyId: familyRef.id, id: familyRef.id };
@@ -104,7 +139,7 @@ export async function getUserFamilies(userId) {
   try {
     const familiesQuery = query(
       collection(db, COLLECTIONS.FAMILIES),
-      where("ownerId", "==", userId),
+      where("collaboratorIds", "array-contains", userId),
       orderBy("updatedAt", "desc"),
     );
     const snapshot = await getDocs(familiesQuery);
@@ -117,7 +152,7 @@ export async function getUserFamilies(userId) {
 export function subscribeToFamilies(userId, callback, onError) {
   const familiesQuery = query(
     collection(db, COLLECTIONS.FAMILIES),
-    where("ownerId", "==", userId),
+    where("collaboratorIds", "array-contains", userId),
     orderBy("updatedAt", "desc"),
   );
   return onSnapshot(
@@ -127,14 +162,120 @@ export function subscribeToFamilies(userId, callback, onError) {
   );
 }
 
+export function subscribeToFamilyCollaborators(familyId, callback, onError) {
+  return onSnapshot(
+    collection(db, COLLECTIONS.FAMILIES, familyId, COLLABORATORS),
+    (snapshot) => callback(snapshotData(snapshot)),
+    onError,
+  );
+}
+
+export async function setFamilyCollaborator(
+  familyId,
+  userId,
+  role,
+  invitedBy,
+  status = "active",
+) {
+  if (!VALID_COLLABORATOR_ROLES.has(role)) {
+    return { success: false, error: "Role must be editor or viewer" };
+  }
+  if (!VALID_COLLABORATOR_STATUSES.has(status)) {
+    return { success: false, error: "Invalid collaborator status" };
+  }
+
+  try {
+    const familyRef = doc(db, COLLECTIONS.FAMILIES, familyId);
+    const collaboratorRef = doc(
+      db,
+      COLLECTIONS.FAMILIES,
+      familyId,
+      COLLABORATORS,
+      userId,
+    );
+    const collaboratorSnapshot = await getDoc(collaboratorRef);
+    const batch = writeBatch(db);
+    const collaboratorData = {
+      userId,
+      role,
+      status,
+      invitedBy:
+        collaboratorSnapshot.data()?.invitedBy || invitedBy,
+      updatedAt: serverTimestamp(),
+    };
+
+    if (!collaboratorSnapshot.exists()) {
+      collaboratorData.createdAt = serverTimestamp();
+    }
+
+    batch.set(collaboratorRef, collaboratorData, { merge: true });
+    batch.update(familyRef, {
+      collaboratorIds:
+        status === "active" ? arrayUnion(userId) : arrayRemove(userId),
+      updatedAt: serverTimestamp(),
+    });
+
+    await batch.commit();
+    return { success: true };
+  } catch (error) {
+    return errorResult("Error setting family collaborator", error);
+  }
+}
+
+export async function removeFamilyCollaborator(familyId, userId) {
+  try {
+    const familyRef = doc(db, COLLECTIONS.FAMILIES, familyId);
+    const collaboratorRef = doc(
+      db,
+      COLLECTIONS.FAMILIES,
+      familyId,
+      COLLABORATORS,
+      userId,
+    );
+    const batch = writeBatch(db);
+
+    batch.delete(collaboratorRef);
+    batch.update(familyRef, {
+      collaboratorIds: arrayRemove(userId),
+      updatedAt: serverTimestamp(),
+    });
+
+    await batch.commit();
+    return { success: true };
+  } catch (error) {
+    return errorResult("Error removing family collaborator", error);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Media / memories
+// -----------------------------------------------------------------------------
+
+function normalizeMediaCreateData(mediaData) {
+  const safeData = stripImmutableFields(mediaData, [
+    "familyId",
+    "createdAt",
+    "updatedAt",
+  ]);
+  const createdBy =
+    mediaData.createdBy || mediaData.uploadedBy || mediaData.userId || null;
+
+  delete safeData.userId;
+
+  return {
+    ...safeData,
+    createdBy,
+    uploadedBy: mediaData.uploadedBy || createdBy,
+  };
+}
+
 export async function createMediaItem(familyId, mediaData) {
   try {
     const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
     await setDoc(mediaRef, {
-      ...mediaData,
+      ...normalizeMediaCreateData(mediaData),
       familyId,
-      createdAt: mediaData.createdAt || serverTimestamp(),
+      createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
@@ -159,9 +300,9 @@ export async function batchCreateMediaItems(familyId, mediaItemsData = []) {
       for (const item of chunk) {
         const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
         batch.set(mediaRef, {
-          ...item,
+          ...normalizeMediaCreateData(item),
           familyId,
-          createdAt: item.createdAt || serverTimestamp(),
+          createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
         results.push({ id: mediaRef.id, mediaId: mediaRef.id });
@@ -219,8 +360,14 @@ export function subscribeToMediaItems(
 
 export async function updateMediaItem(_familyId, mediaId, updates) {
   try {
+    const safeUpdates = stripImmutableFields(updates, [
+      "familyId",
+      "createdBy",
+      "uploadedBy",
+      "createdAt",
+    ]);
     await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
-      ...updates,
+      ...safeUpdates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
@@ -243,14 +390,23 @@ export const updateMemory = updateMediaItem;
 export const deleteMemory = deleteMediaItem;
 export const batchCreateMemories = batchCreateMediaItems;
 
+// -----------------------------------------------------------------------------
 // Genealogical family members
+// -----------------------------------------------------------------------------
+
 export async function addFamilyMember(familyId, memberData) {
   try {
-    const memberRef = doc(collection(db, COLLECTIONS.MEMBERS));
+    const memberRef = doc(collection(db, COLLECTIONS.FAMILY_MEMBERS));
+    const safeMemberData = stripImmutableFields(memberData, [
+      "familyId",
+      "createdAt",
+      "updatedAt",
+    ]);
+
     await setDoc(memberRef, {
-      ...memberData,
+      ...safeMemberData,
       familyId,
-      createdAt: memberData.createdAt || serverTimestamp(),
+      createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     return { success: true, memberId: memberRef.id, id: memberRef.id };
@@ -261,8 +417,13 @@ export async function addFamilyMember(familyId, memberData) {
 
 export async function updateFamilyMember(_familyId, memberId, updates) {
   try {
-    await updateDoc(doc(db, COLLECTIONS.MEMBERS, memberId), {
-      ...updates,
+    const safeUpdates = stripImmutableFields(updates, [
+      "familyId",
+      "createdBy",
+      "createdAt",
+    ]);
+    await updateDoc(doc(db, COLLECTIONS.FAMILY_MEMBERS, memberId), {
+      ...safeUpdates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
@@ -273,7 +434,7 @@ export async function updateFamilyMember(_familyId, memberId, updates) {
 
 export async function deleteFamilyMember(_familyId, memberId) {
   try {
-    await deleteDoc(doc(db, COLLECTIONS.MEMBERS, memberId));
+    await deleteDoc(doc(db, COLLECTIONS.FAMILY_MEMBERS, memberId));
     return { success: true };
   } catch (error) {
     return errorResult("Error deleting family member", error);
@@ -282,7 +443,7 @@ export async function deleteFamilyMember(_familyId, memberId) {
 
 export function subscribeToFamilyMembers(familyId, callback, onError) {
   const membersQuery = query(
-    collection(db, COLLECTIONS.MEMBERS),
+    collection(db, COLLECTIONS.FAMILY_MEMBERS),
     where("familyId", "==", familyId),
   );
   return onSnapshot(
@@ -292,7 +453,10 @@ export function subscribeToFamilyMembers(familyId, callback, onError) {
   );
 }
 
+// -----------------------------------------------------------------------------
 // AI tasks
+// -----------------------------------------------------------------------------
+
 export function subscribeToAITasks(userId, callback, onError) {
   const tasksQuery = query(
     collection(db, COLLECTIONS.AI_TASKS),
@@ -321,8 +485,13 @@ export async function updateAITaskStatus(taskId, status) {
 export async function createAITask(userId, taskData) {
   try {
     const taskRef = doc(collection(db, COLLECTIONS.AI_TASKS));
+    const safeTaskData = stripImmutableFields(taskData, [
+      "userId",
+      "createdAt",
+      "updatedAt",
+    ]);
     await setDoc(taskRef, {
-      ...taskData,
+      ...safeTaskData,
       userId,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -366,6 +535,9 @@ export default {
   createFamily,
   getUserFamilies,
   subscribeToFamilies,
+  subscribeToFamilyCollaborators,
+  setFamilyCollaborator,
+  removeFamilyCollaborator,
   createMediaItem,
   createMemory,
   batchCreateMediaItems,

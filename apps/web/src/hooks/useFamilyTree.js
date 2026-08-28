@@ -79,12 +79,7 @@ export function useFamilyTree() {
     if (!userId) return { success: false, error: "Not authenticated" };
 
     setError(null);
-    const result = await createFamily(userId, {
-      name,
-      description,
-      createdBy: userId,
-      members: [userId],
-    });
+    const result = await createFamily(userId, { name, description });
 
     if (!result.success) setError(result.error);
     return result;
@@ -99,7 +94,7 @@ export function useFamilyTree() {
     setError(null);
     const result = await addFamilyMember(currentFamilyId, {
       ...memberData,
-      userId: memberData.userId || userId,
+      createdBy: userId,
     });
 
     if (!result.success) setError(result.error);
