@@ -1,8 +1,8 @@
 /**
  * Firebase Storage service for Aevum media.
  *
- * PR-01 keeps the existing storage paths for compatibility. Canonical storage
- * paths and security rules are changed together in the follow-up security PR.
+ * The memory/thumbnails paths remain temporarily compatible with the PR-01
+ * uploader. PR-03 migrates family media to media/{mediaId}/original|derived.
  */
 
 import {
@@ -255,7 +255,10 @@ async function uploadSimplePhoto(file, path) {
 export async function uploadProfilePhoto(file, userId) {
   try {
     const extension = file.name.split(".").pop();
-    return await uploadSimplePhoto(file, `users/${userId}/profile.${extension}`);
+    return await uploadSimplePhoto(
+      file,
+      `users/${userId}/profile/profile.${extension}`,
+    );
   } catch (error) {
     console.error("Upload profile photo error:", error);
     return { success: false, error: error.message };
