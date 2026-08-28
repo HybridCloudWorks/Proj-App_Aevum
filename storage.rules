@@ -20,6 +20,10 @@ service firebase.storage {
         : null;
     }
 
+    function mediaDoc(mediaId) {
+      return firestore.get(/databases/(default)/documents/media_items/$(mediaId));
+    }
+
     function canReadFamily(familyId) {
       let family = familyDoc(familyId);
       return isAdmin() ||
@@ -37,6 +41,16 @@ service firebase.storage {
           collaborator != null &&
           collaborator.data.status == 'active' &&
           collaborator.data.role == 'editor');
+    }
+
+    function validMediaReservation(familyId, mediaId) {
+      let media = mediaDoc(mediaId);
+      return isSignedIn() &&
+        media != null &&
+        media.data.familyId == familyId &&
+        media.data.createdBy == request.auth.uid &&
+        media.data.uploadedBy == request.auth.uid &&
+        media.data.status == 'uploading';
     }
 
     function isSupportedImage() {
@@ -60,10 +74,12 @@ service firebase.storage {
         (isSignedIn() && request.auth.uid == userId);
     }
 
-    // Canonical family media paths. Originals are client-created and immutable.
+    // Canonical family media paths. Originals require a pre-reserved media
+    // document owned by the uploader, are client-created once, and immutable.
     match /families/{familyId}/media/{mediaId}/original/{fileName} {
       allow read: if canReadFamily(familyId);
       allow create: if canWriteFamily(familyId) &&
+        validMediaReservation(familyId, mediaId) &&
         isSupportedImage() &&
         imageWithinLimit();
       allow update: if false;
