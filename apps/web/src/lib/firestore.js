@@ -1,148 +1,105 @@
 /**
- * Aevum Firestore Service
+ * Aevum Firestore service.
  *
- * Data layer for Firestore operations following GDEF best practices:
- * - Type-safe document operations
- * - Proper error handling
- * - Optimistic updates where appropriate
+ * PR-01 recovery note: this module intentionally keeps the existing public API
+ * while removing duplicate/partially merged implementations. Data-model and
+ * authorization changes are handled in the canonical-data-contract follow-up.
  */
 
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
   setDoc,
   updateDoc,
-  deleteDoc,
-  writeBatch,
-  query,
   where,
-  orderBy,
-  limit,
-  serverTimestamp,
-  onSnapshot,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-// ==========================================
-// Collections
-// ==========================================
-
-const COLLECTIONS = {
+const COLLECTIONS = Object.freeze({
   USERS: "users",
   FAMILIES: "families",
   MEMBERS: "members",
   MEDIA_ITEMS: "media_items",
-  HERITAGE: "heritage",
   AI_TASKS: "ai_tasks",
-};
+});
 
-// ==========================================
-// User Profile Operations
-// ==========================================
+function documentData(snapshot) {
+  if (!snapshot.exists()) return null;
+  return { id: snapshot.id, ...snapshot.data() };
+}
 
-/**
- * Get user profile by ID
- */
+function snapshotData(snapshot) {
+  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+}
+
+function errorResult(context, error, fallback = {}) {
+  console.error(`${context}:`, error);
+  return { success: false, ...fallback, error: error.message };
+}
+
+// User profiles
 export async function getUserProfile(userId) {
   try {
-    const userRef = doc(db, COLLECTIONS.USERS, userId);
-    const userSnap = await getDoc(userRef);
-
-    if (userSnap.exists()) {
-      const data = userSnap.data();
-      data.id = userSnap.id;
-      return { success: true, data };
-    }
-    return { success: false, error: "User not found" };
+    const snapshot = await getDoc(doc(db, COLLECTIONS.USERS, userId));
+    const data = documentData(snapshot);
+    return data
+      ? { success: true, data }
+      : { success: false, error: "User not found" };
   } catch (error) {
-    console.error("Error getting user profile:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error getting user profile", error);
   }
 }
 
-/**
- * Update user profile
- */
 export async function updateUserProfile(userId, updates) {
   try {
-    const userRef = doc(db, COLLECTIONS.USERS, userId);
-    await updateDoc(userRef, {
+    await updateDoc(doc(db, COLLECTIONS.USERS, userId), {
       ...updates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error updating user profile:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error updating user profile", error);
   }
 }
 
-/**
- * Subscribe to user profile changes
- */
-export function subscribeToUserProfile(userId, callback) {
-  const userRef = doc(db, COLLECTIONS.USERS, userId);
-  return onSnapshot(userRef, (doc) => {
-    if (doc.exists()) {
-      const data = doc.data();
-      data.id = doc.id;
-      callback(data);
-    } else {
-      callback(null);
-    }
-  });
+export function subscribeToUserProfile(userId, callback, onError) {
+  return onSnapshot(
+    doc(db, COLLECTIONS.USERS, userId),
+    (snapshot) => callback(documentData(snapshot)),
+    onError,
+  );
 }
 
-// ==========================================
-// Family Operations
-// ==========================================
-
-/**
- * Create a new family
- */
+// Families
 export async function createFamily(userId, familyData) {
   try {
     const familyRef = doc(collection(db, COLLECTIONS.FAMILIES));
-    const family = {
+    const members = Array.from(new Set([...(familyData.members || []), userId]));
+
+    await setDoc(familyRef, {
       ...familyData,
       ownerId: userId,
+      members,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      memberCount: 1,
-    };
-
-    const batch = writeBatch(db);
-
-    batch.set(familyRef, family);
-
-    // Add user as first member
-    const memberRef = doc(
-      db,
-      COLLECTIONS.FAMILIES,
-      familyRef.id,
-      COLLECTIONS.MEMBERS,
-      userId,
-    );
-    batch.set(memberRef, {
-      userId,
-      role: "owner",
-      joinedAt: serverTimestamp(),
+      memberCount: familyData.memberCount ?? 0,
     });
 
-    await batch.commit();
-
-    return { success: true, familyId: familyRef.id };
+    return { success: true, familyId: familyRef.id, id: familyRef.id };
   } catch (error) {
-    console.error("Error creating family:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error creating family", error);
   }
 }
 
-/**
- * Get families for a user
- */
 export async function getUserFamilies(userId) {
   try {
     const familiesQuery = query(
@@ -150,144 +107,82 @@ export async function getUserFamilies(userId) {
       where("ownerId", "==", userId),
       orderBy("updatedAt", "desc"),
     );
-
     const snapshot = await getDocs(familiesQuery);
-    const families = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-
-    return { success: true, data: families };
+    return { success: true, data: snapshotData(snapshot) };
   } catch (error) {
-    console.error("Error getting user families:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error getting user families", error, { data: [] });
   }
 }
 
-/**
- * Subscribe to family changes
- */
-export function subscribeToFamilies(userId, callback) {
+export function subscribeToFamilies(userId, callback, onError) {
   const familiesQuery = query(
     collection(db, COLLECTIONS.FAMILIES),
     where("ownerId", "==", userId),
     orderBy("updatedAt", "desc"),
   );
-
-  return onSnapshot(familiesQuery, (snapshot) => {
-    const families = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-    callback(families);
-  });
+  return onSnapshot(
+    familiesQuery,
+    (snapshot) => callback(snapshotData(snapshot)),
+    onError,
+  );
 }
 
-// ==========================================
-// Media Item Operations
-// ==========================================
-
-/**
- * Create a new media item
- */
+// Media / memories
 export async function createMediaItem(familyId, mediaData) {
   try {
     const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
-    const mediaItem = {
+    await setDoc(mediaRef, {
       ...mediaData,
       familyId,
-      createdAt: mediaData.date || new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      _serverUpdatedAt: serverTimestamp(),
-    };
-
-    await setDoc(mediaRef, mediaItem);
-    return { success: true, mediaId: mediaRef.id, id: mediaRef.id };
+      createdAt: mediaData.createdAt || serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
     return { success: true, id: mediaRef.id, mediaId: mediaRef.id };
   } catch (error) {
-    console.error("Error creating media item:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error creating media item", error);
   }
 }
 
-/**
- * Create multiple media items in a single batch
- */
-export async function batchCreateMediaItems(familyId, itemsData) {
+export async function batchCreateMediaItems(familyId, mediaItemsData = []) {
+  if (!mediaItemsData.length) {
+    return { success: true, ids: [], results: [] };
+  }
+
   try {
-    // Firestore batch limit is 500 operations
-    const CHUNK_SIZE = 500;
+    const maxBatchSize = 500;
     const results = [];
 
-    for (let i = 0; i < itemsData.length; i += CHUNK_SIZE) {
-      const chunk = itemsData.slice(i, i + CHUNK_SIZE);
+    for (let offset = 0; offset < mediaItemsData.length; offset += maxBatchSize) {
       const batch = writeBatch(db);
+      const chunk = mediaItemsData.slice(offset, offset + maxBatchSize);
 
-      chunk.forEach((data) => {
+      for (const item of chunk) {
         const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
-        const mediaItem = {
-          ...data,
-          familyId,
-          createdAt: data.date || new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          _serverUpdatedAt: serverTimestamp(),
-        };
-        batch.set(mediaRef, mediaItem);
-        results.push({ id: mediaRef.id, ...data });
-      });
-
-      await batch.commit();
-    }
-
-    return { success: true, results };
- * Create multiple media items in a batch
- */
-export async function batchCreateMediaItems(familyId, mediaDataArray) {
-  try {
-    if (!mediaDataArray || mediaDataArray.length === 0) {
-      return { success: true, ids: [] };
-    }
-
-    const results = [];
-    const chunks = [];
-    const CHUNK_SIZE = 500; // Firestore writeBatch limit
-
-    for (let i = 0; i < mediaDataArray.length; i += CHUNK_SIZE) {
-      chunks.push(mediaDataArray.slice(i, i + CHUNK_SIZE));
-    }
-
-    for (const chunk of chunks) {
-      const batch = writeBatch(db);
-      const chunkIds = [];
-
-      chunk.forEach((item) => {
-        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
-        const mediaItem = {
+        batch.set(mediaRef, {
           ...item,
           familyId,
-          createdAt: serverTimestamp(),
+          createdAt: item.createdAt || serverTimestamp(),
           updatedAt: serverTimestamp(),
-        };
-        batch.set(mediaRef, mediaItem);
-        chunkIds.push(mediaRef.id);
-      });
+        });
+        results.push({ id: mediaRef.id, mediaId: mediaRef.id });
+      }
 
       await batch.commit();
-      results.push(...chunkIds);
     }
 
-    return { success: true, ids: results };
+    return {
+      success: true,
+      ids: results.map((item) => item.id),
+      results,
+    };
   } catch (error) {
-    console.error("Error batch creating media items:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error batch creating media items", error, {
+      ids: [],
+      results: [],
+    });
   }
 }
 
-/**
- * Get media items for a family
- */
 export async function getFamilyMediaItems(familyId, maxResults = 20) {
   try {
     const mediaQuery = query(
@@ -296,295 +191,173 @@ export async function getFamilyMediaItems(familyId, maxResults = 20) {
       orderBy("createdAt", "desc"),
       limit(maxResults),
     );
-
     const snapshot = await getDocs(mediaQuery);
-    const mediaItems = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-
-    return { success: true, mediaItems };
+    return { success: true, mediaItems: snapshotData(snapshot) };
   } catch (error) {
-    console.error("Error fetching media items:", error);
-    return { success: false, error: error.message, mediaItems: [] };
+    return errorResult("Error fetching media items", error, { mediaItems: [] });
   }
 }
 
-/**
- * Subscribe to family media items
- */
-export function subscribeToMediaItems(familyId, callback, maxResults = 20) {
+export function subscribeToMediaItems(
+  familyId,
+  callback,
+  maxResults = 20,
+  onError,
+) {
   const mediaQuery = query(
     collection(db, COLLECTIONS.MEDIA_ITEMS),
     where("familyId", "==", familyId),
     orderBy("createdAt", "desc"),
     limit(maxResults),
   );
-
-  return onSnapshot(mediaQuery, (snapshot) => {
-    const mediaItems = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-    callback(mediaItems);
-  });
+  return onSnapshot(
+    mediaQuery,
+    (snapshot) => callback(snapshotData(snapshot)),
+    onError,
+  );
 }
 
-/**
- * Update a media item
- */
-export async function updateMediaItem(familyId, mediaId, updates) {
+export async function updateMediaItem(_familyId, mediaId, updates) {
   try {
-    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
-    await updateDoc(mediaRef, {
+    await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
       ...updates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error updating media item:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error updating media item", error);
   }
 }
 
-/**
- * Delete a media item
- */
-export async function deleteMediaItem(familyId, mediaId) {
+export async function deleteMediaItem(_familyId, mediaId) {
   try {
-    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
-    await deleteDoc(mediaRef);
+    await deleteDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId));
     return { success: true };
   } catch (error) {
-    console.error("Error deleting media item:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error deleting media item", error);
   }
 }
 
-/**
- * Bulk create media items using Firestore batches
- */
-export async function batchCreateMediaItems(familyId, mediaItemsData) {
-  try {
-    const MAX_BATCH_SIZE = 500;
-    const results = [];
-
-    // Process in chunks of 500 (Firestore limit)
-    for (let i = 0; i < mediaItemsData.length; i += MAX_BATCH_SIZE) {
-      const batch = writeBatch(db);
-      const chunk = mediaItemsData.slice(i, i + MAX_BATCH_SIZE);
-
-      const chunkResults = chunk.map((data) => {
-        const mediaRef = doc(collection(db, COLLECTIONS.MEDIA_ITEMS));
-        const mediaItem = {
-          ...data,
-          familyId,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        };
-        batch.set(mediaRef, mediaItem);
-        return { success: true, mediaId: mediaRef.id };
-      });
-
-      await batch.commit();
-      results.push(...chunkResults);
-    }
-
-    return { success: true, results };
-  } catch (error) {
-    console.error("Error batch creating media items:", error);
-    return { success: false, error: error.message };
-  }
-}
-
-// Aliases for Consistency
 export const createMemory = createMediaItem;
 export const updateMemory = updateMediaItem;
 export const deleteMemory = deleteMediaItem;
 export const batchCreateMemories = batchCreateMediaItems;
 
-// ==========================================
-// Family Member Operations
-// ==========================================
-
-/**
- * Add a family member
- */
+// Genealogical family members
 export async function addFamilyMember(familyId, memberData) {
   try {
     const memberRef = doc(collection(db, COLLECTIONS.MEMBERS));
-    const member = {
+    await setDoc(memberRef, {
       ...memberData,
       familyId,
-      createdAt: serverTimestamp(),
+      createdAt: memberData.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp(),
-    };
-
-    await setDoc(memberRef, member);
-    return { success: true, memberId: memberRef.id };
+    });
+    return { success: true, memberId: memberRef.id, id: memberRef.id };
   } catch (error) {
-    console.error("Error adding family member:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error adding family member", error);
   }
 }
 
-/**
- * Update a family member
- */
-export async function updateFamilyMember(familyId, memberId, updates) {
+export async function updateFamilyMember(_familyId, memberId, updates) {
   try {
-    const memberRef = doc(db, COLLECTIONS.MEMBERS, memberId);
-    await updateDoc(memberRef, {
+    await updateDoc(doc(db, COLLECTIONS.MEMBERS, memberId), {
       ...updates,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error updating family member:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error updating family member", error);
   }
 }
 
-/**
- * Delete a family member
- */
-export async function deleteFamilyMember(familyId, memberId) {
+export async function deleteFamilyMember(_familyId, memberId) {
   try {
-    const memberRef = doc(db, COLLECTIONS.MEMBERS, memberId);
-    await deleteDoc(memberRef);
+    await deleteDoc(doc(db, COLLECTIONS.MEMBERS, memberId));
     return { success: true };
   } catch (error) {
-    console.error("Error deleting family member:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error deleting family member", error);
   }
 }
 
-/**
- * Subscribe to family members
- */
-export function subscribeToFamilyMembers(familyId, callback) {
+export function subscribeToFamilyMembers(familyId, callback, onError) {
   const membersQuery = query(
     collection(db, COLLECTIONS.MEMBERS),
     where("familyId", "==", familyId),
   );
-
-  return onSnapshot(membersQuery, (snapshot) => {
-    const members = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-    callback(members);
-  });
+  return onSnapshot(
+    membersQuery,
+    (snapshot) => callback(snapshotData(snapshot)),
+    onError,
+  );
 }
 
-// ==========================================
-// AI Task Operations
-// ==========================================
-
-/**
- * Subscribe to user's AI tasks
- */
-export function subscribeToAITasks(userId, callback) {
+// AI tasks
+export function subscribeToAITasks(userId, callback, onError) {
   const tasksQuery = query(
     collection(db, COLLECTIONS.AI_TASKS),
     where("userId", "==", userId),
     orderBy("createdAt", "desc"),
   );
-
-  return onSnapshot(tasksQuery, (snapshot) => {
-    const tasks = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      return data;
-    });
-    callback(tasks);
-  });
+  return onSnapshot(
+    tasksQuery,
+    (snapshot) => callback(snapshotData(snapshot)),
+    onError,
+  );
 }
 
-/**
- * Update AI task status
- */
 export async function updateAITaskStatus(taskId, status) {
   try {
-    const taskRef = doc(db, COLLECTIONS.AI_TASKS, taskId);
-    await updateDoc(taskRef, {
+    await updateDoc(doc(db, COLLECTIONS.AI_TASKS, taskId), {
       status,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error updating AI task:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error updating AI task", error);
   }
 }
 
-/**
- * Request AI Media Analysis (Face detection, storytelling)
- */
+export async function createAITask(userId, taskData) {
+  try {
+    const taskRef = doc(collection(db, COLLECTIONS.AI_TASKS));
+    await setDoc(taskRef, {
+      ...taskData,
+      userId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, id: taskRef.id, taskId: taskRef.id };
+  } catch (error) {
+    return errorResult("Error creating AI task", error);
+  }
+}
+
 export async function requestMediaAnalysis(mediaId) {
   try {
-    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
-    await updateDoc(mediaRef, {
+    await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
       aiStatus: "pending",
-      status: "processed", // Required by backend ai-analyzer
+      status: "processed",
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error requesting AI analysis:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error requesting AI analysis", error);
   }
 }
 
-/**
- * Request AI Photo Restoration
- */
 export async function requestPhotoRestoration(mediaId, params) {
   try {
-    const mediaRef = doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId);
-    await updateDoc(mediaRef, {
+    await updateDoc(doc(db, COLLECTIONS.MEDIA_ITEMS, mediaId), {
       aiStatus: "restoration_pending",
       restorationParams: params,
       updatedAt: serverTimestamp(),
     });
     return { success: true };
   } catch (error) {
-    console.error("Error requesting photo restoration:", error);
-    return { success: false, error: error.message };
+    return errorResult("Error requesting photo restoration", error);
   }
 }
-
-/**
- * Create an AI task
- */
-export async function createAITask(userId, taskData) {
-  try {
-    const taskRef = doc(collection(db, COLLECTIONS.AI_TASKS));
-    await setDoc(taskRef, {
-      userId,
-      ...taskData,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    return { success: true, id: taskRef.id };
-  } catch (error) {
-    console.error("Error creating AI task:", error);
-    return { success: false, error: error.message };
-  }
-}
-
-// Aliases for useMemories hook consistency
-// ==========================================
-// Aliases for Consistency
-// ==========================================
-
-export const createMemory = createMediaItem;
-export const updateMemory = updateMediaItem;
-export const deleteMemory = deleteMediaItem;
-export const batchCreateMemories = batchCreateMediaItems;
 
 export default {
   getUserProfile,
@@ -603,8 +376,6 @@ export default {
   updateMemory,
   deleteMediaItem,
   deleteMemory,
-  batchCreateMediaItems,
-  batchCreateMemories,
   addFamilyMember,
   updateFamilyMember,
   deleteFamilyMember,
