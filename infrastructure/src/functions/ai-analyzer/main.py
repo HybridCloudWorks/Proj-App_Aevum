@@ -1,16 +1,26 @@
 import os
 
 import functions_framework
+from google import genai
 from google.cloud import firestore, vision
-import vertexai
-from vertexai.generative_models import GenerativeModel
+from google.genai import types
 
 vision_client = vision.ImageAnnotatorClient()
 firestore_client = firestore.Client()
 
-PROJECT_ID = os.environ.get("GCP_PROJECT") or os.environ.get("PROJECT_ID")
-vertexai.init(project=PROJECT_ID, location="us-central1")
-gemini_model = GenerativeModel("gemini-1.5-flash-002")
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("PROJECT_ID")
+GENAI_LOCATION = os.environ.get("GEMINI_LOCATION", "global")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+
+if not PROJECT_ID:
+    raise RuntimeError("PROJECT_ID or GOOGLE_CLOUD_PROJECT must be configured")
+
+genai_client = genai.Client(
+    enterprise=True,
+    project=PROJECT_ID,
+    location=GENAI_LOCATION,
+    http_options=types.HttpOptions(api_version="v1"),
+)
 
 
 def generate_family_story(labels, extracted_text, face_count):
@@ -28,16 +38,29 @@ def generate_family_story(labels, extracted_text, face_count):
     - Be nostalgic but respectful.
     - If there is text, try to weave it into the context.
     - Make it feel like it belongs in a high-end family archive.
-    - Do not claim facts that cannot be inferred from the supplied metadata.
+    - Do not claim identities, relationships, dates, locations, or other facts that cannot be inferred from the supplied metadata.
     - Do not use phrases like "Based on the labels" or "The metadata shows".
     """
 
     try:
-        response = gemini_model.generate_content(prompt)
-        return response.text.strip()
+        response = genai_client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.3,
+                max_output_tokens=256,
+            ),
+        )
+        text = (response.text or "").strip()
+        if text:
+            return text, "generated"
+        raise RuntimeError("Gemini returned an empty story")
     except Exception as error:
-        print(f"Error generating story: {error}")
-        return "A moment preserved in time, waiting for its story to be told."
+        print(f"Story generation fallback: {type(error).__name__}: {error}")
+        return (
+            "A moment preserved in time, waiting for its story to be told.",
+            "fallback",
+        )
 
 
 def firestore_string(fields, key):
@@ -82,13 +105,11 @@ def analyze_media(cloud_event):
 
 
 def process_restoration(doc_id, fields):
-    """Handle the current restoration request contract.
+    """Record the current restoration prototype request contract.
 
-    Restoration remains a product prototype; this function only records the
-    requested options and completion state until a real restoration model is
-    integrated in the dedicated AI hardening workstream.
+    A real restoration model is not connected yet. The explicit prototype flag
+    prevents this state from being mistaken for transformed image output.
     """
-    print(f"Starting AI Restoration for {doc_id}")
     params = firestore_map(fields, "restorationParams")
     colorize = params.get("colorize", {}).get("booleanValue", False)
     sharpen = params.get("sharpen", {}).get("booleanValue", False)
@@ -96,10 +117,6 @@ def process_restoration(doc_id, fields):
 
     doc_ref = firestore_client.collection("media_items").document(doc_id)
     try:
-        print(
-            "Restoration prototype options: "
-            f"Colorize={colorize}, Sharpen={sharpen}, Repair={repair}"
-        )
         doc_ref.update(
             {
                 "aiStatus": "restoration_completed",
@@ -111,27 +128,40 @@ def process_restoration(doc_id, fields):
                         "repair": repair,
                     },
                     "prototype": True,
+                    "outputGenerated": False,
                 },
+                "aiError": firestore.DELETE_FIELD,
+                "aiErrorCode": firestore.DELETE_FIELD,
             }
         )
+        print(f"Restoration prototype state recorded for {doc_id}")
     except Exception as error:
-        print(f"Error during restoration: {error}")
+        print(f"Error during restoration: {type(error).__name__}: {error}")
         doc_ref.update(
             {
                 "aiStatus": "restoration_failed",
                 "aiError": str(error)[:1000],
+                "aiErrorCode": "restoration_state_failed",
+                "aiFailedAt": firestore.SERVER_TIMESTAMP,
             }
         )
 
 
 def analyze_media_logic(doc_id, fields):
     display_gs_uri = canonical_display_uri(fields)
+    doc_ref = firestore_client.collection("media_items").document(doc_id)
 
     if not display_gs_uri:
         print(f"No preserved display URI found for {doc_id}")
+        doc_ref.update(
+            {
+                "aiStatus": "failed",
+                "aiError": "Preservation did not provide a displayGsUri",
+                "aiErrorCode": "missing_display_uri",
+                "aiFailedAt": firestore.SERVER_TIMESTAMP,
+            }
+        )
         return
-
-    doc_ref = firestore_client.collection("media_items").document(doc_id)
 
     try:
         image = vision.Image()
@@ -172,12 +202,13 @@ def analyze_media_logic(doc_id, fields):
         face_count = len(detected_faces)
 
         safe_search = response.safe_search_annotation
-        story = generate_family_story(labels, full_text, face_count)
+        story, story_status = generate_family_story(labels, full_text, face_count)
 
         doc_ref.set(
             {
                 "aiStatus": "completed",
                 "story": story,
+                "storyStatus": story_status,
                 "analysis": {
                     "labels": labels,
                     "faceCount": face_count,
@@ -191,19 +222,26 @@ def analyze_media_logic(doc_id, fields):
                         "spoof": safe_search.spoof.name,
                     },
                 },
+                "aiModel": GEMINI_MODEL,
                 "aiCompletedAt": firestore.SERVER_TIMESTAMP,
+                "aiError": firestore.DELETE_FIELD,
+                "aiErrorCode": firestore.DELETE_FIELD,
             },
             merge=True,
         )
 
-        print(f"AI analysis completed for {doc_id} from {display_gs_uri}")
+        print(
+            f"AI analysis completed for {doc_id}; model={GEMINI_MODEL}; "
+            f"storyStatus={story_status}"
+        )
 
     except Exception as error:
-        print(f"Error during AI analysis: {error}")
+        print(f"Error during AI analysis: {type(error).__name__}: {error}")
         doc_ref.update(
             {
                 "aiStatus": "failed",
                 "aiError": str(error)[:1000],
+                "aiErrorCode": "analysis_failed",
                 "aiFailedAt": firestore.SERVER_TIMESTAMP,
             }
         )
