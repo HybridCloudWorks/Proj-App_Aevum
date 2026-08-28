@@ -9,6 +9,7 @@ const Set<String> prototypeRoutes = <String>{
   '/restoration',
   '/ai-identity',
   '/ai-chronicles',
+  '/tree',
   '/identify-tree',
   '/legacy-handover',
   '/onboarding-journey',
