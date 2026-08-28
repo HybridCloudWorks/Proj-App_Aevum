@@ -33,6 +33,18 @@ variable "firebase_storage_bucket" {
   type        = string
 }
 
+variable "gemini_model" {
+  description = "GA Gemini model used for family-story enrichment."
+  type        = string
+  default     = "gemini-3.5-flash"
+}
+
+variable "gemini_location" {
+  description = "Gemini Enterprise Agent Platform location. Global is supported by Gemini 3.5 Flash."
+  type        = string
+  default     = "global"
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region
@@ -118,7 +130,7 @@ resource "google_project_iam_member" "ai_event_receiver" {
 }
 
 # Preservation reads originals, writes immutable derivatives, and writes archive
-# copies. It has no Vertex AI permission.
+# copies. It has no Vertex/Gen AI permission.
 resource "google_storage_bucket_iam_member" "preservation_media_viewer" {
   bucket = data.google_storage_bucket.firebase_media.name
   role   = "roles/storage.objectViewer"
@@ -282,7 +294,9 @@ resource "google_cloudfunctions2_function" "ai_analyzer" {
     timeout_seconds       = 120
     service_account_email = google_service_account.ai_sa.email
     environment_variables = {
-      PROJECT_ID = var.project_id
+      PROJECT_ID       = var.project_id
+      GEMINI_MODEL     = var.gemini_model
+      GEMINI_LOCATION  = var.gemini_location
     }
   }
 
