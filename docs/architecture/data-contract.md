@@ -11,9 +11,11 @@ Applies to: Web, Flutter, Firestore Rules, Storage Rules, Cloud Functions, index
    - A genealogical person is family data and does not grant application access.
 2. Family authorization is the root of access control for family-scoped data.
 3. Client-writable documents carry immutable provenance fields.
-4. Server-side processing may enrich media and AI state using trusted service identities.
-5. Security Rules are authorization boundaries, not UI hints.
-6. Collection/path names in clients, Rules, indexes, and backend functions must match this contract.
+4. Media uses a reserve -> upload -> process lifecycle so every object has a stable `mediaId` before bytes are uploaded.
+5. Server-side processing enriches media and AI state using trusted service identities.
+6. Original objects are immutable. Derived and archive objects are generation-aware so retries are idempotent and a replaced source can never overwrite prior preservation output.
+7. Security Rules are authorization boundaries, not UI hints.
+8. Collection/path names in clients, Rules, indexes, infrastructure, and backend functions must match this contract.
 
 ## 2. Roles
 
@@ -96,7 +98,7 @@ Authorization:
 - A collaborator may read their own role record.
 - Collaborator documents cannot grant `owner` or platform `admin` privilege.
 
-When membership changes, `families.collaboratorIds` and the collaborator document should be updated atomically.
+When membership changes, `families.collaboratorIds` and the collaborator document must be updated atomically.
 
 ### 3.4 `family_members/{personId}`
 
@@ -126,7 +128,7 @@ Authorization:
 
 ### 3.5 `media_items/{mediaId}`
 
-Purpose: canonical metadata record for an original memory and its processed derivatives.
+Purpose: canonical metadata record for one immutable uploaded original and its preservation/AI lifecycle.
 
 Required/standard fields:
 
@@ -139,17 +141,41 @@ Required/standard fields:
 - `tags`: array of strings.
 - `status`: upload/processing lifecycle state.
 - `aiStatus`: AI lifecycle state; AI must never block core memory availability.
-- `storage`: map containing canonical object paths and derivative references.
-- `imageMetadata`: map for dimensions/EXIF/GPS where permitted.
+- `storage`: map containing canonical original, derivative, and archive references.
+- `processing`: map containing source generation, event ID, processing timestamps, dimensions, and extracted preservation metadata.
+- `imageMetadata`: client-extracted metadata when available and permitted.
 - `createdAt`: timestamp, immutable.
 - `updatedAt`: timestamp.
+
+Canonical lifecycle:
+
+1. Client reserves `media_items/{mediaId}` with `status = uploading`.
+2. Client uploads the original to the canonical Storage path using that `mediaId`.
+3. Client finalizes upload metadata with `status = uploaded` and the original reference.
+4. The Storage finalize event invokes the preservation processor.
+5. Processor records `status = processing`, source generation, and event identity.
+6. Processor creates generation-specific derivatives and an immutable archive copy.
+7. Processor records `status = processed`, canonical `storage` references, and `aiStatus = pending`.
+8. AI enrichment may continue asynchronously. Failure of AI does not invalidate the preserved memory.
+
+Expected processing/error states include `uploading`, `uploaded`, `upload_failed`, `processing`, `processed`, and `processing_failed`.
+
+Canonical `storage` fields after preservation:
+
+- `originalPath`: Firebase Storage object path.
+- `originalGsUri`: `gs://` URI for the original.
+- `displayPath`: generation-specific display derivative path.
+- `displayGsUri`: `gs://` URI consumed by backend AI analysis.
+- `thumbnailPath`: generation-specific thumbnail derivative path.
+- `thumbnailGsUri`: `gs://` URI for the thumbnail.
+- `archiveGsUri`: immutable archive-bucket URI for the exact source generation.
 
 Authorization:
 
 - Family owner/editor/admin may create/update/delete normal client fields.
 - Family viewer may read.
 - Family scope and provenance fields are immutable through client updates.
-- Trusted backend services may update processing/AI fields using server credentials; server SDKs are governed by IAM rather than client Security Rules.
+- Trusted backend services update processing/AI fields using server credentials; server SDKs are governed by IAM rather than client Security Rules.
 
 Primary query:
 
@@ -202,34 +228,59 @@ Client contract:
 - Backend/service identities create events.
 - Read access is admin-only unless a future user export view is introduced deliberately.
 
-## 4. Canonical Storage paths
+## 4. Canonical Storage and preservation paths
 
-Private Beta target paths:
+The Firebase Storage bucket used by authenticated web/mobile clients is the event source for preservation.
+
+Client-write path:
 
 - Original family media: `families/{familyId}/media/{mediaId}/original/{fileName}`
-- Derived family media: `families/{familyId}/media/{mediaId}/derived/{fileName}`
+
+Backend-write paths in the same Firebase Storage bucket:
+
+- Display derivative: `families/{familyId}/media/{mediaId}/derived/{sourceGeneration}/display.webp`
+- Thumbnail derivative: `families/{familyId}/media/{mediaId}/derived/{sourceGeneration}/thumbnail.webp`
+
+Archive-bucket path:
+
+- Exact original generation: `families/{familyId}/media/{mediaId}/originals/{sourceGeneration}/{fileName}`
+
+Other app paths:
+
 - Genealogical member photo: `families/{familyId}/members/{personId}/{fileName}`
 - User profile image: `users/{uid}/profile/{fileName}`
 - AI staging, when needed: `ai-processing/{uid}/{taskId}/{fileName}`
 - Managed public assets: `public/{allPaths=**}`
 
+Private Beta media capability is image-only. Supported image types are JPEG, PNG, TIFF, WebP, HEIC, and HEIF where the client platform can supply a valid MIME type. Video/audio/document preservation must not be enabled in client rules until a processor for those types exists.
+
 Client rules:
 
 - Owner/editor may create originals for an authorized family.
 - Viewers may read but not upload/delete family media.
+- A reserved `mediaId` is mandatory before family-media upload.
 - Clients do not write derived media; backend processors own derivative generation.
-- Object replacement is not used for immutable originals. New content creates a new object/media version.
+- Object replacement is not the media-versioning mechanism. New content creates a new media record/object.
 
-## 5. Transitional compatibility
+Backend rules:
 
-PR-02 establishes the canonical Firestore model and authorization boundary. The recovered PR-01 web uploader still writes the legacy paths:
+- Storage finalize processing ignores non-canonical-original paths, preventing derivative recursion.
+- The processor validates that the object path family matches `media_items/{mediaId}.familyId`.
+- Processing is generation-aware and retry-safe.
+- Derivative/archive creation uses create-if-absent preconditions so duplicate events reuse existing output rather than overwrite it.
+- The source original remains in Firebase Storage; the archive is an additional preservation copy, not a move.
+
+## 5. Legacy storage retirement
+
+The PR-01 legacy family-media paths are retired from new client authorization:
 
 - `families/{familyId}/memories/...`
 - `families/{familyId}/thumbnails/...`
+- user-oriented `uploads/{uid}/...`
 
-Storage Rules may temporarily authorize these two legacy paths for owner/editor clients so PR-02 does not strand the recovered web application. They are deprecated immediately and must be removed by the media-pipeline PR after the uploader moves to the canonical media-ID path.
+No new feature may use these paths. Historical objects may require a controlled backend migration, but client Security Rules must not reopen legacy paths simply to make old code work.
 
-No new feature should be built on a legacy path.
+Legacy `photoUrl`, `thumbnailUrl`, or `urls.display` fields may be read during data migration. New preservation work writes the canonical `storage` map, and AI analysis consumes `storage.displayGsUri` (with any legacy fallback treated as transitional compatibility only).
 
 ## 6. Immutable client fields
 
@@ -259,5 +310,7 @@ Basic equality-only queries rely on automatic indexes unless emulator/integratio
 2. Do not authorize family content solely from `createdBy`/`uploadedBy`; authorize from family membership/role.
 3. Legacy `members` documents migrate to `family_members` before Private Beta data is treated as durable.
 4. Legacy family `members` arrays must not be reused for access control. `collaboratorIds` is the queryable authenticated-user list.
-5. Legacy `photoUrl`/`thumbnailUrl` fields may be read during migration, but new processing work should populate the canonical `storage` map.
-6. Client and Rules changes that alter a path or required field must ship atomically in the same release train.
+5. Legacy media URL fields may remain readable during migration but new writes use the canonical `storage` map.
+6. Legacy family-media Storage paths are not valid new-write targets.
+7. Client, Rules, infrastructure, and processor changes that alter a path or required field must ship in the same release train.
+8. Security and processing behavior is not release-validated until Emulator Suite and end-to-end tests execute successfully in CI.
