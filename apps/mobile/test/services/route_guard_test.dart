@@ -73,5 +73,32 @@ void main() {
         isNull,
       );
     });
+
+    test('blocks known prototype user routes in the default Private Beta build', () {
+      expect(prototypeFeaturesEnabled, isFalse);
+      expect(isPrototypeRoute('/restoration'), isTrue);
+      expect(isPrototypeRoute('/discovery'), isTrue);
+      expect(
+        resolveAuthRedirect(
+          path: '/restoration',
+          isAuthenticated: true,
+          isAdmin: false,
+        ),
+        '/dashboard',
+      );
+    });
+
+    test('keeps core authenticated routes available', () {
+      expect(isPrototypeRoute('/dashboard'), isFalse);
+      expect(isPrototypeRoute('/tree'), isFalse);
+      expect(
+        resolveAuthRedirect(
+          path: '/dashboard',
+          isAuthenticated: true,
+          isAdmin: false,
+        ),
+        isNull,
+      );
+    });
   });
 }
