@@ -1,186 +1,169 @@
 rules_version = '2';
 
-/**
- * Aevum Cloud Storage Security Rules
- * 
- * Following GDEF Best Practices:
- * - File type validation
- * - Size limits per file type
- * - User-scoped uploads
- * - Secure public read for shared content
- */
-
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // ==========================================
-    // Helper Functions
-    // ==========================================
-    
-    function isAuthenticated() {
+    function isSignedIn() {
       return request.auth != null;
     }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-    
+
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.admin == true;
-    }
-    
-    function isFamilyMember(familyId) {
-      let family = firestore.get(/databases/(default)/documents/families/$(familyId));
-      return isAuthenticated() &&
-             family != null &&
-             (
-               request.auth.uid == family.data.ownerId ||
-               request.auth.uid in family.data.members
-             );
+      return isSignedIn() && request.auth.token.admin == true;
     }
 
-    function isMemoryMember(memoryId) {
-      let memory = firestore.get(/databases/(default)/documents/memories/$(memoryId));
-      return isAuthenticated() &&
-             memory != null &&
-             isFamilyMember(memory.data.familyId);
+    function familyDoc(familyId) {
+      return firestore.get(/databases/(default)/documents/families/$(familyId));
     }
 
-    // Validate image file types (with extension check to prevent spoofing)
-    function isValidImageType() {
-      return request.resource.contentType.matches('image/(jpeg|png|gif|webp|heic)') &&
-             request.resource.name.lower().matches('.*\\.(jpe?g|png|gif|webp|heic)$');
-    }
-    
-    // Validate video file types (with extension check to prevent spoofing)
-    function isValidVideoType() {
-      return request.resource.contentType.matches('video/(mp4|webm|quicktime)') &&
-             request.resource.name.lower().matches('.*\\.(mp4|webm|mov|qt|quicktime)$');
-    }
-    
-    // Validate audio file types (with extension check to prevent spoofing)
-    function isValidAudioType() {
-      return request.resource.contentType.matches('audio/(mpeg|wav|ogg|m4a)') &&
-             request.resource.name.lower().matches('.*\\.(mp3|mpeg|wav|ogg|m4a)$');
-    }
-    
-    // Validate document types (with extension check to prevent spoofing)
-    function isValidDocumentType() {
-      return request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)') &&
-             request.resource.name.lower().matches('.*\\.(pdf|doc|docx)$');
-    }
-    
-    // Size limits
-    function isUnderImageLimit() {
-      return request.resource.size < 10 * 1024 * 1024; // 10MB
-    }
-    
-    function isUnderVideoLimit() {
-      return request.resource.size < 500 * 1024 * 1024; // 500MB
-    }
-    
-    function isUnderAudioLimit() {
-      return request.resource.size < 100 * 1024 * 1024; // 100MB
-    }
-    
-    function isUnderDocumentLimit() {
-      return request.resource.size < 20 * 1024 * 1024; // 20MB
+    function collaboratorDoc(familyId) {
+      return isSignedIn()
+        ? firestore.get(/databases/(default)/documents/families/$(familyId)/collaborators/$(request.auth.uid))
+        : null;
     }
 
-    // ==========================================
-    // User Profile Images
-    // ==========================================
+    function canReadFamily(familyId) {
+      let family = familyDoc(familyId);
+      return isAdmin() ||
+        (isSignedIn() &&
+          family != null &&
+          request.auth.uid in family.data.collaboratorIds);
+    }
+
+    function canWriteFamily(familyId) {
+      let family = familyDoc(familyId);
+      let collaborator = collaboratorDoc(familyId);
+      return isAdmin() ||
+        (isSignedIn() && family != null && family.data.ownerId == request.auth.uid) ||
+        (isSignedIn() &&
+          collaborator != null &&
+          collaborator.data.status == 'active' &&
+          collaborator.data.role == 'editor');
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/(jpeg|png|gif|webp|heic)');
+    }
+
+    function isVideo() {
+      return request.resource.contentType.matches('video/(mp4|webm|quicktime)');
+    }
+
+    function isAudio() {
+      return request.resource.contentType.matches('audio/(mpeg|wav|ogg|mp4|x-m4a)');
+    }
+
+    function isDocument() {
+      return request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)');
+    }
+
+    function imageWithinLimit() {
+      return request.resource.size <= 10 * 1024 * 1024;
+    }
+
+    function videoWithinLimit() {
+      return request.resource.size <= 500 * 1024 * 1024;
+    }
+
+    function audioWithinLimit() {
+      return request.resource.size <= 100 * 1024 * 1024;
+    }
+
+    function documentWithinLimit() {
+      return request.resource.size <= 20 * 1024 * 1024;
+    }
+
+    function validFamilyOriginal() {
+      return (isImage() && imageWithinLimit()) ||
+        (isVideo() && videoWithinLimit()) ||
+        (isAudio() && audioWithinLimit()) ||
+        (isDocument() && documentWithinLimit());
+    }
+
+    // -----------------------------------------------------------------------
+    // User profile images
+    // -----------------------------------------------------------------------
     match /users/{userId}/profile/{fileName} {
-      // Authenticated users can read profile images
-      allow read: if isAuthenticated();
-      // Restricted read: Only the owner or an admin can access profile images.
-      // Note: Full family-based access requires familyId to be present on the user document.
-      allow read: if isOwner(userId) || isAdmin();
-      
-      // Only owner can upload/update their profile image
-      allow write: if isOwner(userId) &&
-                      isValidImageType() &&
-                      isUnderImageLimit();
-      
-      // Owner or admin can delete
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-
-    // ==========================================
-    // Family Shared Media
-    // ==========================================
-    match /families/{familyId}/media/{allPaths=**} {
-      // Secure read: restricted to family members
-      allow read: if isFamilyMember(familyId);
-      
-      // Upload with validation and family membership check
-      allow create: if isFamilyMember(familyId) &&
-                       ((isValidImageType() && isUnderImageLimit()) ||
-                        (isValidVideoType() && isUnderVideoLimit()) ||
-                        (isValidAudioType() && isUnderAudioLimit()));
-      
-      // No direct updates - delete and re-upload
+      allow read: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId);
+      allow create: if isSignedIn() &&
+        request.auth.uid == userId &&
+        isImage() &&
+        imageWithinLimit();
       allow update: if false;
-      
-      // Authenticated users in the family can delete
-      allow delete: if isFamilyMember(familyId);
+      allow delete: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId);
     }
 
-    // ==========================================
-    // Memory Attachments
-    // ==========================================
-    match /memories/{memoryId}/{fileName} {
-      // Secure read: restricted to family members by fetching the memory document
-      allow read: if isMemoryMember(memoryId);
-      
-      // Upload with validation
-      allow create: if isAuthenticated() &&
-                       ((isValidImageType() && isUnderImageLimit()) ||
-                        (isValidVideoType() && isUnderVideoLimit()) ||
-                        (isValidDocumentType() && isUnderDocumentLimit()));
-      
-      // No direct updates
+    // -----------------------------------------------------------------------
+    // Canonical family media paths
+    // -----------------------------------------------------------------------
+    match /families/{familyId}/media/{mediaId}/original/{fileName} {
+      allow read: if canReadFamily(familyId);
+      allow create: if canWriteFamily(familyId) && validFamilyOriginal();
       allow update: if false;
-      
-      // Delete by authenticated users in the family
-      allow delete: if isAuthenticated() &&
-                  firestore.get(/databases/(default)/documents/memories/$(memoryId)) != null &&
-                  isFamilyMember(firestore.get(/databases/(default)/documents/memories/$(memoryId)).data.familyId);
+      allow delete: if canWriteFamily(familyId);
     }
 
-    // ==========================================
-    // AI Processing Queue
-    // ==========================================
+    match /families/{familyId}/media/{mediaId}/derived/{fileName} {
+      allow read: if canReadFamily(familyId);
+      // Derived objects are written by trusted backend processors using IAM.
+      allow create, update, delete: if false;
+    }
+
+    // -----------------------------------------------------------------------
+    // Genealogical member photos
+    // -----------------------------------------------------------------------
+    match /families/{familyId}/members/{personId}/{fileName} {
+      allow read: if canReadFamily(familyId);
+      allow create: if canWriteFamily(familyId) &&
+        isImage() &&
+        imageWithinLimit();
+      allow update: if false;
+      allow delete: if canWriteFamily(familyId);
+    }
+
+    // -----------------------------------------------------------------------
+    // Temporary PR-01 uploader compatibility.
+    // Remove these two matches when PR-03 moves uploads to media/{mediaId}/...
+    // -----------------------------------------------------------------------
+    match /families/{familyId}/memories/{fileName} {
+      allow read: if canReadFamily(familyId);
+      allow create: if canWriteFamily(familyId) && validFamilyOriginal();
+      allow update: if false;
+      allow delete: if canWriteFamily(familyId);
+    }
+
+    match /families/{familyId}/thumbnails/{fileName} {
+      allow read: if canReadFamily(familyId);
+      allow create: if canWriteFamily(familyId) &&
+        isImage() &&
+        imageWithinLimit();
+      allow update: if false;
+      allow delete: if canWriteFamily(familyId);
+    }
+
+    // -----------------------------------------------------------------------
+    // User-owned AI staging area. Trusted workers may use IAM/server SDKs.
+    // -----------------------------------------------------------------------
     match /ai-processing/{userId}/{taskId}/{fileName} {
-      // Only the owner can read their AI processing files
-      allow read: if isOwner(userId);
-      
-      // Owner can upload for processing
-      allow create: if isOwner(userId) &&
-                       isValidImageType() &&
-                       isUnderImageLimit();
-      
-      // No updates
+      allow read: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId);
+      allow create: if isSignedIn() &&
+        request.auth.uid == userId &&
+        isImage() &&
+        imageWithinLimit();
       allow update: if false;
-      
-      // Owner or admin can delete
-      allow delete: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId);
     }
 
-    // ==========================================
-    // Public Assets (app icons, etc.)
-    // ==========================================
+    // -----------------------------------------------------------------------
+    // Managed app assets
+    // -----------------------------------------------------------------------
     match /public/{allPaths=**} {
-      // Authenticated users can read public assets
-      allow read: if isAuthenticated();
-      
-      // Only admins can write public assets
-      allow write: if isAdmin();
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
     }
 
-    // ==========================================
-    // Catch-all: Deny everything else
-    // ==========================================
     match /{allPaths=**} {
       allow read, write: if false;
     }
