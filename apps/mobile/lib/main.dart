@@ -40,8 +40,10 @@ import 'package:aevum_native/screens/semantic_discovery_screen.dart';
 import 'package:aevum_native/screens/vault_sync_health_screen.dart';
 import 'package:aevum_native/services/auth_service.dart';
 import 'package:aevum_native/services/route_guard.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -50,6 +52,13 @@ late final GoRouter _router;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate(
+    androidProvider:
+        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode
+        ? AppleProvider.debug
+        : AppleProvider.appAttestWithDeviceCheckFallback,
+  );
   _router = _buildRouter(AuthService());
   runApp(const AevumApp());
 }
