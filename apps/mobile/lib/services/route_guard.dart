@@ -1,6 +1,7 @@
 const Set<String> publicRoutes = <String>{'/', '/auth'};
 
-bool isAdminRoute(String path) => path.startsWith('/admin-');
+bool isAdminRoute(String path) =>
+    path == '/dev-menu' || path.startsWith('/admin-');
 
 String? resolveAuthRedirect({
   required String path,
