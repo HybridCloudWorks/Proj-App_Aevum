@@ -1,21 +1,21 @@
 /**
- * Aevum Firebase Configuration
+ * Aevum Firebase configuration.
  *
- * Following GDEF (Google Developer Expert in Firebase) Best Practices:
- * - Environment-based configuration
- * - Lazy initialization
- * - Type-safe exports
- *
- * IMPORTANT: Do not commit actual API keys. Use environment variables.
+ * App Check is initialized before Firebase data services when a production
+ * reCAPTCHA Enterprise site key is configured. Enforcement is enabled later in
+ * Firebase Console only after legitimate traffic has been observed in metrics.
  */
 
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getApp, getApps, initializeApp } from "firebase/app";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from "firebase/app-check";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
-// Firebase configuration from environment variables
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -26,22 +26,35 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase (singleton pattern)
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const useEmulators =
+  import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === "true";
+const appCheckSiteKey = import.meta.env.VITE_FIREBASE_APPCHECK_ENTERPRISE_SITE_KEY;
 
-// Initialize services
+export const appCheck =
+  typeof window !== "undefined" && !useEmulators && appCheckSiteKey
+    ? initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
+        isTokenAutoRefreshEnabled: true,
+      })
+    : null;
+
+if (import.meta.env.PROD && !appCheckSiteKey) {
+  console.warn(
+    "Firebase App Check is not initialized because VITE_FIREBASE_APPCHECK_ENTERPRISE_SITE_KEY is missing.",
+  );
+}
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Analytics (only in browser, not SSR)
 export const analytics =
   typeof window !== "undefined"
     ? isSupported().then((yes) => (yes ? getAnalytics(app) : null))
     : Promise.resolve(null);
 
-// Connect to emulators in development
-if (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === "true") {
+if (useEmulators) {
   connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "localhost", 8080);
   connectStorageEmulator(storage, "localhost", 9199);
