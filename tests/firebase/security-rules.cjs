@@ -327,7 +327,7 @@ async function main() {
       }),
     );
     await assertFails(
-      updateDoc(doc(editor.firestore(), "families", familyId), {
+      updateDoc(doc(owner.firestore(), "families", familyId), {
         createdBy: editorId,
         updatedAt: "attempted-reassignment",
       }),
@@ -419,6 +419,20 @@ async function main() {
       getDoc(doc(outsider.firestore(), "ai_tasks", "owner-task")),
     );
     await assertFails(
+      setDoc(doc(outsider.firestore(), "ai_tasks", "spoofed-task"), {
+        userId: ownerId,
+        status: "pending",
+        createdAt: "attempted",
+        updatedAt: "attempted",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(outsider.firestore(), "ai_tasks", "owner-task"), {
+        status: "completed",
+        updatedAt: "outsider-attempt",
+      }),
+    );
+    await assertFails(
       updateDoc(doc(owner.firestore(), "ai_tasks", "owner-task"), {
         userId: outsiderId,
         updatedAt: "attempted-transfer",
@@ -426,7 +440,31 @@ async function main() {
     );
   });
 
-  await run("audit and undeclared collections deny client writes", async () => {
+  await run("audit and undeclared collections deny client access", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "audit_events", "seeded-event"), {
+        eventType: "fixture",
+        actorType: "system",
+        actorId: "fixture",
+        occurredAt: "fixture-created",
+        targetType: "media",
+        targetId: "seeded-media",
+        metadata: {},
+      });
+      await setDoc(doc(context.firestore(), "undeclared", "seeded-record"), {
+        value: "fixture",
+      });
+    });
+
+    await assertFails(
+      getDoc(doc(owner.firestore(), "audit_events", "seeded-event")),
+    );
+    await assertSucceeds(
+      getDoc(doc(admin.firestore(), "audit_events", "seeded-event")),
+    );
+    await assertFails(
+      getDoc(doc(owner.firestore(), "undeclared", "seeded-record")),
+    );
     await assertFails(
       setDoc(doc(owner.firestore(), "audit_events", "client-event"), {
         eventType: "spoof",
@@ -438,9 +476,6 @@ async function main() {
       setDoc(doc(owner.firestore(), "undeclared", "record"), {
         value: "denied",
       }),
-    );
-    await assertSucceeds(
-      getDoc(doc(admin.firestore(), "audit_events", "missing-event")),
     );
   });
 
