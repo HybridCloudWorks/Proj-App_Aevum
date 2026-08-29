@@ -16,7 +16,13 @@ class MockUser extends Mock implements User {
         returnValue: '',
       ) as String;
 }
-class MockUuid extends Mock implements Uuid {}
+class MockUuid extends Mock implements Uuid {
+  @override
+  String v4({Map<String, dynamic>? options}) => super.noSuchMethod(
+        Invocation.method(#v4, [], {#options: options}),
+        returnValue: '',
+      ) as String;
+}
 class MockCollectionReference extends Mock
     implements CollectionReference<Map<String, dynamic>> {}
 class MockDocumentReference extends Mock
