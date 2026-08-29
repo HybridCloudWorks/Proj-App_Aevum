@@ -19,8 +19,6 @@ const NEXT_ITEMS = [
   },
 ];
 
-// ⚡ Bolt Optimization: Define GALLERY_ITEMS outside component to prevent recreation on every render
-const GALLERY_ITEMS = [
 const CONTEXT_PHOTOS = [
   {
     tags: true,
@@ -208,7 +206,6 @@ function IdentityTaggingScreen() {
             </span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            {GALLERY_ITEMS.map((item, index) => (
             {CONTEXT_PHOTOS.map((item, index) => (
               <div
                 key={index}

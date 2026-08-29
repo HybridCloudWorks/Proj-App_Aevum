@@ -7,7 +7,9 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && request.auth.token.admin == true;
+      return isSignedIn() &&
+        'admin' in request.auth.token &&
+        request.auth.token.admin == true;
     }
 
     function familyDoc(familyId) {
@@ -32,16 +34,12 @@ service cloud.firestore {
     }
 
     function canWriteFamily(familyId) {
-      let family = familyDoc(familyId);
-      let collaborator = isSignedIn()
-        ? collaboratorDoc(familyId, request.auth.uid)
-        : null;
       return isAdmin() ||
-        (isSignedIn() && family.data.ownerId == request.auth.uid) ||
         (isSignedIn() &&
-          collaborator != null &&
-          collaborator.data.status == 'active' &&
-          collaborator.data.role == 'editor');
+          familyDoc(familyId).data.ownerId == request.auth.uid) ||
+        (isSignedIn() &&
+          collaboratorDoc(familyId, request.auth.uid).data.status == 'active' &&
+          collaboratorDoc(familyId, request.auth.uid).data.role == 'editor');
     }
 
     function protectedProfileKeysAbsent() {

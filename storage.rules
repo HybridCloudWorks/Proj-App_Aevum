@@ -7,7 +7,9 @@ service firebase.storage {
     }
 
     function isAdmin() {
-      return isSignedIn() && request.auth.token.admin == true;
+      return isSignedIn() &&
+        'admin' in request.auth.token &&
+        request.auth.token.admin == true;
     }
 
     function familyDoc(familyId) {
@@ -33,14 +35,12 @@ service firebase.storage {
     }
 
     function canWriteFamily(familyId) {
-      let family = familyDoc(familyId);
-      let collaborator = collaboratorDoc(familyId);
       return isAdmin() ||
-        (isSignedIn() && family != null && family.data.ownerId == request.auth.uid) ||
         (isSignedIn() &&
-          collaborator != null &&
-          collaborator.data.status == 'active' &&
-          collaborator.data.role == 'editor');
+          familyDoc(familyId).data.ownerId == request.auth.uid) ||
+        (isSignedIn() &&
+          collaboratorDoc(familyId).data.status == 'active' &&
+          collaboratorDoc(familyId).data.role == 'editor');
     }
 
     function validMediaReservation(familyId, mediaId) {
@@ -78,7 +78,8 @@ service firebase.storage {
     // document owned by the uploader, are client-created once, and immutable.
     match /families/{familyId}/media/{mediaId}/original/{fileName} {
       allow read: if canReadFamily(familyId);
-      allow create: if canWriteFamily(familyId) &&
+      allow create: if resource == null &&
+        canWriteFamily(familyId) &&
         validMediaReservation(familyId, mediaId) &&
         isSupportedImage() &&
         imageWithinLimit();

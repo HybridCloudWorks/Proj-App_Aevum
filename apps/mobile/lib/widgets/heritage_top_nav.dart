@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 
 class HeritageTopNav extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final String? subtitle;
   final bool showBack;
 
   const HeritageTopNav({
     super.key,
     required this.title,
+    this.subtitle,
     this.showBack = true,
   });
 

@@ -3,15 +3,18 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import FamilyTreeScreen from "./FamilyTreeScreen";
 
-// Mock auth context
+// Keep the mocked auth object stable across renders. FamilyTreeScreen's
+// subscription effect depends on user identity.
+const mockAuthState = vi.hoisted(() => ({
+  user: {
+    uid: "test-user-id",
+    displayName: "Test User",
+    photoURL: "test-photo.jpg",
+  },
+}));
+
 vi.mock("@/contexts/AuthContext", () => ({
-  useAuth: () => ({
-    user: {
-      uid: "test-user-id",
-      displayName: "Test User",
-      photoURL: "test-photo.jpg",
-    },
-  }),
+  useAuth: () => mockAuthState,
 }));
 
 // Mock firestore functions

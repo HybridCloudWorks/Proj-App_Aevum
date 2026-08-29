@@ -294,9 +294,9 @@ resource "google_cloudfunctions2_function" "ai_analyzer" {
     timeout_seconds       = 120
     service_account_email = google_service_account.ai_sa.email
     environment_variables = {
-      PROJECT_ID       = var.project_id
-      GEMINI_MODEL     = var.gemini_model
-      GEMINI_LOCATION  = var.gemini_location
+      PROJECT_ID      = var.project_id
+      GEMINI_MODEL    = var.gemini_model
+      GEMINI_LOCATION = var.gemini_location
     }
   }
 
@@ -311,9 +311,10 @@ resource "google_cloudfunctions2_function" "ai_analyzer" {
       value     = "(default)"
     }
 
-    event_filters_path_pattern {
+    event_filters {
       attribute = "document"
       value     = "media_items/{mediaId}"
+      operator  = "match-path-pattern"
     }
   }
 }

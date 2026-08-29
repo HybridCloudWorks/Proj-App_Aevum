@@ -4,7 +4,11 @@ import 'package:go_router/go_router.dart';
 class HeritageBottomNav extends StatelessWidget {
   final int selectedIndex;
 
-  const HeritageBottomNav({super.key, required this.selectedIndex});
+  const HeritageBottomNav({
+    super.key,
+    int? selectedIndex,
+    int? activeIndex,
+  }) : selectedIndex = selectedIndex ?? activeIndex ?? 0;
 
   void _onItemTapped(BuildContext context, int index) {
     if (index == selectedIndex) return;

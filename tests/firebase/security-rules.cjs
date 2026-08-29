@@ -285,26 +285,28 @@ async function main() {
     await assertSucceeds(batch.commit());
   });
 
-  await run("storage original requires matching reservation and write-capable user", async () => {
-    const objectPath =
-      "families/family-a/media/storage-media/original/photo.jpg";
-    const ownerRef = ref(owner.storage(), objectPath);
-    const viewerRef = ref(viewer.storage(), objectPath);
+  const originalObjectPath =
+    "families/family-a/media/storage-media/original/photo.jpg";
 
+  await run("viewer cannot upload a reserved original", async () => {
     await assertFails(
-      uploadBytes(viewerRef, new Uint8Array([1, 2, 3]), {
+      uploadBytes(ref(viewer.storage(), originalObjectPath), new Uint8Array([1, 2, 3]), {
         contentType: "image/jpeg",
       }),
     );
+  });
 
+  await run("owner can upload a reserved original", async () => {
     await assertSucceeds(
-      uploadBytes(ownerRef, new Uint8Array([1, 2, 3]), {
+      uploadBytes(ref(owner.storage(), originalObjectPath), new Uint8Array([1, 2, 3]), {
         contentType: "image/jpeg",
       }),
     );
+  });
 
+  await run("original media cannot be overwritten", async () => {
     await assertFails(
-      uploadBytes(ownerRef, new Uint8Array([4, 5, 6]), {
+      uploadBytes(ref(owner.storage(), originalObjectPath), new Uint8Array([4, 5, 6]), {
         contentType: "image/jpeg",
       }),
     );
