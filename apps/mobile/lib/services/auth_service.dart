@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthClient {
-  Future<UserCredential> signInWithGoogle();
-  Future<UserCredential> signInWithApple();
-  Future<UserCredential> signInWithEmail(String email, String password);
-  Future<UserCredential> createAccountWithEmail(String email, String password);
+  Future<Object?> signInWithGoogle();
+  Future<Object?> signInWithApple();
+  Future<Object?> signInWithEmail(String email, String password);
+  Future<Object?> createAccountWithEmail(String email, String password);
   Future<void> sendPasswordReset(String email);
 }
 
