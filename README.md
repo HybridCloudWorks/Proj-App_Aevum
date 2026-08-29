@@ -53,6 +53,7 @@ We maintain a centralized documentation hub in the `docs/` folder:
 - **[Strategic Docs](docs/)**: Migration logs, implementation plans, and walkthroughs.
 - **[Design Baselines](docs/baselines/)**: 57 high-fidelity design captures for 1-to-1 UI matching.
 - **[Master Mapping](docs/mapping.md)**: Registry of design-to-code components.
+- **[Canonical Data Contract](docs/data-contract.md)**: Versioned schema, ownership, mutation, and storage-path contract.
 
 ## 🔐 Security & Data (GDEF Guidelines)
 
