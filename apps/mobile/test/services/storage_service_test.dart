@@ -130,19 +130,14 @@ void main() {
       expect(result, testAlbumId);
       verify(mockFirestore.collection('albums')).called(1);
       verify(mockCollection.doc(testAlbumId)).called(1);
-      verify(
-        mockDocument.set(argThat(containsPair('familyId', testFamilyId))),
-      ).called(1);
-      verify(
-        mockDocument.set(argThat(containsPair('createdBy', testUid))),
-      ).called(1);
-      verify(mockDocument.set(argThat(containsPair('name', testName)))).called(1);
-      verify(
-        mockDocument.set(argThat(containsPair('description', testDescription))),
-      ).called(1);
-      verify(
-        mockDocument.set(argThat(containsPair('mediaIds', <String>[]))),
-      ).called(1);
+      final Map<String, dynamic> payload =
+          verify(mockDocument.set(captureAny)).captured.single
+              as Map<String, dynamic>;
+      expect(payload['familyId'], testFamilyId);
+      expect(payload['createdBy'], testUid);
+      expect(payload['name'], testName);
+      expect(payload['description'], testDescription);
+      expect(payload['mediaIds'], <String>[]);
     });
 
     test('uses an empty description by default', () async {
