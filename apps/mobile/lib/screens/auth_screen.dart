@@ -285,7 +285,14 @@ class _AuthScreenState extends State<AuthScreen> {
         children: [
           Icon(icon),
           const SizedBox(width: 12),
-          Text(label, style: const TextStyle(fontSize: 16)),
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
         ],
       ),
     );
