@@ -9,7 +9,13 @@ import 'package:uuid/uuid.dart';
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 class MockFirebaseStorage extends Mock implements FirebaseStorage {}
-class MockUser extends Mock implements User {}
+class MockUser extends Mock implements User {
+  @override
+  String get uid => super.noSuchMethod(
+        Invocation.getter(#uid),
+        returnValue: '',
+      ) as String;
+}
 class MockUuid extends Mock implements Uuid {}
 class MockCollectionReference extends Mock
     implements CollectionReference<Map<String, dynamic>> {}
