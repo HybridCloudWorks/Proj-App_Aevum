@@ -1,3 +1,4 @@
+// Contract coverage target: docs/data-contract.md (v1.0.0)
 const fs = require("node:fs");
 const {
   assertFails,
