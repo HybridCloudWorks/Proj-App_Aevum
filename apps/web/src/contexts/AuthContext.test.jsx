@@ -27,6 +27,7 @@ describe("AuthProvider trusted admin claims", () => {
   let tokenListener;
 
   beforeEach(() => {
+    tokenListener = undefined;
     vi.clearAllMocks();
     onIdTokenChanged.mockImplementation((_auth, listener) => {
       tokenListener = listener;
@@ -40,6 +41,8 @@ describe("AuthProvider trusted admin claims", () => {
         <AuthState />
       </AuthProvider>,
     );
+    expect(onIdTokenChanged).toHaveBeenCalledOnce();
+    expect(tokenListener).toEqual(expect.any(Function));
   }
 
   it("grants admin state only from a verified ID-token claim", async () => {
