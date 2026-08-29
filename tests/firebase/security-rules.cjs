@@ -286,6 +286,164 @@ async function main() {
     await assertSucceeds(batch.commit());
   });
 
+  await run("cross-family records are unreadable and unwritable", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "families", "family-b"), {
+        name: "Other Family",
+        ownerId: outsiderId,
+        createdBy: outsiderId,
+        collaboratorIds: [outsiderId],
+        createdAt: "fixture-created",
+        updatedAt: "fixture-updated",
+      });
+      await setDoc(doc(context.firestore(), "family_members", "family-b-person"), {
+        familyId: "family-b",
+        createdBy: outsiderId,
+        name: "Other Person",
+        createdAt: "fixture-created",
+        updatedAt: "fixture-updated",
+      });
+    });
+
+    await assertFails(
+      getDoc(doc(owner.firestore(), "family_members", "family-b-person")),
+    );
+    await assertFails(
+      setDoc(doc(owner.firestore(), "family_members", "family-b-write"), {
+        familyId: "family-b",
+        createdBy: ownerId,
+        name: "Cross-family write",
+        createdAt: "attempted",
+        updatedAt: "attempted",
+      }),
+    );
+  });
+
+  await run("family ownership and creation identity are immutable", async () => {
+    await assertFails(
+      updateDoc(doc(owner.firestore(), "families", familyId), {
+        ownerId: editorId,
+        updatedAt: "attempted-transfer",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(editor.firestore(), "families", familyId), {
+        createdBy: editorId,
+        updatedAt: "attempted-reassignment",
+      }),
+    );
+  });
+
+  await run("genealogical identity fields cannot be reassigned", async () => {
+    await assertFails(
+      updateDoc(doc(editor.firestore(), "family_members", "editor-person"), {
+        familyId: "family-b",
+        updatedAt: "attempted-family-change",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(editor.firestore(), "family_members", "editor-person"), {
+        createdBy: ownerId,
+        updatedAt: "attempted-creator-change",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(editor.firestore(), "family_members", "editor-person"), {
+        createdAt: "attempted-created-at-change",
+        updatedAt: "attempted-created-at-change",
+      }),
+    );
+  });
+
+  await run("media ownership fields cannot be reassigned", async () => {
+    await assertFails(
+      updateDoc(doc(owner.firestore(), "media_items", "seeded-media"), {
+        familyId: "family-b",
+        updatedAt: "attempted-family-change",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(owner.firestore(), "media_items", "seeded-media"), {
+        uploadedBy: editorId,
+        updatedAt: "attempted-uploader-change",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(owner.firestore(), "media_items", "seeded-media"), {
+        createdBy: editorId,
+        updatedAt: "attempted-creator-change",
+      }),
+    );
+  });
+
+  await run("viewer cannot mutate family content", async () => {
+    await assertFails(
+      updateDoc(doc(viewer.firestore(), "media_items", "seeded-media"), {
+        title: "Denied",
+        updatedAt: "viewer-attempt",
+      }),
+    );
+    await assertFails(
+      updateDoc(doc(viewer.firestore(), "families", familyId), {
+        name: "Denied",
+        updatedAt: "viewer-attempt",
+      }),
+    );
+  });
+
+  await run("collaborator roles are owner-managed and constrained", async () => {
+    await assertFails(
+      updateDoc(
+        doc(editor.firestore(), "families", familyId, "collaborators", viewerId),
+        { role: "editor", updatedAt: "editor-attempt" },
+      ),
+    );
+    await assertFails(
+      updateDoc(
+        doc(owner.firestore(), "families", familyId, "collaborators", viewerId),
+        { role: "owner", updatedAt: "invalid-role" },
+      ),
+    );
+  });
+
+  await run("AI tasks are user-scoped and identity is immutable", async () => {
+    await assertSucceeds(
+      setDoc(doc(owner.firestore(), "ai_tasks", "owner-task"), {
+        userId: ownerId,
+        status: "pending",
+        createdAt: "task-created",
+        updatedAt: "task-created",
+      }),
+    );
+    await assertFails(
+      getDoc(doc(outsider.firestore(), "ai_tasks", "owner-task")),
+    );
+    await assertFails(
+      updateDoc(doc(owner.firestore(), "ai_tasks", "owner-task"), {
+        userId: outsiderId,
+        updatedAt: "attempted-transfer",
+      }),
+    );
+  });
+
+  await run("audit and undeclared collections deny client writes", async () => {
+    await assertFails(
+      setDoc(doc(owner.firestore(), "audit_events", "client-event"), {
+        eventType: "spoof",
+        actorId: ownerId,
+        occurredAt: "attempted",
+      }),
+    );
+    await assertFails(
+      setDoc(doc(owner.firestore(), "undeclared", "record"), {
+        value: "denied",
+      }),
+    );
+    await assertSucceeds(
+      getDoc(doc(admin.firestore(), "audit_events", "missing-event")),
+    );
+  });
+
   const originalObjectPath =
     "families/family-a/media/storage-media/original/photo.jpg";
 
