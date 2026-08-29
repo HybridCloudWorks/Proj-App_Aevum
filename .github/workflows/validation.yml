@@ -1,0 +1,85 @@
+name: PR Validation
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web Lint, Test, and Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx prettier --check "apps/web/src/**/*.{js,jsx,ts,tsx,css,json}"
+      - run: npm run test -- --run
+      - run: npm run build
+        env:
+          VITE_ENABLE_PROTOTYPE_FEATURES: "false"
+
+  firebase-rules:
+    name: Firebase Rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install emulator tooling
+        run: npm install --global firebase-tools@15.28.2 @firebase/rules-unit-testing@5.0.2 firebase@12.18.0
+      - name: Test Firestore and Storage rules
+        run: |
+          export NODE_PATH="$(npm root -g)"
+          firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs"
+
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.0"
+      - run: terraform fmt -check -recursive infrastructure
+      - name: Validate data module
+        working-directory: infrastructure/data/terraform
+        run: terraform init -backend=false -input=false && terraform validate
+      - name: Validate computeless module
+        working-directory: infrastructure/computeless/terraform
+        run: terraform init -backend=false -input=false && terraform validate
+
+  flutter:
+    name: Flutter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Resolve dependencies
+        working-directory: apps/mobile
+        run: flutter pub get
+      - name: Verify committed lockfile
+        run: git diff --exit-code -- apps/mobile/pubspec.lock
+      - name: Analyze
+        working-directory: apps/mobile
+        run: flutter analyze
+      - name: Test
+        working-directory: apps/mobile
+        run: flutter test
