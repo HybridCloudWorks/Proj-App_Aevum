@@ -83,7 +83,12 @@ jobs:
         working-directory: apps/mobile
         run: flutter pub get
       - name: Verify committed lockfile
-        run: git diff --exit-code -- apps/mobile/pubspec.lock
+        run: |
+          if ! git diff --quiet -- apps/mobile/pubspec.lock; then
+            echo "::error::apps/mobile/pubspec.lock is stale"
+            echo "LOCKFILE_BASE64=$(base64 -w 0 apps/mobile/pubspec.lock)"
+            exit 1
+          fi
       - name: Analyze
         working-directory: apps/mobile
         run: flutter analyze
