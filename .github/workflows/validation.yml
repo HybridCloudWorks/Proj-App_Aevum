@@ -38,7 +38,12 @@ jobs:
           if (( ${#files[@]} )); then
             npx prettier --check "${files[@]}"
           fi
-      - run: npm run test --workspace=apps/web -- --run --pool=forks --maxWorkers=1 --minWorkers=1
+      - name: Test web files in isolated processes
+        working-directory: apps/web
+        run: |
+          while IFS= read -r test_file; do
+            timeout 60s npx vitest run "$test_file" --pool=forks --maxWorkers=1 --minWorkers=1
+          done < <(find src -type f \( -name "*.test.js" -o -name "*.test.jsx" -o -name "*.test.ts" -o -name "*.test.tsx" \) -print | sort)
       - run: npm run build
         env:
           VITE_ENABLE_PROTOTYPE_FEATURES: "false"
