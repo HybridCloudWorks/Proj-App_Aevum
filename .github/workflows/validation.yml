@@ -38,7 +38,7 @@ jobs:
           if (( ${#files[@]} )); then
             npx prettier --check "${files[@]}"
           fi
-      - run: npm run test -- --run
+      - run: timeout 180s npm run test -- --run
       - run: npm run build
         env:
           VITE_ENABLE_PROTOTYPE_FEATURES: "false"
@@ -60,7 +60,7 @@ jobs:
       - name: Test Firestore and Storage rules
         run: |
           export NODE_PATH="$(npm root -g)"
-          firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs"
+          timeout 180s firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs"
 
   terraform:
     name: Terraform
