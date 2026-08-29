@@ -161,3 +161,9 @@ bucket receives no new application dependencies.
    cross-family denial.
 4. Deploy additive changes before writers; remove old fields only after readers
    and stored data have migrated.
+
+## Enforcement references
+
+This contract is referenced by `firestore.rules`, `storage.rules`, and
+`tests/firebase/security-rules.cjs`. Those executable artifacts remain the source
+of truth for currently enforced behavior; any mismatch is a release blocker.
