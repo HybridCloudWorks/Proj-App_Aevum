@@ -66,7 +66,7 @@ jobs:
       - name: Test Firestore and Storage rules
         run: |
           export NODE_PATH="$(npm root -g)"
-          timeout 180s firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs"
+          timeout 180s firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs && node tests/firebase/index-contract.cjs"
 
   terraform:
     name: Terraform
