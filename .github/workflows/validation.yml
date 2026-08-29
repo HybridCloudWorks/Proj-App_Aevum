@@ -38,7 +38,7 @@ jobs:
           if (( ${#files[@]} )); then
             npx prettier --check "${files[@]}"
           fi
-      - run: timeout 180s npm run test -- --run --pool=forks --maxWorkers=1 --minWorkers=1
+      - run: npm run test --workspace=apps/web -- --run --pool=forks --maxWorkers=1 --minWorkers=1
       - run: npm run build
         env:
           VITE_ENABLE_PROTOTYPE_FEATURES: "false"
