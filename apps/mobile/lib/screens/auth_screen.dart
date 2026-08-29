@@ -2,15 +2,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aevum_native/services/auth_service.dart';
 
+const bool googleSignInEnabled = bool.fromEnvironment(
+  'AEVUM_ENABLE_GOOGLE_SIGN_IN',
+  defaultValue: false,
+);
+const bool appleSignInEnabled = bool.fromEnvironment(
+  'AEVUM_ENABLE_APPLE_SIGN_IN',
+  defaultValue: false,
+);
+
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+  final AuthClient? authClient;
+
+  const AuthScreen({super.key, this.authClient});
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final AuthService _auth = AuthService();
+  late final AuthClient _auth;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = widget.authClient ?? AuthService();
+  }
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -142,18 +159,26 @@ class _AuthScreenState extends State<AuthScreen> {
                   if (!_showEmail) ...[
                     _socialButton(
                       icon: Icons.g_mobiledata,
-                      label: 'Continue with Google',
-                      onTap: () => _run(() async {
-                        await _auth.signInWithGoogle();
-                      }),
+                      label: googleSignInEnabled
+                          ? 'Continue with Google'
+                          : 'Google sign-in is not configured',
+                      onTap: googleSignInEnabled
+                          ? () => _run(() async {
+                              await _auth.signInWithGoogle();
+                            })
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     _socialButton(
                       icon: Icons.apple,
-                      label: 'Continue with Apple',
-                      onTap: () => _run(() async {
-                        await _auth.signInWithApple();
-                      }),
+                      label: appleSignInEnabled
+                          ? 'Continue with Apple'
+                          : 'Apple sign-in is not configured',
+                      onTap: appleSignInEnabled
+                          ? () => _run(() async {
+                              await _auth.signInWithApple();
+                            })
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     _socialButton(
@@ -245,7 +270,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget _socialButton({
     required IconData icon,
     required String label,
-    required VoidCallback onTap,
+    required VoidCallback? onTap,
   }) {
     return ElevatedButton(
       onPressed: _loading ? null : onTap,
