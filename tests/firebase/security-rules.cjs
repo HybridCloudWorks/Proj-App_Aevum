@@ -185,6 +185,32 @@ async function main() {
     );
   });
 
+  await run("new profile cannot create client-controlled privileges", async () => {
+    const newUserId = "new-profile-user";
+    const newUser = testEnv.authenticatedContext(newUserId);
+
+    await assertFails(
+      setDoc(doc(newUser.firestore(), "users", newUserId), {
+        uid: newUserId,
+        email: "new@example.test",
+        displayName: "New User",
+        admin: true,
+        createdAt: "profile-created",
+        updatedAt: "profile-created",
+      }),
+    );
+
+    await assertSucceeds(
+      setDoc(doc(newUser.firestore(), "users", newUserId), {
+        uid: newUserId,
+        email: "new@example.test",
+        displayName: "New User",
+        createdAt: "profile-created",
+        updatedAt: "profile-created",
+      }),
+    );
+  });
+
   await run("owner can create only an uploading media reservation", async () => {
     await assertSucceeds(
       setDoc(doc(owner.firestore(), "media_items", "reservation-ok"), {
