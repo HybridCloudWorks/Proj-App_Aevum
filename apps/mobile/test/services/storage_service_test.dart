@@ -6,7 +6,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:uuid/uuid.dart';
 
-class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+class MockFirebaseFirestore extends Mock implements FirebaseFirestore {
+  @override
+  CollectionReference<Map<String, dynamic>> collection(String collectionPath) =>
+      super.noSuchMethod(
+        Invocation.method(#collection, [collectionPath]),
+        returnValue: MockCollectionReference(),
+      ) as CollectionReference<Map<String, dynamic>>;
+}
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 class MockFirebaseStorage extends Mock implements FirebaseStorage {}
 class MockUser extends Mock implements User {
@@ -35,7 +42,14 @@ class MockUuid extends Mock implements Uuid {
       ) as String;
 }
 class MockCollectionReference extends Mock
-    implements CollectionReference<Map<String, dynamic>> {}
+    implements CollectionReference<Map<String, dynamic>> {
+  @override
+  DocumentReference<Map<String, dynamic>> doc([String? path]) =>
+      super.noSuchMethod(
+        Invocation.method(#doc, [path]),
+        returnValue: MockDocumentReference(),
+      ) as DocumentReference<Map<String, dynamic>>;
+}
 class MockDocumentReference extends Mock
     implements DocumentReference<Map<String, dynamic>> {
   @override
