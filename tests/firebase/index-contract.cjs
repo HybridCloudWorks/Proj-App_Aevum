@@ -1,8 +1,10 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const path = require("node:path");
 
+const indexesPath = path.resolve(__dirname, "..", "..", "firestore.indexes.json");
 const definition = JSON.parse(
-  fs.readFileSync("firestore.indexes.json", "utf8"),
+  fs.readFileSync(indexesPath, "utf8"),
 );
 
 function signature(index) {
@@ -32,10 +34,17 @@ for (const expected of required) {
   assert.ok(actual.has(expected), `Missing canonical index: ${expected}`);
 }
 
+const configuredIndexes = [
+  ...(definition.indexes || []),
+  ...(definition.fieldOverrides || []),
+];
+
 assert.equal(
-  definition.indexes.some((index) => index.collectionGroup === "memories"),
+  configuredIndexes.some((entry) =>
+    entry.collectionGroup === "memories" || entry.collectionId === "memories"
+  ),
   false,
-  "Legacy memories indexes must not return",
+  "Legacy memories indexes or field overrides must not return",
 );
 
 console.log("Canonical Firestore index contract passed.");
