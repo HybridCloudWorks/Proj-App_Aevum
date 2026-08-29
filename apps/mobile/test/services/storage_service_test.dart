@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/v4.dart';
 
 class MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
@@ -21,7 +20,7 @@ class MockUuid extends Mock implements Uuid {
   @override
   String v4({
     Map<String, dynamic>? options,
-    V4Options? config,
+    Object? config,
   }) =>
       super.noSuchMethod(
         Invocation.method(
