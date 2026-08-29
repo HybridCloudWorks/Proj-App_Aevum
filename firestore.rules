@@ -1,3 +1,4 @@
+// Canonical schema and authorization semantics: docs/data-contract.md (v1.0.0)
 rules_version = '2';
 
 service cloud.firestore {
