@@ -15,32 +15,32 @@ class FakeAuthClient implements AuthClient {
   String? lastEmail;
   String? lastPassword;
   Object? emailError;
-  Completer<Object?>? emailCompleter;
+  Completer<UserCredential?>? emailCompleter;
 
   @override
-  Future<Object?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     googleCalls += 1;
     return null;
   }
 
   @override
-  Future<Object?> signInWithApple() async {
+  Future<UserCredential?> signInWithApple() async {
     appleCalls += 1;
     return null;
   }
 
   @override
-  Future<Object?> signInWithEmail(String email, String password) {
+  Future<UserCredential?> signInWithEmail(String email, String password) {
     emailCalls += 1;
     lastEmail = email;
     lastPassword = password;
-    if (emailError != null) return Future<Object?>.error(emailError!);
+    if (emailError != null) return Future<UserCredential?>.error(emailError!);
     if (emailCompleter != null) return emailCompleter!.future;
-    return Future<Object?>.value();
+    return Future<UserCredential?>.value();
   }
 
   @override
-  Future<Object?> createAccountWithEmail(String email, String password) async {
+  Future<UserCredential?> createAccountWithEmail(String email, String password) async {
     createCalls += 1;
     lastEmail = email;
     lastPassword = password;
@@ -129,7 +129,7 @@ void main() {
   testWidgets('loading state prevents duplicate email submissions', (
     tester,
   ) async {
-    final client = FakeAuthClient()..emailCompleter = Completer<Object?>();
+    final client = FakeAuthClient()..emailCompleter = Completer<UserCredential?>();
     await showEmailForm(tester, client);
     await enterCredentials(tester);
 
