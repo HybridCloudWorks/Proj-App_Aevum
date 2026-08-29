@@ -18,8 +18,19 @@ class MockUser extends Mock implements User {
 }
 class MockUuid extends Mock implements Uuid {
   @override
-  String v4({Map<String, dynamic>? options}) => super.noSuchMethod(
-        Invocation.method(#v4, [], {#options: options}),
+  String v4({
+    Map<String, dynamic>? options,
+    V4Options? config,
+  }) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #v4,
+          const [],
+          <Symbol, dynamic>{
+            #options: options,
+            #config: config,
+          },
+        ),
         returnValue: '',
       ) as String;
 }
