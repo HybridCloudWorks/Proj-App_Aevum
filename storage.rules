@@ -78,7 +78,8 @@ service firebase.storage {
     // document owned by the uploader, are client-created once, and immutable.
     match /families/{familyId}/media/{mediaId}/original/{fileName} {
       allow read: if canReadFamily(familyId);
-      allow create: if canWriteFamily(familyId) &&
+      allow create: if resource == null &&
+        canWriteFamily(familyId) &&
         validMediaReservation(familyId, mediaId) &&
         isSupportedImage() &&
         imageWithinLimit();
