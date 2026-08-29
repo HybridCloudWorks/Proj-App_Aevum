@@ -306,14 +306,12 @@ resource "google_cloudfunctions2_function" "ai_analyzer" {
     retry_policy          = "RETRY_POLICY_RETRY"
     service_account_email = google_service_account.ai_sa.email
 
-    event_filters {
-      attribute = "database"
-      value     = "(default)"
+    event_filters = {
+      database = "(default)"
     }
 
-    event_filters_path_pattern {
-      attribute = "document"
-      value     = "media_items/{mediaId}"
+    event_filters_path_pattern = {
+      document = "media_items/{mediaId}"
     }
   }
 }
