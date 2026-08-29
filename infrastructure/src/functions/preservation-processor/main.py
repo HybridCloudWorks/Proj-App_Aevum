@@ -14,8 +14,24 @@ register_heif_opener()
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET")
 ARCHIVE_BUCKET = os.environ.get("ARCHIVE_BUCKET")
 
-storage_client = storage.Client()
-firestore_client = firestore.Client()
+storage_client = None
+firestore_client = None
+
+
+def get_storage_client():
+    """Create the Storage client lazily so pure pipeline behavior is testable."""
+    global storage_client
+    if storage_client is None:
+        storage_client = storage.Client()
+    return storage_client
+
+
+def get_firestore_client():
+    """Create the Firestore client lazily so ignored events need no credentials."""
+    global firestore_client
+    if firestore_client is None:
+        firestore_client = firestore.Client()
+    return firestore_client
 
 SUPPORTED_IMAGE_TYPES = {
     "image/jpeg",
@@ -152,7 +168,7 @@ def process_upload(cloud_event):
         return
 
     family_id, media_id, file_name = parsed
-    media_ref = firestore_client.collection("media_items").document(media_id)
+    media_ref = get_firestore_client().collection("media_items").document(media_id)
     media_snapshot = media_ref.get()
 
     if not media_snapshot.exists:
@@ -182,7 +198,7 @@ def process_upload(cloud_event):
         # Raising allows Eventarc retry policy to revisit after status=uploaded.
         raise RuntimeError(f"Media {media_id} upload metadata is not finalized yet")
 
-    source_bucket = storage_client.bucket(bucket_name)
+    source_bucket = get_storage_client().bucket(bucket_name)
     source_blob = source_bucket.blob(object_name, generation=int(generation))
     content_type = data.get("contentType") or source_blob.content_type
 
@@ -239,7 +255,7 @@ def process_upload(cloud_event):
 
         if not ARCHIVE_BUCKET:
             raise RuntimeError("ARCHIVE_BUCKET is not configured")
-        archive_bucket = storage_client.bucket(ARCHIVE_BUCKET)
+        archive_bucket = get_storage_client().bucket(ARCHIVE_BUCKET)
         archive_path = (
             f"families/{family_id}/media/{media_id}/originals/"
             f"{generation}/{file_name}"
