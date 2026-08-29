@@ -513,12 +513,24 @@ async function main() {
     await assertFails(getBytes(ref(outsider.storage(), objectPath)));
   });
 
-  await run("original upload rejects spoofed media ownership", async () => {
+  await run("original upload rejects a mismatched family reservation", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "media_items", "family-b-storage"), {
+        familyId: "family-b",
+        createdBy: ownerId,
+        uploadedBy: ownerId,
+        status: "uploading",
+        aiStatus: "waiting",
+        storage: {},
+        createdAt: "fixture-created",
+        updatedAt: "fixture-updated",
+      });
+    });
     const spoofedPath =
-      "families/family-a/media/seeded-media/original/spoof.jpg";
+      "families/family-a/media/family-b-storage/original/spoof.jpg";
     await assertFails(
       uploadBytes(
-        ref(editor.storage(), spoofedPath),
+        ref(owner.storage(), spoofedPath),
         new Uint8Array([1, 2, 3]),
         { contentType: "image/jpeg" },
       ),
@@ -622,6 +634,28 @@ async function main() {
     await assertSucceeds(getBytes(ref(owner.storage(), stagingPath)));
     await assertFails(deleteObject(ref(outsider.storage(), stagingPath)));
     await assertSucceeds(deleteObject(ref(owner.storage(), stagingPath)));
+  });
+
+  await run("managed public assets require authentication to read and admin to write", async () => {
+    const publicPath = "public/release/banner.webp";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), publicPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/webp" },
+      ),
+    );
+    await assertSucceeds(
+      uploadBytes(
+        ref(admin.storage(), publicPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/webp" },
+      ),
+    );
+    await assertFails(getBytes(ref(anonymous.storage(), publicPath)));
+    await assertSucceeds(getBytes(ref(owner.storage(), publicPath)));
+    await assertFails(deleteObject(ref(owner.storage(), publicPath)));
+    await assertSucceeds(deleteObject(ref(admin.storage(), publicPath)));
   });
 
   await run("family original deletion follows write roles", async () => {
