@@ -68,6 +68,22 @@ jobs:
           export NODE_PATH="$(npm root -g)"
           timeout 180s firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs && node tests/firebase/index-contract.cjs"
 
+  preservation:
+    name: Preservation Pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: infrastructure/src/functions/preservation-processor/requirements.txt
+      - name: Install preservation dependencies
+        run: pip install --requirement infrastructure/src/functions/preservation-processor/requirements.txt
+      - name: Test preservation processor
+        working-directory: infrastructure/src/functions/preservation-processor
+        run: python -m unittest discover -s tests -v
+
   terraform:
     name: Terraform
     runs-on: ubuntu-latest
