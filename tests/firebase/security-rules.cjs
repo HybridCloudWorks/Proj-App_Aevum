@@ -12,7 +12,7 @@ const {
   updateDoc,
   writeBatch,
 } = require("firebase/firestore");
-const { getBytes, ref, uploadBytes } = require("firebase/storage");
+const { deleteObject, getBytes, ref, uploadBytes } = require("firebase/storage");
 
 const projectId = process.env.GCLOUD_PROJECT || "demo-aevum";
 let testEnv;
@@ -511,6 +511,160 @@ async function main() {
       "families/family-a/media/storage-media/original/photo.jpg";
     await assertSucceeds(getBytes(ref(viewer.storage(), objectPath)));
     await assertFails(getBytes(ref(outsider.storage(), objectPath)));
+  });
+
+  await run("original upload rejects a mismatched family reservation", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), "media_items", "family-b-storage"), {
+        familyId: "family-b",
+        createdBy: ownerId,
+        uploadedBy: ownerId,
+        status: "uploading",
+        aiStatus: "waiting",
+        storage: {},
+        createdAt: "fixture-created",
+        updatedAt: "fixture-updated",
+      });
+    });
+    const spoofedPath =
+      "families/family-a/media/family-b-storage/original/spoof.jpg";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), spoofedPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+  });
+
+  await run("original upload enforces image type and size", async () => {
+    const invalidTypePath =
+      "families/family-a/media/storage-media/original/not-image.txt";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), invalidTypePath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "text/plain" },
+      ),
+    );
+
+    const oversizedPath =
+      "families/family-a/media/storage-media/original/oversized.jpg";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), oversizedPath),
+        new Uint8Array(10 * 1024 * 1024 + 1),
+        { contentType: "image/jpeg" },
+      ),
+    );
+  });
+
+  await run("clients cannot write processor-owned derivatives", async () => {
+    const derivativePath =
+      "families/family-a/media/storage-media/derived/source-generation/display.webp";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), derivativePath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/webp" },
+      ),
+    );
+  });
+
+  await run("member photos enforce family roles and isolation", async () => {
+    const memberPath = "families/family-a/members/editor-person/photo.jpg";
+    await assertFails(
+      uploadBytes(
+        ref(viewer.storage(), memberPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertSucceeds(
+      uploadBytes(
+        ref(editor.storage(), memberPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertSucceeds(getBytes(ref(viewer.storage(), memberPath)));
+    await assertFails(getBytes(ref(outsider.storage(), memberPath)));
+    await assertFails(deleteObject(ref(viewer.storage(), memberPath)));
+    await assertSucceeds(deleteObject(ref(editor.storage(), memberPath)));
+  });
+
+  await run("profile images are isolated to their user", async () => {
+    const profilePath = "users/owner/profile/avatar.jpg";
+    await assertFails(
+      uploadBytes(
+        ref(outsider.storage(), profilePath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertSucceeds(
+      uploadBytes(
+        ref(owner.storage(), profilePath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertFails(getBytes(ref(outsider.storage(), profilePath)));
+    await assertSucceeds(getBytes(ref(owner.storage(), profilePath)));
+    await assertSucceeds(deleteObject(ref(owner.storage(), profilePath)));
+  });
+
+  await run("AI staging objects are user-scoped and constrained", async () => {
+    const stagingPath = "ai-processing/owner/task-a/input.jpg";
+    await assertFails(
+      uploadBytes(
+        ref(outsider.storage(), stagingPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertSucceeds(
+      uploadBytes(
+        ref(owner.storage(), stagingPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/jpeg" },
+      ),
+    );
+    await assertFails(getBytes(ref(outsider.storage(), stagingPath)));
+    await assertSucceeds(getBytes(ref(owner.storage(), stagingPath)));
+    await assertFails(deleteObject(ref(outsider.storage(), stagingPath)));
+    await assertSucceeds(deleteObject(ref(owner.storage(), stagingPath)));
+  });
+
+  await run("managed public assets require authentication to read and admin to write", async () => {
+    const publicPath = "public/release/banner.webp";
+    await assertFails(
+      uploadBytes(
+        ref(owner.storage(), publicPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/webp" },
+      ),
+    );
+    await assertSucceeds(
+      uploadBytes(
+        ref(admin.storage(), publicPath),
+        new Uint8Array([1, 2, 3]),
+        { contentType: "image/webp" },
+      ),
+    );
+    await assertFails(getBytes(ref(anonymous.storage(), publicPath)));
+    await assertSucceeds(getBytes(ref(owner.storage(), publicPath)));
+    await assertFails(deleteObject(ref(owner.storage(), publicPath)));
+    await assertSucceeds(deleteObject(ref(admin.storage(), publicPath)));
+  });
+
+  await run("family original deletion follows write roles", async () => {
+    await assertFails(
+      deleteObject(ref(viewer.storage(), originalObjectPath)),
+    );
+    await assertSucceeds(
+      deleteObject(ref(editor.storage(), originalObjectPath)),
+    );
   });
 
   await testEnv.cleanup();
