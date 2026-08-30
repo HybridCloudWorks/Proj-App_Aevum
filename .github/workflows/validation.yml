@@ -99,6 +99,15 @@ jobs:
       - name: Validate computeless module
         working-directory: infrastructure/computeless/terraform
         run: terraform init -backend=false -input=false && terraform validate
+      - name: Capture Terraform provider locks
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-provider-locks
+          include-hidden-files: true
+          path: |
+            infrastructure/data/terraform/.terraform.lock.hcl
+            infrastructure/computeless/terraform/.terraform.lock.hcl
+          retention-days: 1
 
   flutter:
     name: Flutter
