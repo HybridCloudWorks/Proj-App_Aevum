@@ -36,7 +36,10 @@ describe("Private Beta feature registry", () => {
     expect(isRouteReleased("/dashboard")).toBe(true);
   });
 
-  it("keeps planned telemetry disconnected from operational values", () => {
+  it("keeps planned admin telemetry and routes unavailable", () => {
     expect(RELEASE_FEATURES.adminOperationalTelemetry).toBe("planned");
+    expect(getRouteStatus("/admin")).toBe("planned");
+    expect(getRouteStatus("/admin/operations")).toBe("planned");
+    expect(isRouteReleased("/admin")).toBe(false);
   });
 });
