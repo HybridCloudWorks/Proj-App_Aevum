@@ -63,10 +63,10 @@ jobs:
           java-version: "21"
       - name: Install emulator tooling
         run: npm install --global firebase-tools@15.28.2 @firebase/rules-unit-testing@5.0.2 firebase@12.18.0
-      - name: Test Firestore and Storage rules
+      - name: Test Firebase rules and Private Beta journey
         run: |
           export NODE_PATH="$(npm root -g)"
-          timeout 180s firebase emulators:exec --only firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs && node tests/firebase/index-contract.cjs"
+          timeout 300s firebase emulators:exec --only auth,firestore,storage --project demo-aevum "node tests/firebase/security-rules.cjs && node tests/firebase/index-contract.cjs && node tests/firebase/private-beta-journey.cjs"
 
   preservation:
     name: Preservation Pipeline
