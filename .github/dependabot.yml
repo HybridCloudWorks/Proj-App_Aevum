@@ -1,0 +1,55 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      web-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: pub
+    directory: /apps/mobile
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      flutter-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: pip
+    directory: /infrastructure/src/functions/preservation-processor
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      preservation-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: pip
+    directory: /infrastructure/src/functions/ai-analyzer
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      ai-analyzer-minor-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: terraform
+    directory: /infrastructure/data/terraform
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: terraform
+    directory: /infrastructure/computeless/terraform
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

@@ -78,6 +78,14 @@ jobs:
           python-version: "3.11"
           cache: pip
           cache-dependency-path: infrastructure/src/functions/preservation-processor/requirements.txt
+      - name: Verify Cloud Function direct dependencies are pinned
+        run: |
+          for requirements in infrastructure/src/functions/*/requirements.txt; do
+            if grep -Ev '^[A-Za-z0-9_.-]+==[^[:space:]]+$' "$requirements"; then
+              echo "::error file=$requirements::Every direct dependency must use an exact == pin."
+              exit 1
+            fi
+          done
       - name: Install preservation dependencies
         run: pip install --requirement infrastructure/src/functions/preservation-processor/requirements.txt
       - name: Test preservation processor
@@ -93,12 +101,20 @@ jobs:
         with:
           terraform_version: "1.16.0"
       - run: terraform fmt -check -recursive infrastructure
+      - name: Require committed provider locks
+        run: |
+          test -s infrastructure/data/terraform/.terraform.lock.hcl
+          test -s infrastructure/computeless/terraform/.terraform.lock.hcl
       - name: Validate data module
         working-directory: infrastructure/data/terraform
-        run: terraform init -backend=false -input=false && terraform validate
+        run: terraform init -backend=false -input=false -lockfile=readonly && terraform validate
       - name: Validate computeless module
         working-directory: infrastructure/computeless/terraform
-        run: terraform init -backend=false -input=false && terraform validate
+        run: terraform init -backend=false -input=false -lockfile=readonly && terraform validate
+      - name: Verify provider lockfiles did not drift
+        run: |
+          git diff --exit-code -- infrastructure/data/terraform/.terraform.lock.hcl
+          git diff --exit-code -- infrastructure/computeless/terraform/.terraform.lock.hcl
 
   flutter:
     name: Flutter
