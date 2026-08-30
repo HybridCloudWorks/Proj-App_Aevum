@@ -81,7 +81,13 @@ jobs:
       - name: Verify Cloud Function direct dependencies are pinned
         run: |
           for requirements in infrastructure/src/functions/*/requirements.txt; do
-            if grep -Ev '^[A-Za-z0-9_.-]+==[^[:space:]]+
+            if grep -Ev '^[A-Za-z0-9_.-]+==[^[:space:]]+$' "$requirements"; then
+              echo "::error file=$requirements::Every direct dependency must use an exact == pin."
+              exit 1
+            fi
+          done
+      - name: Install preservation dependencies
+        run: pip install --requirement infrastructure/src/functions/preservation-processor/requirements.txt
       - name: Test preservation processor
         working-directory: infrastructure/src/functions/preservation-processor
         run: python -m unittest discover -s tests -v
