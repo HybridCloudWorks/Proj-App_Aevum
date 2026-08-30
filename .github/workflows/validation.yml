@@ -101,12 +101,20 @@ jobs:
         with:
           terraform_version: "1.16.0"
       - run: terraform fmt -check -recursive infrastructure
+      - name: Require committed provider locks
+        run: |
+          test -s infrastructure/data/terraform/.terraform.lock.hcl
+          test -s infrastructure/computeless/terraform/.terraform.lock.hcl
       - name: Validate data module
         working-directory: infrastructure/data/terraform
         run: terraform init -backend=false -input=false -lockfile=readonly && terraform validate
       - name: Validate computeless module
         working-directory: infrastructure/computeless/terraform
         run: terraform init -backend=false -input=false -lockfile=readonly && terraform validate
+      - name: Verify provider lockfiles did not drift
+        run: |
+          git diff --exit-code -- infrastructure/data/terraform/.terraform.lock.hcl
+          git diff --exit-code -- infrastructure/computeless/terraform/.terraform.lock.hcl
 
   flutter:
     name: Flutter
