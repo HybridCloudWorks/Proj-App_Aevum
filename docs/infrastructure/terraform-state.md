@@ -67,9 +67,9 @@ Never copy `.tfstate` or `.tfstate.backup` into the repository.
 - Terraform CLI: `>= 1.6.0, < 2.0.0`; CI currently pins stable Terraform 1.16.0.
 - Google provider: compatible with the reviewed `7.45.x` line via `~> 7.45`.
 - Archive provider: `2.8.0`.
-- Commit `.terraform.lock.hcl` for each root module after an authenticated `terraform init` and provider review.
+- Each root module commits `.terraform.lock.hcl`; CI initializes with `-lockfile=readonly` so unreviewed provider resolution fails.
 - Renovate/Dependabot-style updates should be reviewed through normal plans rather than auto-applied.
 
-## Current validation caveat
+## Observed provider resolution
 
-Repository GitHub Actions execution is independently blocked/tracked in AEV-002. The workflow definitions are present, but a green pipeline must not be claimed until GitHub actually creates and runs the jobs.
+The committed locks resolve Google provider 7.46.0 within the approved `~> 7.45` constraint and Archive provider 2.8.0 at its exact constraint. PR Validation initializes both roots with the backend disabled, enforces the committed locks, and runs `terraform validate`. Provider updates must arrive as reviewable dependency pull requests and pass this gate.
