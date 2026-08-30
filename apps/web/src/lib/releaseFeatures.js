@@ -6,6 +6,7 @@ export const FEATURE_STATUS = Object.freeze({
 });
 
 const routeRegistry = Object.freeze([
+  { prefix: "/admin", status: FEATURE_STATUS.PLANNED },
   { prefix: "/story/sample-id", status: FEATURE_STATUS.PROTOTYPE },
   { prefix: "/ai/identity-matcher", status: FEATURE_STATUS.PROTOTYPE },
   { prefix: "/ai/discovery", status: FEATURE_STATUS.PROTOTYPE },
