@@ -1,6 +1,6 @@
 # Aevum Private Beta Release Checklist
 
-This checklist separates implementation status from validation status. A merged implementation is not considered release-validated until its required runtime checks have executed successfully.
+This checklist separates implementation status from validation status. A merged implementation is not considered release-validated until its required runtime checks have executed successfully. The canonical capability classification and disabled-feature release notes are maintained in [the Private Beta feature registry](./feature-registry.md).
 
 ## Implemented in repository
 
@@ -13,9 +13,12 @@ This checklist separates implementation status from validation status. A merged 
 - [x] Terraform validation job defined
 - [x] Flutter dependency, analyzer, and test jobs defined
 - [x] Executable Firebase Firestore and Storage Rules test suite added
+- [x] Production/Beta/Prototype/Planned feature registry maintained
 - [x] Prototype web routes hidden by default in Private Beta builds
 - [x] Prototype Flutter routes hidden by default in Private Beta builds
-- [x] Mock Flutter family tree route hidden by default until backed by canonical data
+- [x] Unclassified Flutter routes fail closed
+- [x] Mock Flutter family tree and companion mock-data routes excluded
+- [x] Planned mobile admin/developer routes unavailable, including to admins
 - [x] Misleading FaceID and zero-knowledge encryption claims removed
 - [x] Fabricated admin telemetry and release controls removed
 - [x] Preservation and AI service identities separated with reduced permissions
