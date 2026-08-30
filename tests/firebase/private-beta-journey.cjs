@@ -1,5 +1,6 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const { randomUUID } = require("node:crypto");
 const { initializeApp, deleteApp } = require("firebase/app");
 const {
   connectAuthEmulator,
@@ -29,7 +30,8 @@ const {
   initializeTestEnvironment,
 } = require("@firebase/rules-unit-testing");
 
-const projectId = "demo-aevum";
+const projectId = process.env.GCLOUD_PROJECT || "demo-aevum";
+const runId = randomUUID();
 const password = "PrivateBeta123!";
 const apps = [];
 let privilegedEnv;
@@ -58,7 +60,20 @@ function client(name) {
 }
 
 async function expectDenied(action, label) {
-  await assert.rejects(action, undefined, label);
+  await assert.rejects(
+    action,
+    (error) => {
+      assert.ok(
+        error &&
+          (error.code === "permission-denied" ||
+            error.code === "storage/unauthorized"),
+        label + ": expected a rules denial, received " +
+          (error && error.code ? error.code : String(error)),
+      );
+      return true;
+    },
+    label,
+  );
 }
 
 async function createAccount(context, email) {
@@ -76,17 +91,17 @@ async function main() {
   const collaborator = client("journey-collaborator");
   const outsider = client("journey-outsider");
 
-  const ownerEmail = "owner@private-beta.test";
-  const collaboratorEmail = "collaborator@private-beta.test";
-  const outsiderEmail = "outsider@private-beta.test";
+  const ownerEmail = "owner+" + runId + "@private-beta.test";
+  const collaboratorEmail = "collaborator+" + runId + "@private-beta.test";
+  const outsiderEmail = "outsider+" + runId + "@private-beta.test";
 
   const ownerId = await createAccount(owner, ownerEmail);
   const collaboratorId = await createAccount(collaborator, collaboratorEmail);
   await createAccount(outsider, outsiderEmail);
 
-  const familyId = "golden-family";
-  const personId = "golden-person";
-  const mediaId = "golden-media";
+  const familyId = "golden-family-" + runId;
+  const personId = "golden-person-" + runId;
+  const mediaId = "golden-media-" + runId;
   const familyRef = doc(owner.firestore, "families", familyId);
   const personRef = doc(owner.firestore, "family_members", personId);
   const mediaRef = doc(owner.firestore, "media_items", mediaId);
@@ -216,7 +231,7 @@ async function main() {
     "revoked collaborators cannot read the family",
   );
 
-  const failedMediaId = "failed-upload";
+  const failedMediaId = "failed-upload-" + runId;
   await setDoc(doc(owner.firestore, "media_items", failedMediaId), {
     familyId,
     createdBy: ownerId,
@@ -249,7 +264,7 @@ async function main() {
     "failed reservations cannot receive an original",
   );
 
-  const malformedMediaId = "malformed-upload";
+  const malformedMediaId = "malformed-upload-" + runId;
   await setDoc(doc(owner.firestore, "media_items", malformedMediaId), {
     familyId,
     createdBy: ownerId,
