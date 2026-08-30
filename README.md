@@ -24,10 +24,12 @@ Aevum is organized as a unified monorepo containing both the web and native mobi
 
 ### 🌐 Web Project
 
+Run installs from the repository root so local development and CI use the
+single committed workspace lockfile:
+
 ```bash
-cd apps/web
-npm install
-npm run dev
+npm ci
+npm run dev --workspace=apps/web
 ```
 
 ### 📱 Mobile Project
