@@ -37,9 +37,8 @@ export function ProtectedRoute({ children }) {
           </div>
           <h1 className="text-2xl font-bold">Not in Private Beta</h1>
           <p className="text-white/60">
-            This feature is still classified as a prototype and is disabled in
-            the Private Beta build until its data, security, and reliability
-            behavior is release-validated.
+            This feature is not available in the Private Beta build until its
+            data, security, and reliability behavior is release-validated.
           </p>
           <Link
             to="/dashboard"
