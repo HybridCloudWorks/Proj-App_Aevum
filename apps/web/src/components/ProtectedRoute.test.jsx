@@ -92,7 +92,7 @@ describe("ProtectedRoute", () => {
     expect(screen.queryByText("Admin Console")).not.toBeInTheDocument();
   });
 
-  it("renders /admin for a user with the trusted admin claim", () => {
+  it("keeps planned /admin unavailable to trusted admins", () => {
     useAuth.mockReturnValue({
       user: { uid: "admin-123" },
       loading: false,
@@ -107,6 +107,7 @@ describe("ProtectedRoute", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Admin Console")).toBeInTheDocument();
+    expect(screen.getByText("Not in Private Beta")).toBeInTheDocument();
+    expect(screen.queryByText("Admin Console")).not.toBeInTheDocument();
   });
 });
