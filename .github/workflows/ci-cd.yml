@@ -186,7 +186,7 @@ jobs:
           VITE_ENABLE_PROTOTYPE_FEATURES: "false"
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: apps/web/dist
