@@ -49,6 +49,45 @@ jobs:
         env:
           VITE_ENABLE_PROTOTYPE_FEATURES: "false"
 
+  coverage:
+    name: Web Test Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Run web tests with coverage
+        working-directory: apps/web
+        run: npm run test:coverage -- --run --pool=forks --maxWorkers=1 --minWorkers=1
+      - name: Write coverage summary
+        if: ${{ !cancelled() }}
+        working-directory: apps/web
+        run: |
+          summary=coverage/coverage-summary.json
+          if [[ ! -f "$summary" ]]; then
+            echo "::warning::Vitest did not write $summary."
+            exit 0
+          fi
+          {
+            echo "### Web test coverage"
+            echo
+            echo "| Metric | Covered | Total | Percent |"
+            echo "| :--- | ---: | ---: | ---: |"
+            jq -r '.total as $t | ("lines", "statements", "branches", "functions") | "| \(.) | \($t[.].covered) | \($t[.].total) | \($t[.].pct)% |"' "$summary"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-coverage
+          path: apps/web/coverage/
+          retention-days: 7
+          if-no-files-found: warn
+
   firebase-rules:
     name: Firebase Rules
     runs-on: ubuntu-latest
