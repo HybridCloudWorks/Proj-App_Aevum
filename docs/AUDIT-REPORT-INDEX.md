@@ -10,7 +10,7 @@
 
 This comprehensive audit includes 5 critical documents that challenge the previous team's findings and provide a clear path to fixing the MVP in 2 weeks.
 
-### 1. **[REAL_FINDINGS.md](REAL_FINDINGS.md)** ⭐ START HERE
+### 1. **[REAL_FINDINGS.md](archive/Real-Findings.md)** ⭐ START HERE
 **Purpose**: Aggressive technical audit challenging all previous assumptions  
 **Length**: 600+ lines  
 **For Whom**: Technical team, architects, engineers  
@@ -57,7 +57,7 @@ This comprehensive audit includes 5 critical documents that challenge the previo
 
 ---
 
-### 3. **[BROKEN-LINKS-REFERENCE.md](BROKEN-LINKS-REFERENCE.md)** 🔗 QUICK FIX GUIDE
+### 3. **[BROKEN-LINKS-REFERENCE.md](archive/Broken-Links-Reference.md)** 🔗 QUICK FIX GUIDE
 **Purpose**: Exact locations of every broken route and simple fixes  
 **Length**: 300+ lines  
 **For Whom**: Engineers fixing specific issues  
@@ -132,7 +132,7 @@ This comprehensive audit includes 5 critical documents that challenge the previo
 
 **Monday (Feb 13)**:
 1. **Leadership**: Read [LEADERSHIP-SUMMARY.md](LEADERSHIP-SUMMARY.md) (15 min)
-2. **Architects**: Read [REAL_FINDINGS.md](REAL_FINDINGS.md) (30 min)
+2. **Architects**: Read [REAL_FINDINGS.md](archive/Real-Findings.md) (30 min)
 3. **Team**: Skim [MVP-ACTION-PLAN.md](MVP-ACTION-PLAN.md) intro (10 min)
 4. **Decision**: Approve 2-week sprint (go/no-go meeting)
 
@@ -146,7 +146,7 @@ This comprehensive audit includes 5 critical documents that challenge the previo
 
 **Daily**:
 - Team standup (15 min) using daily template in [PERSONA-ASSIGNMENTS.md](PERSONA-ASSIGNMENTS.md)
-- When stuck on a route issue: Check [BROKEN-LINKS-REFERENCE.md](BROKEN-LINKS-REFERENCE.md)
+- When stuck on a route issue: Check [BROKEN-LINKS-REFERENCE.md](archive/Broken-Links-Reference.md)
 - When needing code: Check [MVP-ACTION-PLAN.md](MVP-ACTION-PLAN.md)
 
 **Weekly Check-In**:
@@ -233,9 +233,9 @@ Before starting work, ensure everyone has:
 
 ## 📞 Getting Help
 
-**For route issues**: Check [BROKEN-LINKS-REFERENCE.md](BROKEN-LINKS-REFERENCE.md)  
+**For route issues**: Check [BROKEN-LINKS-REFERENCE.md](archive/Broken-Links-Reference.md)  
 **For implementation details**: Check [MVP-ACTION-PLAN.md](MVP-ACTION-PLAN.md)  
-**For architecture questions**: Check [REAL_FINDINGS.md](REAL_FINDINGS.md)  
+**For architecture questions**: Check [REAL_FINDINGS.md](archive/Real-Findings.md)  
 **For resource/timeline questions**: Check [LEADERSHIP-SUMMARY.md](LEADERSHIP-SUMMARY.md)  
 **For assignment clarity**: Check [PERSONA-ASSIGNMENTS.md](PERSONA-ASSIGNMENTS.md)  
 
