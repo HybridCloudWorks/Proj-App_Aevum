@@ -1,0 +1,8 @@
+apps/web/src/stitch-screens/*/code.html linguist-vendored
+apps/mobile/android/** linguist-vendored
+apps/mobile/ios/** linguist-vendored
+apps/mobile/linux/** linguist-vendored
+apps/mobile/macos/** linguist-vendored
+apps/mobile/windows/** linguist-vendored
+apps/mobile/web/** linguist-vendored
+scripts/*.html linguist-documentation
