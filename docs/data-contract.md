@@ -3,7 +3,7 @@
 Status: **Canonical v1**  
 Contract version: **1.0.0**  
 Effective: 2026-08-29  
-Tracks: [AEV-004](https://github.com/saulpatinojr/Proj-App_Aevum/issues/138)
+Tracks: [AEV-004](https://github.com/HybridCloudWorks/Proj-App_Aevum/issues/138)
 
 This document is the authoritative persistence contract shared by web, mobile,
 Firebase Security Rules, indexes, and backend processors. New fields or paths
