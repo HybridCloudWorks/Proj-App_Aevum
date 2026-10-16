@@ -53,8 +53,7 @@ firebase deploy --only firestore:rules
 We maintain a centralized documentation hub in the `docs/` folder:
 
 - **[Strategic Docs](docs/)**: Migration logs, implementation plans, and walkthroughs.
-- **[Design Baselines](docs/baselines/)**: 57 high-fidelity design captures for 1-to-1 UI matching.
-- **[Master Mapping](docs/mapping.md)**: Registry of design-to-code components.
+- **[Design Baselines](docs/baselines/)**: 42 high-fidelity design captures for 1-to-1 UI matching.
 - **[Canonical Data Contract](docs/data-contract.md)**: Versioned schema, ownership, mutation, and storage-path contract.
 
 ## 🔐 Security & Data (GDEF Guidelines)
@@ -65,7 +64,7 @@ We maintain a centralized documentation hub in the `docs/` folder:
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18, Vite, TypeScript, TailwindCSS
+- **Frontend**: React 18, Vite, JavaScript, TailwindCSS
 - **State**: Zustand (Atomic state management)
 - **Backend**: Firebase Auth, Firestore, Cloud Storage
 - **Routing**: React Router 6 (Lazy-loaded routes)
@@ -74,4 +73,4 @@ We maintain a centralized documentation hub in the `docs/` folder:
 
 ## 📄 License
 
-MIT © 2026 Aevum Heritage Team
+All rights reserved. See [LICENSE](LICENSE).

@@ -267,9 +267,9 @@ A: No. We're fixing wiring and plumbing, not rewriting features.
 ## Appendices
 
 For detailed information, see:
-- **[REAL_FINDINGS.md](REAL_FINDINGS.md)** — Full technical audit
+- **[REAL_FINDINGS.md](archive/Real-Findings.md)** — Full technical audit
 - **[MVP-ACTION-PLAN.md](MVP-ACTION-PLAN.md)** — Sprint-by-sprint implementation guide
-- **[BROKEN-LINKS-REFERENCE.md](BROKEN-LINKS-REFERENCE.md)** — Exact locations of all broken routes
+- **[BROKEN-LINKS-REFERENCE.md](archive/Broken-Links-Reference.md)** — Exact locations of all broken routes
 - **[FINDINGS.md](FINDINGS.md)** — Previous team's findings (for comparison)
 
 ---

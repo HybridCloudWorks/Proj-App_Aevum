@@ -21,3 +21,6 @@ apps/mobile/windows/flutter/generated_*
 # Coverage artifacts
 coverage/
 apps/web/coverage/
+
+# Logs
+*.log
