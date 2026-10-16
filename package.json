@@ -15,5 +15,14 @@
     "lint": "npm run lint --workspace=apps/web",
     "test": "npm run test --workspace=apps/web",
     "build": "npm run build --workspace=apps/web"
+  },
+  "overrides": {
+    "firebase": {
+      "undici": "6.28.1",
+      "@grpc/grpc-js": "1.13.6"
+    },
+    "vitest": {
+      "tinypool": "2.1.2"
+    }
   }
 }
